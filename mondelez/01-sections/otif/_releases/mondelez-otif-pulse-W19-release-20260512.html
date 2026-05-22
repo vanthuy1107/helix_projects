@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Báo cáo Vận hành OTIF — Tuần 19/2026 — Mondelez Việt Nam</title>
+<style>
+:root {
+  --sl-navy-dark:      #14283F;
+  --sl-navy:           #1E3A5F;
+  --sl-navy-light:     #2C5282;
+  --sl-blue:           #2563EB;
+  --sl-blue-pale:      #C5DAEC;
+  --sl-pale:           #EFF4FB;
+  --sl-bg:             #F7FAFD;
+  --sl-white:          #FFFFFF;
+  --sl-text-primary:   #1F2937;
+  --sl-text-secondary: #5B6573;
+  --sl-border:         #D6E0EE;
+  --sl-border-strong:  #B6C5DC;
+  --sl-success:        #16A34A;
+  --sl-success-pale:   #E6F4EC;
+  --sl-danger:         #B0322F;
+  --sl-warning:        #C2750E;
+  --sl-radius-sm:      4px;
+  --sl-radius-md:      8px;
+  --sl-radius-lg:      12px;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 18mm 16mm 20mm 16mm;
+}
+@page :first {
+  margin: 0;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: var(--sl-text-primary);
+  background: var(--sl-white);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 500;
+  color: var(--sl-navy-dark);
+  margin-top: 0;
+}
+
+p { margin: 0 0 10pt 0; text-align: justify; }
+
+.cover {
+  height: 297mm;
+  width: 210mm;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  page-break-after: always;
+  background: var(--sl-white);
+}
+.cover-band {
+  background: var(--sl-navy-dark);
+  color: var(--sl-pale);
+  padding: 28mm 18mm 16mm 18mm;
+  flex: 0 0 auto;
+}
+.cover-brand {
+  font-size: 11pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #B6D4FF;
+  margin-bottom: 6mm;
+}
+.cover-tenant {
+  font-size: 12pt;
+  color: #D6E8FF;
+  margin-bottom: 8mm;
+  letter-spacing: 0.04em;
+}
+.cover-title {
+  font-size: 26pt;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--sl-white);
+  margin-bottom: 4mm;
+}
+.cover-subtitle {
+  font-size: 13pt;
+  color: #D6E8FF;
+  margin-bottom: 0;
+}
+.cover-body {
+  flex: 1 1 auto;
+  padding: 18mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.cover-meta {
+  display: grid;
+  grid-template-columns: 40mm 1fr;
+  row-gap: 4mm;
+  font-size: 11pt;
+}
+.cover-meta dt {
+  color: var(--sl-text-secondary);
+  font-weight: 500;
+}
+.cover-meta dd {
+  color: var(--sl-text-primary);
+  margin: 0;
+}
+.cover-footer {
+  font-size: 9pt;
+  color: var(--sl-text-secondary);
+  border-top: 0.5px solid var(--sl-border);
+  padding-top: 4mm;
+}
+
+h1.section-title {
+  font-size: 18pt;
+  color: var(--sl-navy);
+  border-bottom: 0.5px solid var(--sl-border-strong);
+  padding-bottom: 4pt;
+  margin-bottom: 12pt;
+  page-break-before: auto;
+  page-break-after: avoid;
+}
+h2.chapter-title {
+  font-size: 13pt;
+  color: var(--sl-navy);
+  margin-top: 18pt;
+  margin-bottom: 8pt;
+  page-break-after: avoid;
+}
+h3.sub-title {
+  font-size: 11.5pt;
+  color: var(--sl-navy-dark);
+  margin-top: 12pt;
+  margin-bottom: 6pt;
+  page-break-after: avoid;
+}
+
+.callout {
+  background: var(--sl-pale);
+  border-left: 4px solid var(--sl-blue);
+  border-radius: 0 var(--sl-radius-md) var(--sl-radius-md) 0;
+  padding: 10pt 14pt;
+  margin: 10pt 0 14pt 0;
+  page-break-inside: avoid;
+}
+.callout h3 {
+  margin: 0 0 6pt 0;
+  font-size: 11pt;
+  color: var(--sl-navy-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout ul {
+  margin: 0;
+  padding-left: 16pt;
+}
+.callout li {
+  margin-bottom: 5pt;
+  color: var(--sl-text-primary);
+}
+.callout li strong {
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+
+.callout--warning {
+  background: #FEF3E2;
+  border-left-color: var(--sl-warning);
+}
+.callout--warning h3 { color: #894F0B; }
+
+.callout--danger {
+  background: #FCEBEB;
+  border-left-color: var(--sl-danger);
+}
+.callout--danger h3 { color: #7A1F1F; }
+
+table.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin: 8pt 0 14pt 0;
+  page-break-inside: auto;
+}
+table.report-table thead {
+  background: var(--sl-pale);
+}
+table.report-table thead th {
+  color: var(--sl-navy);
+  font-weight: 500;
+  text-align: left;
+  padding: 6pt 8pt;
+  border-bottom: 0.5px solid var(--sl-border-strong);
+  letter-spacing: 0.02em;
+}
+table.report-table tbody td {
+  padding: 5pt 8pt;
+  border-bottom: 0.5px solid var(--sl-border);
+  color: var(--sl-text-primary);
+  vertical-align: top;
+}
+table.report-table tbody tr:nth-child(even) {
+  background: var(--sl-bg);
+}
+table.report-table tbody tr.group-row td {
+  background: var(--sl-pale);
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+table.report-table tbody tr.highlight td {
+  background: #EAF1FB;
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+table.report-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.report-table .center { text-align: center; }
+
+.badge {
+  display: inline-block;
+  padding: 2pt 8pt;
+  border-radius: 999px;
+  font-size: 9pt;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.badge--ok      { background: var(--sl-success-pale); color: #14532D; }
+.badge--warn    { background: #FEF3E2;                color: #894F0B; }
+.badge--danger  { background: #FCEBEB;                color: #7A1F1F; }
+.badge--info    { background: var(--sl-pale);         color: var(--sl-navy); }
+
+.chart-bars {
+  margin: 8pt 0 14pt 0;
+  page-break-inside: avoid;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 38mm 1fr 38mm;
+  align-items: center;
+  gap: 6pt;
+  padding: 3pt 0;
+  font-size: 9.5pt;
+}
+.bar-label {
+  color: var(--sl-text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar-track {
+  position: relative;
+  background: var(--sl-bg);
+  border: 0.5px solid var(--sl-border);
+  border-radius: var(--sl-radius-sm);
+  height: 14pt;
+  overflow: visible;
+}
+.bar {
+  background: var(--sl-blue);
+  height: 100%;
+  border-radius: var(--sl-radius-sm) 0 0 var(--sl-radius-sm);
+}
+.bar--warn   { background: var(--sl-warning); }
+.bar--danger { background: var(--sl-danger); }
+.bar--success{ background: var(--sl-success); }
+.bar--neutral{ background: var(--sl-navy); }
+
+.bar-marker {
+  position: absolute;
+  top: -2pt;
+  bottom: -2pt;
+  width: 0;
+  border-left: 1.5px dashed var(--sl-navy);
+}
+.bar-marker::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -8pt;
+  left: 4pt;
+  font-size: 7.5pt;
+  color: var(--sl-navy);
+  white-space: nowrap;
+}
+
+.bar-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--sl-text-primary);
+}
+
+table.action-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10pt 0 16pt 0;
+  font-size: 10pt;
+  page-break-inside: auto;
+}
+table.action-table thead th {
+  background: var(--sl-navy);
+  color: var(--sl-pale);
+  padding: 7pt 10pt;
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+table.action-table tbody td {
+  padding: 8pt 10pt;
+  border-bottom: 0.5px solid var(--sl-border);
+  color: var(--sl-text-primary);
+  vertical-align: top;
+}
+table.action-table tbody tr:nth-child(even) {
+  background: var(--sl-bg);
+}
+table.action-table .col-when {
+  white-space: nowrap;
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+
+.closing {
+  margin: 18pt 0 8pt 0;
+  padding: 14pt 16pt;
+  background: var(--sl-bg);
+  border: 0.5px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+  page-break-inside: avoid;
+}
+.closing p {
+  margin: 0;
+  color: var(--sl-text-primary);
+  font-size: 10.5pt;
+  line-height: 1.6;
+}
+
+.report-footer {
+  margin-top: 24pt;
+  padding-top: 8pt;
+  border-top: 0.5px solid var(--sl-border);
+  font-size: 8.5pt;
+  color: var(--sl-text-secondary);
+  text-align: center;
+}
+
+.page-break        { page-break-after: always; }
+.avoid-break       { page-break-inside: avoid; }
+.break-before      { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<section class="cover">
+  <div class="cover-band">
+    <div class="cover-brand">Smartlog Control Tower · Báo cáo Vận hành</div>
+    <div class="cover-tenant">Mondelez Việt Nam</div>
+    <div class="cover-title">Báo cáo OTIF Tuần 19</div>
+    <div class="cover-subtitle">Diễn biến giao hàng Đúng hạn × Đủ lượng từ 04/05 đến 09/05/2026</div>
+  </div>
+  <div class="cover-body">
+    <dl class="cover-meta">
+      <dt>Kỳ báo cáo</dt>          <dd>Tuần 19/2026 (Thứ Hai 04/05 → Thứ Bảy 09/05/2026)</dd>
+      <dt>Ngày chốt số liệu</dt>   <dd>10/05/2026, lúc 17:00 (giờ Việt Nam)</dd>
+      <dt>Đối tượng</dt>           <dd>Supply Chain Manager Mondelez Việt Nam</dd>
+      <dt>Phạm vi</dt>             <dd>Mondelez Việt Nam — toàn quốc</dd>
+      <dt>Soạn ngày</dt>           <dd>12/05/2026</dd>
+    </dl>
+    <div class="cover-footer">
+      Báo cáo phát hành · Số liệu chốt từ hệ thống Smartlog Control Tower
+    </div>
+  </div>
+</section>
+
+<!-- 1. BỐI CẢNH -->
+<h1 class="section-title">Bối cảnh</h1>
+<p>Trong tuần 19 (04/05 → 09/05/2026), bộ chỉ số giao hàng OTIF (Đúng hạn × Đủ lượng) của Mondelez Việt Nam đã chạm mức thấp nhất trong 5 tuần liên tiếp gần đây. Phần lớn áp lực đến từ vận tải khu vực Nam Bộ — đặc biệt trên cluster vận chuyển BKD1 × ANH SON chiếm khoảng 30% sản lượng đơn hàng tuần. Sản lượng đo lường tuần này (3.258 đơn) cao hơn 18% so với mặt bằng ba tuần trước, phản ánh áp lực phục hồi sau kỳ nghỉ Labor Day ở tuần 18.</p>
+<p>Báo cáo dưới đây tổng hợp các con số chốt, phân tích theo khu vực và theo nhà vận tải, đồng thời đề xuất các hành động cần triển khai trước tuần 20 nhằm tránh xu hướng này trở thành mặt bằng mới.</p>
+
+<!-- 2. ĐIỂM NHẤN -->
+<div class="callout">
+  <h3>Điểm nhấn</h3>
+  <ul>
+    <li><strong>OTIF tuần 19 = 62,34%</strong> — thấp hơn 9,6 điểm so với baseline 3 tuần W15–W17 (71,98%); là tuần thấp nhất trong 5 tuần liên tiếp.</li>
+    <li><strong>Đúng hạn 76,24%</strong> — giảm 11,8 điểm so với baseline; tín hiệu vận tải trễ rõ rệt, đặc biệt ở nửa đầu tuần.</li>
+    <li><strong>Đủ lượng 81,77%</strong> — gần như đi ngang so với baseline (+0,9 điểm), nhưng vẫn dưới mục tiêu 90% và sụt mạnh ở nửa cuối tuần.</li>
+    <li><strong>Vận tải chiếm 78% lỗi Đủ lượng + 87% lỗi Đúng hạn</strong> trong tuần — không phải vấn đề từ kho.</li>
+    <li><strong>0/11 khu vực đội xe đạt mục tiêu OTIF 80%</strong> trong tuần — chỉ Hà Nội tiệm cận ở mức 70,11%.</li>
+  </ul>
+</div>
+
+<!-- 3. CÂU CHUYỆN -->
+<h1 class="section-title">Phân tích chi tiết</h1>
+
+<!-- CHƯƠNG 1 -->
+<h2 class="chapter-title">Tuần 19 là tín hiệu thật, không phải nhiễu — hai cơn vỡ chồng lên trong cùng một tuần</h2>
+<p>Mức OTIF 62,34% tuần 19 thấp hơn cả bốn tuần liền trước (W15 66,58%; W16 71,18%; W17 78,19%; W18 86,98%). So với mặt bằng baseline 3 tuần W15–W17 (đã loại trừ tuần lễ Labor Day W18 vì sản lượng chỉ 1.751 đơn — biased high), mức tuần này thấp hơn 9,6 điểm — chênh lệch lớn không thể giải thích bằng biến động ngẫu nhiên, đặc biệt khi sản lượng đo lường tuần này cao hơn baseline 18%.</p>
+<p>Quan trọng hơn, daily trend cho thấy đây không phải một sự cố duy nhất mà là <strong>hai cơn vỡ khác bản chất chồng lên nhau</strong> trong cùng một tuần: nửa đầu tuần (Thứ Hai → Thứ Tư) chỉ số Đủ lượng giữ ổn định quanh 89% nhưng Đúng hạn vỡ (Thứ Ba xuống 60,91%); nửa sau tuần (Thứ Năm → Thứ Bảy) thì ngược lại — Đúng hạn hồi phục lên 78–87% nhưng Đủ lượng collapse xuống 61–70%.</p>
+
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Tuần</th>
+      <th class="num">Sản lượng đo lường (đơn)</th>
+      <th class="num">% Đúng hạn</th>
+      <th class="num">% Đủ lượng</th>
+      <th class="num">% OTIF</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>W15</td><td class="num">2.618</td><td class="num">87,17%</td><td class="num">74,68%</td><td class="num">66,58%</td></tr>
+    <tr><td>W16</td><td class="num">2.880</td><td class="num">89,65%</td><td class="num">78,12%</td><td class="num">71,18%</td></tr>
+    <tr><td>W17</td><td class="num">2.774</td><td class="num">87,20%</td><td class="num">89,83%</td><td class="num">78,19%</td></tr>
+    <tr><td>W18 (kỳ nghỉ Labor Day)</td><td class="num">1.751</td><td class="num">91,78%</td><td class="num">93,32%</td><td class="num">86,98%</td></tr>
+    <tr class="highlight"><td>W19 (hiện tại)</td><td class="num">3.258</td><td class="num">76,24%</td><td class="num">81,77%</td><td class="num">62,34%</td></tr>
+  </tbody>
+</table>
+
+<!-- CHƯƠNG 2 -->
+<h2 class="chapter-title">Cluster vận chuyển BKD1 + ANH SON là đòn bẩy lớn nhất tuần — chiếm 30% sản lượng và chỉ đạt OTIF 61,58%</h2>
+<p>Nhà vận tải ANH SON là đối tác chính tuần này, đảm nhận 1.749 đơn (54% sản lượng đo lường), nhưng OTIF chỉ đạt 61,98%. So sánh trực tiếp với HDA (đối tác lớn thứ hai, 847 đơn) đạt 69,19%, chênh lệch 7,21 điểm cho thấy vấn đề không phải điều kiện vận tải Việt Nam mặt bằng chung.</p>
+<p>Khi phân tích sâu hơn nhóm đơn hàng không có gán khu vực đội xe (1.075 đơn — 33% sản lượng tuần), <strong>88,7% trong số đó (954 đơn) thuộc cluster kho BKD1 × nhà vận tải ANH SON</strong> — tương đương khoảng 30% sản lượng tuần. Cluster này có OTIF chỉ 61,58%, kéo bình quân tuần xuống đáng kể. Hai giả thuyết đang để mở: (a) ANH SON gặp vấn đề năng lực fleet sau holiday W18 — sản lượng nhảy 1,86 lần tuần ngay sau kỳ nghỉ là áp lực backlog không nhỏ; (b) ANH SON đang đảm nhận một số route/khách hàng đặc thù trên cluster BKD1 đang underperform.</p>
+
+<h3 class="sub-title">% OTIF theo nhà vận tải (tuần 19, ≥30 đơn)</h3>
+<div class="chart-bars">
+  <div class="bar-row">
+    <div class="bar-label">ANH SON</div>
+    <div class="bar-track">
+      <div class="bar bar--danger" style="width: 61.98%;"></div>
+      <div class="bar-marker" style="left: 90%;" data-label="Mục tiêu 90%"></div>
+    </div>
+    <div class="bar-value">61,98% · 1.749 đơn</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">HDA</div>
+    <div class="bar-track">
+      <div class="bar bar--warn" style="width: 69.19%;"></div>
+      <div class="bar-marker" style="left: 90%;"></div>
+    </div>
+    <div class="bar-value">69,19% · 847 đơn</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">TLL</div>
+    <div class="bar-track">
+      <div class="bar bar--danger" style="width: 51.21%;"></div>
+      <div class="bar-marker" style="left: 90%;"></div>
+    </div>
+    <div class="bar-value">51,21% · 207 đơn</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">NGUYEN PHAT</div>
+    <div class="bar-track">
+      <div class="bar bar--warn" style="width: 68.24%;"></div>
+      <div class="bar-marker" style="left: 90%;"></div>
+    </div>
+    <div class="bar-value">68,24% · 148 đơn</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">HVP</div>
+    <div class="bar-track">
+      <div class="bar bar--warn" style="width: 70.34%;"></div>
+      <div class="bar-marker" style="left: 90%;"></div>
+    </div>
+    <div class="bar-value">70,34% · 118 đơn</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">THANH AN</div>
+    <div class="bar-track">
+      <div class="bar bar--danger" style="width: 60.38%;"></div>
+      <div class="bar-marker" style="left: 90%;"></div>
+    </div>
+    <div class="bar-value">60,38% · 106 đơn</div>
+  </div>
+</div>
+<p style="font-size: 9pt; color: var(--sl-text-secondary); margin-top: -4pt;">ANH SON + HDA chiếm 80% sản lượng tuần. Nếu kéo được riêng ANH SON từ 61,98% lên 75%, OTIF tuần ước tăng thêm khoảng 7 điểm.</p>
+
+<!-- CHƯƠNG 3 -->
+<h2 class="chapter-title">Thứ Năm 07/05 là "cơn bão hoàn hảo" với 3 nhà vận tải cùng vỡ ở 5 khu vực</h2>
+<p>Ngày tệ nhất tuần là Thứ Năm 07/05 (OTIF 48,41%, 314 đơn hàng). Khi drilldown, có <strong>5 segment dưới 50% OTIF cùng ngày</strong> trải rộng từ Bắc Trung Bộ đến Đồng bằng sông Cửu Long — đặc trưng cho thấy đây không phải vấn đề của một nhà vận tải đơn lẻ.</p>
+
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Khu vực</th>
+      <th>Nhà vận tải</th>
+      <th class="num">Đơn</th>
+      <th class="num">% OTIF</th>
+      <th>Vấn đề chính</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>TP Hồ Chí Minh</td><td>ANH SON</td><td class="num">34</td><td class="num">41,18%</td><td>Đủ lượng vỡ</td></tr>
+    <tr><td>South East</td><td>ANH SON</td><td class="num">35</td><td class="num">34,29%</td><td>Đủ lượng vỡ −60 điểm</td></tr>
+    <tr><td>South East — Lâm Đồng</td><td>ANH SON</td><td class="num">15</td><td class="num">46,67%</td><td>Đủ lượng</td></tr>
+    <tr><td>North Central Coast</td><td>TLL</td><td class="num">13</td><td class="num">0,00%</td><td>Đúng hạn vỡ hoàn toàn</td></tr>
+    <tr><td>Mekong 2</td><td>NGUYEN PHAT</td><td class="num">14</td><td class="num">14,29%</td><td>Đủ lượng vỡ 86%</td></tr>
+  </tbody>
+</table>
+
+<p>Phạm vi địa lý quá rộng (Bắc Trung Bộ, Nam Bộ, Mekong) để là vấn đề nội bộ của riêng từng nhà vận tải. Nhiều khả năng có <strong>một yếu tố kích hoạt bên ngoài</strong> — thời tiết, sự kiện vận tải, hoặc kho gốc BKD1 gặp vấn đề trong ngày 07/05 ảnh hưởng dây chuyền xuống khâu giao hàng.</p>
+
+<!-- CHƯƠNG 4 -->
+<h2 class="chapter-title">33% sản lượng tuần không có gán khu vực đội xe — chỉ điểm điểm yếu trong danh mục</h2>
+<p>Một phần ba sản lượng tuần (1.075 đơn / 3.258 đơn) thuộc nhóm không có thông tin "khu vực đội xe" trong dữ liệu. Đáng chú ý, gần 9 trên 10 đơn trong nhóm này (88,7%) là cluster BKD1 × ANH SON — gợi ý đây là <strong>thiếu mapping danh mục cho cluster</strong> chứ không phải dữ liệu thiếu ngẫu nhiên.</p>
+<p>Đối chiếu với báo cáo đánh giá 10/05: vào thời điểm đó, nhóm "không có khu vực" có OTIF cao bất thường 86,9% (dữ liệu tháng 4 đến đầu tháng 5) — đã được suspect là "vận chuyển nội bộ". Sang tuần này, nhóm này có OTIF chỉ 61,58% — paradox đã đảo chiều. Điều này cho thấy giả thuyết "vận chuyển nội bộ = không có khu vực" không vững — vấn đề thực ra là một mảnh masterdata vận tải cho cluster BKD1 × ANH SON chưa được cập nhật vào danh mục.</p>
+<p>Ngoài ra, có 76 đơn hàng tuần với "nhà vận tải rỗng" và OTIF = 0% — bản chất là dữ liệu sai, không phải các chuyến giao thật bị fail, cần loại khỏi phép tính hoặc sửa từ nguồn.</p>
+
+<!-- CHƯƠNG 5 -->
+<h2 class="chapter-title">Mục tiêu KPI 90/80 tiếp tục mất tín hiệu — cần định nghĩa lại theo nhóm khu vực</h2>
+<p>Trong tuần 19, không có khu vực nào đạt mục tiêu OTIF 80% (0/11) — chỉ Hà Nội tiệm cận với 70,11%. Trong 14 ngày gần nhất, chỉ 1 ngày đạt 80% (Thứ Ba 28/04 với 80,42%), và Labor Day 01/05 là điểm bất thường ở 96,93% (sản lượng chỉ 880 đơn — không phản ánh nhịp thường).</p>
+<p>Mức ngưỡng 90 (đỏ-vàng) và 80 (vàng-xanh) hiện đang đặt theo kỳ vọng MDLZ chứ không theo baseline vận hành thực tế của Mondelez Việt Nam. Cần định nghĩa ngưỡng theo nhóm khu vực có độ chín khác nhau, hoặc chuyển sang ngưỡng tương đối (so với trung bình 4 tuần rolling) để mỗi tuần chỉ highlight các khu vực thực sự đang trượt.</p>
+
+<!-- 4. ĐỀ XUẤT HÀNH ĐỘNG -->
+<h1 class="section-title break-before">Đề xuất hành động</h1>
+
+<table class="action-table">
+  <thead>
+    <tr>
+      <th style="width:55%;">Việc cần làm</th>
+      <th style="width:25%;">Người chịu trách nhiệm</th>
+      <th style="width:20%;" class="col-when">Khi nào</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Liên hệ 2 nhà vận tải lớn (ANH SON, TLL) — xác minh vấn đề tuần 19 (đội xe, tài xế, kho/cảng?)</td>
+      <td>Đội Khách hàng &amp; Triển khai Smartlog</td>
+      <td class="col-when">Trong 24 giờ (trước 13/05)</td>
+    </tr>
+    <tr>
+      <td>Đặt cuộc họp review SLA OTIF với đội điều phối Mondelez</td>
+      <td>PM Mondelez</td>
+      <td class="col-when">Trước Thứ Hai 11/05 (đầu tuần 20)</td>
+    </tr>
+    <tr>
+      <td>Rút log per-route trong tuần cho ANH SON — xác định lỗi tập trung theo khách hàng/route hay rải đều</td>
+      <td>Đội Triển khai Smartlog</td>
+      <td class="col-when">Trước 14/05</td>
+    </tr>
+    <tr>
+      <td>Cân nhắc rebalance sản lượng sang HDA hoặc NGUYEN PHAT cho tuần 20 nếu ANH SON chưa khắc phục</td>
+      <td>Đội điều phối Mondelez</td>
+      <td class="col-when">Quyết định trước 12/05</td>
+    </tr>
+    <tr>
+      <td>Đối chiếu cảnh báo trễ giao hàng cho ngày 07/05 — kiểm tra có cluster cảnh báo sớm trước "cơn bão" không</td>
+      <td>Đội Phân tích Dữ liệu Smartlog</td>
+      <td class="col-when">Trong tuần 20</td>
+    </tr>
+    <tr>
+      <td>Xác minh masterdata khu vực vận tải cho cluster BKD1 × ANH SON — bổ sung mapping còn thiếu</td>
+      <td>Đội Triển khai Smartlog + Backend Mondelez</td>
+      <td class="col-when">Trong sprint hiện tại</td>
+    </tr>
+    <tr>
+      <td>Thống nhất với MDLZ stakeholder mức ngưỡng OTIF mới theo nhóm khu vực (Hà Nội/HCM, nông thôn, vùng sâu)</td>
+      <td>BA Smartlog + Supply Chain Manager Mondelez</td>
+      <td class="col-when">Tuần 20–21</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- 5. LỜI KẾT -->
+<h1 class="section-title">Lời kết</h1>
+
+<div class="closing">
+  <p>Tuần 19 đánh dấu mức OTIF thấp nhất kể từ giữa tháng Tư, và mô thức "hai cơn vỡ trong cùng một tuần" — đầu tuần trễ giao, cuối tuần thiếu lượng — là tín hiệu hệ thống vận tải Nam Bộ đang chịu áp lực bất thường ngay sau kỳ nghỉ Labor Day. Việc 78% lỗi Đủ lượng và 87% lỗi Đúng hạn đều bắt nguồn từ khâu vận tải, kết hợp với cluster BKD1 × ANH SON chiếm 30% sản lượng nhưng chỉ đạt OTIF 61,58%, cho thấy đòn bẩy lớn nhất để cải thiện tuần 20 nằm ở một quyết định duy nhất: hỗ trợ ANH SON khôi phục năng lực, hoặc tạm thời chuyển một phần sản lượng sang nhà vận tải dự phòng. Báo cáo tiếp theo sẽ theo dõi diễn biến ANH SON ngày 12–13/05 và xác nhận hướng đi đã chọn có hiệu quả hay chưa.</p>
+</div>
+
+<div class="report-footer">
+  Số liệu chốt từ hệ thống Smartlog Control Tower lúc 17:00 ngày 10/05/2026 (giờ Việt Nam) · Soạn ngày 12/05/2026
+</div>
+
+</body>
+</html>

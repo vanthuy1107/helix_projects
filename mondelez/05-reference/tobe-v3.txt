@@ -1,0 +1,1792 @@
+    TO-BE BLUEPRINT
+
+  SMARTLOG
+  CONTROL TOWER
+
+Transform Logistics Intelligently
+Qun lý thay i
+
+Ngày thay i  Mc, bng, s  c thay i  Mô t thay i  Phiên bn
+
+                                                Transform Logistics Intelligently
+Trang ký Smartlog
+
+      Vai trò          Tên & Chc v  Ch ký  Ngày  Ghi chú
+Technical Solution
+
+Solution Owner
+
+PM - Project Manager
+PD - Project Director
+
+                                                 Transform Logistics Intelligently
+Trang ký Mondelez
+
+              Vai trò         Tên ngi duyt  Ch ký  Ngày  Ghi chú
+               Key User
+BFL ­ Business Function Lead
+BPO ­ Business Process Owner
+    Qun lý d án ­ Business
+     Qun lý d án ­ System
+
+                                                         Transform Logistics Intelligently
+01  [W&T] FLASH E2E REPORT
+
+02  [Warehouse] HIU SUT IN - INV - OUT
+
+03  [Transportation] GIÁM SÁT N
+    HÀNG
+
+                            Transform Logistics Intelligently
+FLASH REPORT
+
+              Transform Logistics Intelligently
+        FLASH REPORT
+
+ 01 SOURCE INFORMATION
+
+Ngun:
+  Ly t view Shipment Order trên h thng SWM
+  Ly t view Giám sát - Phân phi & view iu phi - Gi thu chi tit trên h thng STM
+
+           Hình 1: View Shipment Order (SWM)                                         Hình 3: View Giám sát - Phân phi (STM)
+Hình 2: View iu phi - Gi thu chi tit (STM)
+                                               iu kin d liu u vào:
+                                                       SWM: Maintain masterdata Item + Customer
+                                                       STM: Maintain masterdata vùng - shipto
+                                                       External: Input file convert Order Type
+
+                                                                                                                        Transform Logistics Intelligently 1
+      FLASH REPORT
+
+02 LOGIC: nh ngha 5 trng thái E2E ca n DO
+
+                          Hình: 5 status E2E theo hành trình 1 n hàng  Hình: Các mc thi gian trong report
+
+         E2E Status n DO           Status h thng SWM x STM                                                                                           Mô t
+Cha xut kho                                                            n hàng va EDI t SAP, có k hoch nhng cha x lý
+ang xut kho               New                                          Logic: Trng thái chi tit n SWM = New
+ã xut kho                                                              Hàng ang trong quá trình son, óng gói
+ang vn chuyn              Part Allocated  Part Shipped                 Logic: Trng thái chi tit n SWM = Part Allocate, Allocated, Picked, Part Shipped
+ã vn chuyn                                                             Hàng hóa ã c xut khi kho
+                          Shipped                                      Logic: Trng thái chi tit n SWM = Shipped
+                                                                       Xe ri dock và trên ng giao ti khách hàng
+                          Ri Dock  Ti Shipto                           Logic: TG ri dock NOT NULL
+                                                                       Chuyn ã giao thành công và ri im giao
+                          Ri Shipto                                    Logic: TG ri im giao NOT NULL
+
+                                                                       Transform Logistics Intelligently 2
+FLASH REPORT
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc          Loi b lc                 Tiêu chí lc
+
+UOM                      Single-select      Gm: CSE, Ton, CBM, Pallet, DO
+Transport Type       (cho chn 1 giá tr)     Mc nh: CSE
+Kho ly hàng
+Brand                     Multi-select      Gm: Dánh sách Tên kênh bán hàng t Masterdata Customer
+Type              (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+Khu vc giao hàng
+Loi ngày                  Multi-select      Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khong thi gian    (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+
+                          Multi-select      Gm: lc danh sách SKU u 4 (FG) => ly string u tiên trong sku name
+                  (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+
+                          Multi-select     · Gm: Danh sách Nhóm hàng t Masterdata Item
+                  (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+
+                          Multi-select      Gm: Danh sách Tên khu vc t Thit lp khu vc
+                  (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+
+                          Combo box         Gm: Actual Ship Date, ATD gi thu, ETD gi thu, ATA n, ETA gi thu, GI date
+                  (cho chn mt giá tr)       Mc nh: GI date
+
+                  T khong n khong           Chn ti a 12 tháng
+                                            Mc nh: Ngày hin ti
+
+                                                        Transform Logistics Intelligently 3
+      FLASH REPORT                         Tracking s lng xut kho (SL nh) và cha
+                                           xut kho (SL giao) so vi total k hoch
+03 VISUALIZATION (maximum 8-10 chart/tab)
+                                                                                  Transform Logistics Intelligently 4
+ Report Link Flash Report
+
+Scorecard E2E status
+      FLASH REPORT
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+  Tracking s lng xut bán by kho, NPP, vùng, kênh bán hàng
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 5
+      FLASH REPORT
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 5
+      FLASH REPORT
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 5
+HIU SUT IN-INV-OUT
+
+                    Transform Logistics Intelligently
+CÁC VIEW LIÊN QUAN                       %WH UTILIZATION => logic CF (Bách
+                                         2102026)
+                            Dashboard    => time refresh: 5p
+                     Hiu sut In-Inv-Out
+                                          Trung chuyn => Bách CF 24022026
+
+                                         Copack => Bách CF 24022026
+
+                                          Nhp t xng => Bách CF 24022026
+                                          %Loose/Full Picking => Bách CF 240220
+
+                                          %Stock Type => Bách CF 24022026
+                                         Movement Transaction
+      %WH UTILIZATION                                                               iu kin d liu u vào:
+                                                                                            SWM: Maintain masterdata Stacklimit + Location (hn ch to
+01 SOURCE INFORMATION                                                                           location nháp)
+
+Ngun:                                                                                                                                              Transform Logistics Intelligently 6
+   Ly t view INVENTORY TOTAL trên h thng SWM
+   Ly t view LOCATION trên h thng SWM
+
+                                               Hình 1: View Inventory Total (SWM)
+
+                                              Hình 2: Masterdata Location (SWM)
+      %WH UTILIZATION                                                                                       TNG CAO (tng 2 tr lên)
+                                                                                                                 BKD: only rack ôi
+02 LOGIC: Thng nht terms & vn hành thc t                                                                         NKD: rack n + rack ôi
+                                                                                                                 VN821: cha có info
+Vn hành thc t: hàng hóa c nhp t xng (v BKD2) hoc internal (BKD2 v BKD1,3)                                        VN831: cha có info
+nguyên kin (pallet) hoc l (loose) vi nguyên tc 1 pallet vt lý ch cha 1 sku x lô duy
+nht. Mi bin ch cha duy nht 1 sku x lô. H thng SWM gen 1 PalletID, 1 LPNID duy nht                           TNG THP (tng 1) còn gi là
+cho tng sku x lô                                                                                            pickBfKaDce: rack n + rack ôi
+
+   Vi BKD2: Tng cao & pickface s cha hàng nguyên pallet  luôn di hoc bng                                         NKD: rack n + rack ôi
+       stacklimit                                                                                                VN821: cha có info
+                                                                                                                 VN831: cha có info
+   Vi BKD1, 3: Tng cao cha hàng nguyên pallet c internal, pickface cha hàng                                 FLOWRACK (only BKD)
+       l/nguyên. Forklift move hàng t tng cao xung pickface ti thi im allocate hàng                              B qua vì quá ít, không dùng thng xuyên
+       cho n, sn sàng  ppt ti ly hàng ready load lên xe  có th vt stacklimit
+                                                                                                            KHO LNH (only BKD, NKD)
+  Thut ng                                                    Mô t                            nh: kho thng        BKD: only rack ôi
+                                                                                               nh: kho lnh       NKD: only rack ôi
+Location/Bin  Là v trí lu tr hàng hóa
+PalletID      Ví d: A07.13.2  A07 là aisle || 13 là s th t racking || 2 là tng racking                           Transform Logistics Intelligently 7
+              SWM qun lý theo palletID
+Pallet vt lý
+Stacklimit        1 SKU x batch s c gen palletID duy nht  qun lý
+                  PalletID là ni chui whseid x nm(26) x 8 kí t tnh tin
+Pickface      SWM không qun lý ti pallet vt lý
+              Nguyên tc: 1 pallet vt lý ch cha 1 palletID, 1 LPNID, 1 sku x batch
+              S pallet vt lý ti a ti 1 location/bin
+                  Masterdata stacklimit setup trên SWM
+              Ví d: A07.13.2 có stacklimit = 2  cha ti a 2 pallet vt lý ti location/bin này
+              Rack tng 1, cha nhiu palletID ready load lên xe
+           %WH UTILIZATION                            NOTE: Theo vn hành, 1 LPNID = 1 pallet vt lý = 1 Pallet
+
+02 LOGIC: %Utilization tng cao & tngIDthp                                                                  LOGIC RACK TNG THP (pickface)
+
+LOGIC RACK TNG CAO (tng 2 tr lên) & KHO LNH                                                                * Rack ôi                      * Rack n
+
+Do 1 sku x batch nm trên 1 pallet vt lý và  Logic segment Full/Partial/Empty cho Location
+SWM gen duy nht 1 palletID                      Full: Count(PalletID) = Stacklimit
+Count(palletID) = Count(pallet vt lý)           Partial: 0 < Count(PalletID) < Stacklimit
+                                                Empty: Count(PalletID) = 0
+
+* Rack ôi                                   * Rack n
+
+Bc 1: bng INVENTORY TOTAL  Count s palletID ti mi location/bin tng 2 tr lên                                Bc 1: bng INVENTORY TOTAL  Count s palletID ti mi location/bin tng 1
+· Loi b bin thuc Flowrack, A0, STAGE, BUN, PICKTO, CHECK, CHAMHANG, Inventory, TRIBECO, CHUYEN             · Loi b bin thuc Flowrack, A0, STAGE, BUN, PICKTO, CHECK, CHAMHANG, Inventory, TRIBECO, CHUYEN
+
+   KHO, BLOCK01, KHO INHOUSE                                                                                  KHO, BLOCK01, KHO INHOUSE
+· Riêng kho BKD2, b có bin A**. Kho BKD3 b các bin l 16, 17, 18, 19, 20, 21, 22, A0, K, TO, E, CK, COPACK  · Riêng kho BKD2, b có bin A**. Kho BKD3 b các bin l 16, 17, 18, 19, 20, 21, 22, A0, K, TO, E, CK, COPACK
+· Riêng kho NKD, b các dòng tn có SKU là LOSCAM, BACHTHUAN vì ây là các pallet rng                         · Riêng kho NKD, b các dòng tn có SKU là LOSCAM, BACHTHUAN vì ây là các pallet rng
+
+                                                                                                           Bc 2: So sánh count(PalletID) VS Stacklimit  xác nh s pallet vt lý
+
+                                                                                                           Location Count(PalletID) Stacklimi ánh du pickface
+                                                                                                                          t  có s dng
+
+Bc 2: So sánh count(PalletID) VS Stacklimit  phân loi Full/Partial/Empty                                   A51.21.1   15  2  Có                                                Output - s pallet cha
+· Group theo location Full/Partial/Empty => Sum(pallet vt lý)                                                                                                                   pickface = 17 pallet
+                                                                                                           A51.22.1   1   2  Có
+                                                                          Output - s pallet vt
+Location Count(PalletID Stacklimi Full/Partial/Empty                      lý theo mi group                 A51.32.1   0   1  Không
+           )  t
+                                                                              Full: 7                                                               Transform Logistics Intelligently 8
+                                                                              Partial: 2 (1+1)             A51.42.1   1   1  Có
+      %WH UTILIZATION                                                                   Nguyên tc 1:
+
+02 LOGIC: hàng SLOB, FG, POSM                                                           Tng pallet vt lý = s pallet POSM + s pallet SLOB + s pallet FG (không SLOB)
+                                                                                        = s pallet  location Full + s pallet  location Partial + s pallet  location Pickface
+Vn hành thc t: trong kho có 2 mt hàng là FG (finished goods) và POSM (hàng khuyn
+mãi)                                                                                    Nguyên tc 2:
+
+  - SLOB: là hàng h hng trong quá trình lu kho hoc hàng ht hn. Team warehouse s         Tng location = s location POSM + s location SLOB + s location FG (không SLOB)
+       xác nh theo rule hàng Local <60% shelf life hoc hàng Import <50% shelf life hoc  = s location Full + s location Partial + s location Pickface
+       Damage stock,... và chuyn status ca hàng hóa trên SWM thành Damaged, Hold, QI,
+       Blocked, Expired                                                                 Bc 1: bng INVENTORY TOTAL  tính s pallet/location cha hàng POSM
+
+                                                                                            SKU GROUP = POSM
+                                                                                            Count(palletID) = s pallet vt lý
+
+   POSM, SLOB: lu tr nguyên pallet, không xé l. Khi n c Allocated thì forklift          Bc 2: Tính s pallet/location cha hàng SLOB
+       move hàng t tng cao xung pickface, khi chun b xut kho thì ppt pick hàng ra          STATUS = Damaged v Hold v QI v Blocked v Expired
+       stage gn ca xe ti load. Nu trong quá trình move hàng hoc pick hàng mà phát hin      SKU GROUP <> POSM
+       h hng (do lu kho, dt nc, ht hn, v.v) thì team warehouse s ánh du h nguyên           Count(palletID) = s pallet vt lý
+       pallet
+
+ Count(palletID) = Count(pallet vt lý)
+
+                                                                                        Bc 3: Tính s pallet/location cha hàng FG (không SLOB)
+                                                                                           FG = (Full + Partial + Pickface) - SLOB - POSM
+                                                                                                                                                                Transform Logistics Intelligently 9
+%WH UTILIZATION
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng: không có b lc
+
+Tên b lc  Loi b lc                         Tiêu chí lc
+
+                                                        Transform Logistics Intelligently 10
+      %WH UTILIZATION
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report Link WH utilization
+
+        Tracking %FG,SLOB,POSM trong kho
+Tng quan hin trng lp y và sc cha ca kho.
+
+                                           Transform Logistics Intelligently 10
+      %WH UTILIZATION
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report Link WH utilization
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 11
+      Trung chuyn
+
+01 SOURCE INFORMATION
+
+ Ngun:
+   Ly t view INBOUND REPORT TOTAL trên h thng SWM
+   Ly t view OUTBOUND REPORT TOTAL trên h thng SWM
+ Phm vi d liu:
+   Only kho trong BKD, NKD
+
+Hình 1: View Inbound Report Total (SWM)                                          Hình 3: Masterdata Receipt Type (SWM)
+
+                                  Hình 2: View Outbound Report Total (SWM)       Hình 4: Masterdata Order Type (SWM)
+                                                                                                                     Transform Logistics Intelligently 11
+ iu kin d liu u vào:
+         SWM: Maintain masterdata OrderType + ReceiptType chính xác gia các kho
+      Trung chuyn                                                                    Bc 1: INBOUND REPORT TOTAL  lc data theo 2 condition:
+                                                                                        STATUS = Received
+02 LOGIC: Hàng nhp trung chuyn In-Ex                                                    [Rule cho riêng BKD1,2,3]
+                                                                                              o (In-Ex) TYPE = 08, ICDMT, ICD
+Vn hành nhp hàng trung chuyn In-Ex:                                                           o (In-In) TYPE = 02
+   Xut/nhp kho ngoài ch vn hành bui sáng. Khi thiu hàng thì kho trong (NKD, BKD)        [Rule cho riêng NKD]
+       nhp t kho ngoài v. Các n nhp có mã n SO cha ký t N BEE hoc N ICD. Quy nh               o (In-Ex) TYPE = 09
+       1 xe ch 16 pallet. Khi nhp hàng hóa thì SWM t gen PalletID mi
+
+Trên system:
+   Team warehouse manual to n SO trung chuyn t kho trong ra kho ngoài, team kho
+       ngoài manual to n ASN nhn t kho trong. Mi mt sku x lô nhp vào kho s gen ra 1
+       palletID, 1 LPNID riêng và c ánh du Type riêng
+
+ count PalletID = count Pallet vt lý
+
+                                                                                     Bc 2: Tính s pallet vt lý nhp hàng trung chuyn
+                                                                                        Count(PalletID)
+
+                                                                                     Transform Logistics Intelligently 12
+      Trung chuyn                                                                          Bc 1: OUTBOUND REPORT TOTAL  lc data theo 2 condition:
+                                                                                              STATUS = Shipped
+02 LOGIC: Hàng xut trung chuyn In-Ex                                                          [Rule cho riêng BKD1,2,3]
+                                                                                                    o (In-Ex) TYPE = 03, ICD, ICDK12, ICDMT, ICDMC, ICDSFG
+Vn hành xut hàng trung chuyn:                                                                       o (In-In) TYPE = 02
+   Xut/nhp kho ngoài ch vn hành bui sáng. Hàng tràn s y t kho trong ra kho ngoài. Các         [Rule cho riêng NKD]
+       n xut có mã n SO cha ký t X BEE hoc X ICD. Xut nguyên pallet, quy nh 1 xe ch 16              o (In-Ex) TYPE = 03, GMDGT, TLLMC, CKN
+       pallet. Khi nhp hàng hóa thì SWM t gen PalletID mi
+
+Trên system:
+   Team warehouse manual to n SO trung chuyn t kho trong ra kho ngoài, team kho ngoài
+       manual to n ASN nhn t kho trong. Mi mt sku x lô nhp vào kho s gen ra 1 palletID, 1
+       LPNID riêng và c ánh du Type riêng
+
+ count PalletID = count Pallet vt lý
+
+                                                                                           Bc 2: Group d liu field SO NO x ORDERKEY x SKU x Batch ri tính s pallet
+                                                                                           vt lý xut hàng trung chuyn
+
+                                                                                              Group SO NO x ORDERKEY x SKU x batch
+                                                                                              Sum(RoundUp(QTY SHIPPEDDETAIL PALLET)) = s pallet vt lý thc xut
+
+                                                                                           Transform Logistics Intelligently 13
+Trung chuyn
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc        Loi b lc                   Tiêu chí lc
+
+Kho ly hàng             Multi-select        Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khong thi gian  (cho chn nhiu giá tr)       Mc nh: chn tt c giá tr
+
+                T khong n khong             Chn ti a 12 tháng
+                                            Mc nh: Ngày hin ti (date)
+
+                                                                                         Transform Logistics Intelligently 14
+      Trung chuyn
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report Link Report trung chuyn In - Ex
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 15
+      Trung chuyn
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+   1/ Scorecard s pallet trung chuyn nhp & xut
+
+2/ By time                                      3/ By warehouse
+
+                                                                 Transform Logistics Intelligently 16
+      Copack
+
+01 SOURCE INFORMATION
+
+ Ngun:
+   Ly t view INBOUND REPORT TOTAL trên h thng SWM
+   Ly t view OUTBOUND REPORT TOTAL trên h thng SWM
+ Phm vi d liu: Only kho trong BKD, NKD
+
+Hình 1: View Inbound Report Total (SWM)                                          Hình 3: Masterdata Receipt Type (SWM)
+
+                                  Hình 2: View Outbound Report Total (SWM)       Hình 4: Masterdata Order Type (SWM)
+                                                                                                                    Transform Logistics Intelligently 17
+ iu kin d liu u vào:
+         SWM: Maintain masterdata OrderType + ReceiptType chính xác gia các kho
+      Copack                                                                            Nhp Copack
+
+02 LOGIC: Nhp Copack                                                                          Bc 1: INBOUND REPORT TOTAL  lc data theo 3 condition:
+                                                                                                 STATUS = Received
+Vn hành nhp/xut Copack:                                                                          [Rule cho riêng BKD1,2,3]
+   Xut/nhp Copack ch có bui sáng. Kho s gom hàng t nhiu SKU x lô li, chuyn qua b                        o TYPE = FGTN VÀ SLOC = 0072, blank
+       phn Copack  "xào li, to combo" thành sn phm mi. Xut Copack t kho s xut                           o TYPE = 05
+       nguyên pallet, b phn Copack mix các SKU và to ra 1 SKU mi vi s lng pallet gi              [Rule cho riêng NKD]
+       nguyên và nhp ngc li cho kho                                                                     o TYPE = FGTN VÀ SLOC = 0032, 0021
+                                                                                                        o TYPE = 05
+Trên system:
+   EDI nhp hàng Copack v kho trong (BKD, NKD) kèm thông tin sloc. Nu lung EDI fail thì        Bc 2: Tính s pallet vt lý nhp hàng copack
+       team warehouse thc hin nhp manual trên SWM, có th fill hoc không fill thông tin            Count(PalletID) = S pallet vt lý nhp
+       sloc
+   Các n Copack c ánh du Type = FGTN (là n tích hp) hoc 05 (là n nhp
+       manual) có sloc nhn là 0072 hoc blank
+   Sloc 0072: c nh ngha trên SAP. Cha hàng Copack
+
+Nguyên tc: S lng pallet out Copack = S lng pallet in Copack
+
+                                                                                        Transform Logistics Intelligently 18
+      Copack                                                                          Xut Copack
+
+02 LOGIC: Xut Copack                                                                        Bc 1: OUTBOUND REPORT TOTAL  lc data theo các condition:
+                                                                                               STATUS = Shipped
+Vn hành nhp/xut Copack:                                                                        [Rule cho riêng BKD1,2,3]
+   Xut/nhp Copack ch có bui sáng. Kho s gom hàng t nhiu SKU x lô li, chuyn qua b                      o TYPE = 05,CPK
+       phn Copack  "xào li, to combo" thành sn phm mi. Xut Copack t kho s xut                  [Rule cho riêng NKD]
+       nguyên pallet, b phn Copack mix các SKU và to ra 1 SKU mi vi s lng pallet gi                   o TYPE = 04,05,CPK
+       nguyên và nhp ngc li cho kho
+                                                                                           Bc 2: Tính s pallet vt lý xut hàng copack. Group d liu field SO NO x
+Trên system:                                                                               ORDERKEY x SKU x Batch ri tính s pallet vt lý xut copack
+   EDI xut hàng Copack khi kho trong (BKD, NKD). Nu lung EDI fail thì team warehouse
+       thc hin xut manual trên SWM                                                             Group SO NO x ORDERKEY x SKU x batch
+   Các n Copack c ánh du Type = CPK (là n tích hp) hoc 05 (là n xut                            Sum(RoundUp(QTY SHIPPEDDETAIL PALLET)) = s pallet vt lý thc xut
+       manual)
+
+Nguyên tc: S lng pallet xut Copack = S lng pallet nhp Copack
+
+                                                                                      Transform Logistics Intelligently 19
+Copack
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc        Loi b lc                   Tiêu chí lc
+
+Kho ly hàng             Multi-select        Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khong thi gian  (cho chn nhiu giá tr)       Mc nh: chn tt c giá tr
+
+                T khong n khong             Chn ti a 12 tháng
+                                            Mc nh: Ngày hin ti
+
+                                                                                         Transform Logistics Intelligently 20
+      Copack
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report Hàng Copack
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 21
+      Copack
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+1/ Scorecard t l n Copack EDI success
+
+2/ Scorecard s pallet Copack nhp & xut
+
+3/ By time                              4/ By warehouse
+
+                                                         Transform Logistics Intelligently 22
+      Nhp t xng
+
+01 SOURCE INFORMATION
+
+Ngun: Ly t view INBOUND REPORT TOTAL trên h thng SWM
+Phm vi d liu: Only kho trong BKD, NKD
+
+Hình 1: View Inbound Report Total (SWM)                iu kin d liu u vào:
+Hình 2: Masterdata Receipt Type (SWM)                          SWM: Maintain masterdata ReceiptType chính xác gia các kho
+
+                                                                                                                           Transform Logistics Intelligently 23
+      Nhp t xng                                                                      Nhp t xng
+
+02 LOGIC: Nhp t xng                                                                        Bc 1: INBOUND REPORT TOTAL  lc data theo 3 condition:
+                                                                                              STATUS = Received
+Vn hành thc t:                                                                                [Rule cho riêng BKD1,2,3]
+   Hàng hóa t xng sn xut c nhp vào kho BKD2/ NKD. Nhp nguyên pallet, mi sku                          o TYPE = FGTN AND SLOC = 0035, 0038, 0041, 0044, 0046, 0054
+       x lô nm trên 1 pallet vt lý                                                                   o TYPE = 04
+                                                                                              [Rule cho riêng NKD]
+Trên system:                                                                                         o TYPE = FGTN AND SLOC = 0041, 0047, 0020, 0050, 0055
+   EDI t xng sn xut v kho trong (NKD, BKD2) kèm thông tin sloc x condition code. Mi                  o TYPE = 04, NB2BMC, NHXK
+       mt sku x lô nhp vào kho s gen ra 1 dòng d liu, có palletID riêng và c ánh du
+       Type và Sloc (Sloc do SAP qun lý). Cha hàng FG nhp t xng sn xut
+
+                                                                                     Bc 2: Tính s pallet vt lý nhp hàng trung chuyn
+                                                                                        Count(PalletID) = s pallet vt lý
+
+                                                                                     Transform Logistics Intelligently 24
+Nhp t xng
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc        Loi b lc                   Tiêu chí lc
+
+Kho ly hàng             Multi-select        Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khong thi gian  (cho chn nhiu giá tr)       Mc nh: chn tt c giá tr
+
+                T khong n khong             Chn ti a 12 tháng
+                                            Mc nh: Tháng hin ti
+
+                                                                                         Transform Logistics Intelligently 25
+      Nhp t xng
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report Link Nhp t xng report
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 26
+      Nhp t xng                                         Tn sut refresh: near-
+                                                        realtime
+03 VISUALIZATION (maximum 8-10 chart/tab)
+                                                        2/ Tracking mc  xut xng theo tng kho qua thi gian
+   1/ Tracking overview
+
+3/ Tracking s pallet hàng ã xut xng t u tháng n hin ti  4/ Tracking mc  xut xng nhiu ít trong tháng
+
+                                                                                                     Transform Logistics Intelligently 27
+      %Loose/Full Picking                                                           iu kin d liu u vào:
+                                                                                            SWM: Maintain masterdata OrderType + Item (quy cách) chính
+01 SOURCE INFORMATION                                                                           xác gia các kho
+
+Ngun:
+   Ly t view OUTBOUND REPORT TOTAL trên h thng SWM
+Phm vi d liu:
+   Only kho trong BKD, NKD
+
+                                         Hình 1: View Outbound Report Total (SWM)
+
+Hình 2: Masterdata Order Type (SWM)                                                Hình 3: Masterdata Pack (SWM)
+                                                                                                             Transform Logistics Intelligently 28
+      %Loose/Full Picking                                                                       Bc 1: OUTBOUND REPORT TOTAL  lc các n xut bán
+                                                                                                · [Rule cho riêng BKD1, 2, 3] TYPE = 01, 240
+02 LOGIC: %Loose/Full Picking                                                                   · [Rule cho riêng NKD] TYPE = 01, 07, 08, 09, 240, XB2BMC, XTNPP
+
+Vn hành thc t:                                                                                       Bc 2: Tính s CSE l, s CSE full ca 1 n SO NO x ORDERKEY x SKU x BATCH
+   Ch xét các n xut bán                                                                                 Dò SKU vào bng Pack ly ra quy cách quy i cse (qty in case)
+         o Kho BKD1,2,3: TYPE = 01, 240                                                                      và quy cách quy i pallet (qty in pallet)
+         o Kho NKD: TYPE = 01, 07, 08, 09, 240, XB2BMC, XTNPP                                           Group d liu SO NO x ORDERKEY x SKU x BATCH
+   Thao tác khi pick LOOSE pallet: team warehouse in phiu masterpick  forklift move hàng                S CSE full = RoundDown(Sum(QtyShippedDetail CSE) / case per pallet) * case
+       nguyên pallet t tng cao xung pickface  ppt pick hàng l + kim hàng da trên phiu                        per pallet
+       masterpick + move hàng ra stage gn ca xut  team bc xp cht hàng hóa lên xe                        S CSE loose = Sum(Qty ShippedDetail CSE) - s CSE full
+   Thao tác khi pick FULL pallet: team warehouse in phiu masterpick  forklift move hàng
+       nguyên pallet t tng cao xung pickface  ppt pick hàng nguyên pallet + move hàng ra stage        Bc 3: Tính % Loose picking ca 1 n SO NO
+       gn ca xut  team bc xp cht hàng hóa lên xe                                                         Group d liu SO NO
+                                                                                                         S CSE loose ca n SO = SUM(s CSE loose) (gi là a)
+ % Full Picking càng cao thì càng tt, fast outbound. Link ti câu chuyn b trí nhân s trong kho            Tng CSE ca n SO = SUM(s CSE loose) + SUM(s CSE full) (gi là b)
+vào nhng ngày có n l nhiu  vn m bo tc  xut hàng                                                          % Loose picking = a/b
+ %Loose picking = (s CSE l/ tng s CSE) * 100. Xét cho tng n DO
+                                                                                                Ví d: trong 1 DO có sku A, B
+                                                                                                · Sku A - lô 19032026: qty là 140cse + UOM 30/pl => 140/30 = 4.67 => CSE loose = 140 - rounddo
+                                                                                                · Sku A - lô 20032026: qty là 130cse + UOM 30/pl => 130/30 = 4.33 => CSE loose = 130 ­ rounddo
+                                                                                                · Sku B - lô 20032026: qty là 160cse + UOM 50/pl => 160/50 = 3.2 => CSE loose = 160 ­ rounddow
+                                                                                                => (20+10+10)/(140+130+160) = 9.3% rate loose Transform Logistics Intelligently 29
+%Loose/Full Picking
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc        Loi b lc                   Tiêu chí lc
+
+Kho ly hàng             Multi-select        Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khong thi gian  (cho chn nhiu giá tr)       Mc nh: chn tt c giá tr
+
+                T khong n khong             Chn ti a 12 tháng
+                                            Mc nh: Ngày hin ti
+
+                                                                                         Transform Logistics Intelligently 30
+      %Loose/Full Picking
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report Link %Loose/Full Picking
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 31
+      %Loose/Full Picking
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+1/ Tracking tng s pallet xut & % Loose Picking
+
+2/ Tracking tng daily s loose pallet mi ngày    3/ Tracking top 10 SKU loose pallet nhiu nht
+
+                                                                                              Transform Logistics Intelligently 32
+      %Stock Type
+
+01 SOURCE INFORMATION
+
+Ngun: Ly t view INVENTORY TOTAL trên h thng SWM
+Phm vi d liu: Tt c kho: BKD1, BKD2, BKD3, NKD, VN821, VN831
+
+Hình 1: View Inventory Total (SWM)                                                            Hình 3: Masterdata Pack (SWM)
+  Hình 2: Masterdata Item (SWM)
+                                                              iu kin d liu u vào:
+                                                                      SWM: Maintain masterdata Item (quy cách + group of cago)
+                                                                                                                          Transform Logistics Intelligently 33
+      %Stock Type                                                                                    Logic tính:
+
+02 LOGIC: % Stock Type                                                                               Bc 1: INVENTORY TOTAL REPORT
+                                                                                                     · [Rule cho riêng NKD] loi b các SKU = LOSCAM, BACHTHUAN
+Vn hành thc t:                                                                                       · Convert NHÓM HÀNG standard và BRAND theo logic ti ây (xem sheet Get Brand,
+
+   Cn tracking %Stock Type trong tn theo 2 n v (CSE & Pallet)                                             Conver Cargo) [Logic masterdata] Logic convert cargo, channel.xlsx
+           Có 6 nhóm hàng standard: PM, TEST, EQUIPMENT, MOONCAKE, POSM/OFFBOM, FRESH,
+               DRY
+           Có 13 brand: Solite, AFC, Lu, Cosy, Oreo, Tt, Trung Thu, Slide, KD, RITZ, Toblerone
+          Logic quy i nhóm hàng xem chi tit ti [Logic masterdata] Logic convert cargo, channel.xlsx
+
+Ví d minh ha                                                                                         Bc 2: Tính s CSE, s Pallet ca tng hàng hóa
+                                                                                                        Dò SKU vào bng Pack ly ra quy cách quy i pallet (qty in pallet)
+                                                                                                        Tính s Pallet theo quy cách => S pallet = Sum(QTY)/ (qty in pallet)
+                                                                                                        Tính s CSE => S CSE = Sum(QTY CS)
+
+                                                                                                     Bc 3: Tính % Stock Type trong tn theo 2 n v (CSE, Pallet)
+                                                                                                        Group d liu theo sku x batch => RoundUp s CSE và s Pallet
+                                                                                                        Group d liu theo nhóm hàng standard x brand => Sum s CSE hoc s Pallet
+                                                                                                        Tính t trng nhóm hàng theo n v CSE
+                                                                                                        Tính t trng nhóm hàng theo n v Pallet
+
+                                                                                                                                                                     Transform Logistics Intelligently 34
+%Stock Type
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+           Tên b lc  Loi b lc               Tiêu chí lc
+
+Kho                          Multi-select    Gm: Danh sách Tên h thng t Danh mc a im KHO
+Nhóm hàng            (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Brand
+                             Multi-select    Gm: Dánh sách Tên nhóm hàng
+                     (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                             Multi-select    Gm: Dánh sách Tên Brand
+                     (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                                                                                          Transform Logistics Intelligently 35
+      %Stock Type
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Report
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 36
+%Stock Type
+
+03 VISUALIZATION (maximum 8-10 chart/tab)               2/ T trng các nhóm hàng
+
+           1/ Tracking trend s lng hàng theo tng group
+
+3/ Tracking MOM/ WOW
+change
+
+                                                                                 Transform Logistics Intelligently 37
+      Movement Transaction                                                          Transform Logistics Intelligently 33
+
+01 SOURCE INFORMATION
+
+Ngun: Ly t view OUTBOUND TOTAL, INBOUND TOTAL trên h thng SWM
+Phm vi d liu: ch kho trong BKD - BKD1, BKD2, BKD3
+
+                                           Hình 1: View Inbound Report Total (SWM)
+
+                                         Hình 2: View Outbound Report Total (SWM)
+      Movement Transaction                                                            Logic tính transaction Inbound
+
+02 LOGIC LUNG NHP/XUT                                                                 Bc 1: INBOUND TOTAL REPORT
+                                                                                      · Ly d liu kho BKD 1,2,3 và NKD
+Vn hành thc t:                                                                        · Ly các n Status = Received
+
+  MDLZ cn o lng khi lng x lý ca tng activities Inbound & Outbound, là c s  tính toán  Bc 2: Tính s thao tác ca tng nghip v inbound
+  chi phí phi tr cho team FM. Mi nghip v xut/nhp c o lng qua n v khác nhau (ph        · Phân loi hot ng theo activities Inbound
+  thuc hp ng tha thun 2 bên)                                                          · Group d liu theo hot ng x ngày thc xut ca line hàng (DATERECEIVED)
+  Phm vi ch o lng: only trong BKD (min Nam) và NKD (min Bc) vì ã có cách o
+  lng riêng và không cover kho ngoài vì ã chi tr fixed cost bao gm tt c hot ng kho
+
+  INBOUND (TYPE inbound ca kho NKD cha done)
+  · PALLET: nhp t xng, nhp copack, nhp chuyn kho (In-Ex, In-In)
+  · CBM: nhp cont/nhp khu, nhp tr v t NPP
+  · Tons: nhp POSM
+  OUTBOUND (TYPE outbound ca kho NKD cha done, xut hy, xut tip tân cha define)
+  · PALLET: xut chuyn kho (In-Ex, In-In), xut hy, xut chuyn kho trc tip t xng, xut
+
+       copack
+  · CBM: xut bán
+  · CASE: xut khu
+  · Tons: xut POSM
+  QUN MÀNG CO
+  · PALLET: nhp t xng, nhp cont/nhp khu
+  PHÍ PRINT DO
+  · n DO: Tt c hot ng xut
+
+                                                                                      Transform Logistics Intelligently 34
+      Movement Transaction                                                          Logic tính transaction Outbound
+
+02 LOGIC LUNG NHP/XUT                                                               Bc 1: OUTBOUND TOTAL REPORT
+                                                                                    · Ly d liu kho BKD 1,2,3 và NKD
+Vn hành thc t:                                                                      · Ly các n Status = Shipped
+
+  MDLZ cn o lng khi lng x lý ca tng activities Inbound &                            Bc 2: Tính s thao tác ca tng nghip v Outbound
+  Outbound, là c s  tính toánchi phí phi tr cho team                                · Phân loi hot ng theo activities Outbound
+  FM. Mi nghip v xut/nhp c o lng qua n v khác nhau (phthuc hp ng tha thu            · Group d liu theo hot ng x ngày thc xut ca line hàng (ACTUAL SHIP
+  n 2 bên)
+  Phm vi ch o lng: only trong BKD (min Nam) và NKD                                       DATE)
+  (min Bc) vì ã có cách o lng riêngvà không cover kho ngoài vì ã chi tr fixed cost  · Group d liu sku x lô => roundup(s pallet)
+  bao gm tt c hot ng kho
+
+  INBOUND (TYPE inbound ca kho NKD cha done)
+  · PALLET: nhp t xng, nhp copack, nhp chuyn kho (In-Ex, In-In)
+  · CBM: nhp cont/nhp khu, nhp tr v t NPP
+  · Tons: nhp POSM
+  OUTBOUND (TYPE outbound ca kho NKD cha done, xut hy, xut tip tân cha define)
+  · PALLET: xut chuyn kho (In-Ex, In -
+
+        In), xut hy, xut chuyn kho trc tip t xng, xutcopack
+  · CBM: xut bán
+  · CASE: xut khu
+  · Tons: xut POSM
+  QUN MÀNG CO
+  · PALLET: nhp t xng, nhp cont/nhp khu
+  PHÍ PRINT DO
+  · n DO: Tt c hot ng xut
+
+                                                                                    Transform Logistics Intelligently 34
+Movement Transaction
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc        Loi b lc                   Tiêu chí lc
+
+Kho ly hàng             Multi-select        Gm: Danh sách Tên h thng t Danh mc a im KHO
+Loi ngày        (cho chn nhiu giá tr)       Mc nh: chn tt c giá tr
+Khong thi gian
+                        Combo box           Gm: Actual Ship Date
+                (cho chn mt giá tr)         Mc nh: Actual Ship Date
+
+                T khong n khong             Chn ti a 12 tháng
+                                            Mc nh: Ngày hin ti
+
+                                                                                         Transform Logistics Intelligently 35
+        Movement Transaction
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+        Link Movement
+Report  Transaction
+
+                                           Transform Logistics Intelligently 36
+Giám sát n hàng
+
+                 Transform Logistics Intelligently
+CÁC VIEW LIÊN QUAN          Hiu sut giao hàng (OTIF) - Linh MDLZ Cf Logic 0
+
+                 Dashboard  T l s dng xe (VFR) - Linh MDLZ cf Logic 0902
+           Giám sát n hàng
+                            Cnh báo tình trng n tr/ nguy c tr
+                            Cnh báo trong kho ­ Linh MDLZ Cf 0902
+                            SLG b sung Alert trên ng i
+                            Tin  xut hàng theo loi xe gi thu, vn hành -
+                            MDLZ Cf 1102
+
+                            T l áp ng xe vn hành và xe gi thu - Linh MD
+      HIU SUT GIAO HÀNG (OTIF)
+
+01 SOURCE INFORMATION
+
+Ngun:
+   Ly t View n hàng trên h thng STM & View Giám sát - Phân phi & View Giám sát - Giám sát ng tài & View iu phi - Gi thu chi
+
+       tit trên h thng STM
+   Ly t View Shipment Order & View Configuration, Item trên h thng SWM
+
+Hình 1: View n hàng               Hình 3: View Giám sát -Giám sát ng tài
+
+Hình 2: View Giám sát - Phân phi  Hình 4: View iu phi - Gi thu chi tit.
+
+                                                                       Transform Logistics Intelligently 38
+      HIU SUT GIAO HÀNG (OTIF)
+
+01 SOURCE INFORMATION
+
+ Ngun:
+   Ly t View n hàng trên h thng STM & View Giám sát - Phân phi & View Giám sát - Giám sát ng tài & View iu phi - Gi thu chi
+
+       tit trên h thng STM
+   Ly t View Shipment Order & View Configuration, Item trên h thng SWM
+
+Hình 5: View Shipment Order (SWM)   iu kin d liu u vào:
+                                            SWM: Maintain masterdata Item
+
+                                                                                             Transform Logistics Intelligently 39
+       HIU SUT GIAO HÀNG (OTIF)                                         Bc 3: Tính %Ontime, %Infull, %OTIF, CSE On cho tng n DO
+                                                                        %Ontime = n t Ontime/ total n
+02 LOGIC OTIF CHO N                                                     %Infull = s CSE xut kho/ total CSE k hoch
+                                                                        %OTIF = s CSE giao ti khách t Ontime/ total CSE k hoch
+                                                                        CSE On = s CSE giao ti khách t Ontime
+
+                            nh: E2E process và các im chm trên process  Bc 4: Phân loi li Failed Ontime, Failed Infull
+                                                                        Nu n failed ontime hoc infull hoc c 2 => check nguyên nhân
+Logic tính OTIF
+                                                                                                                                                  Transform Logistics Intelligently 40
+Bc 1:
+· Ly d liu kho & ti ca kho trong: BKD 1,2,3 và NKD
+· Ch ly các n DO ã giao ti khách hàng
+
+Bc 2: Xét Infull, Ontime cho các n DO
+Ontime:
+· ETA gi thu < ATA n: Failed
+· Ngc li: Ontime
+Infull:
+· SL k hoch > SL xut kho hoc SL xut kho > SL giao: Failed
+· Ngc li: Infull
+      HIU SUT GIAO HÀNG (OTIF)
+
+03 VISUALIZATION
+
+Report Link OTIF
+
+nh: Mi dòng là 1 n DO, OTIF cho n DO
+
+                                      Transform Logistics Intelligently 41
+HIU SUT GIAO HÀNG (OTIF)
+
+03 VISUALIZATION                     Loi b lc                                                                           Tiêu chí lc
+
+B lc áp dng:                         Multi-select    Gm: Danh sách Tên h thng t Danh mc a im KHO
+                             (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+                   Tên b lc
+  Kho ly hàng                        Multi-select    Gm: Danh sách Tên khu vc t Thit lp khu vc
+                             (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+  Khu vc giao hàng
+                                     Multi-select    Gm: Fresh, Dry
+  Nhóm hàng                  (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+  Nhà vn ti                          Multi-select    Gm: Danh sách Tên ngn t Danh sách nhà xe
+                             (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+  Loi ngày
+                                     Combo box       Gm: ETA gi thu, ATA chi tit chuyn
+  Khong thi gian             (cho chn mt giá tr)     Mc nh: ETA gi thu
+
+                             T khong n khong         Chn ti a 12 tháng
+                                                     Mc nh: Tháng hin ti
+
+                                                                                                                                     Transform Logistics Intelligently 42
+      HIU SUT GIAO HÀNG (OTIF)
+
+03 VISUALIZATION
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 43
+      HIU SUT GIAO HÀNG (OTIF)
+
+03 VISUALIZATION
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 44
+      T L S DNG XE (VFR)
+
+01 SOURCE INFORMATION
+
+Ngun: Ly t view Giám sát - Phân phi & view iu phi - Gi thu chi tit trên h thng TMS.
+
+       View Giám sát - Phân phi.   iu kin d liu u vào:
+View iu phi - Gi thu chi tit.              Trng thái chi tit chuyn vn hành
+                                               StatusOfDITOMaster = ã hoàn thành
+                                           ID chuyn gi thu
+                                               TenderMasterID <> Null
+                                           Loi xe gi thu
+                                               TenderGroupOfVehicleName <> Null
+                                           Loi xe vn hành (ch áp dng vi VFR gi thu)
+                                               GroupOfVehicleName <> Null
+                                           Dch v vn chuyn
+                                               ServiceOfOrderName = Xut bán
+                                           Mã im nhn
+                                               LocationFromCode (ca chi tit chuyn) = TextFromCode (ca
+                                               n) (ch áp dng vi VFR gi thu)
+
+                                                                                           Transform Logistics Intelligently 45
+T L S DNG XE (VFR)
+
+01 SOURCE INFORMATION
+
+Bng d liu chi tit: Mi dòng c nhóm theo "ID chuyn gi thu" nu VFR tính theo chuyn gi thu và ngc li, nu VFR tính theo chuyn vn
+hành thì nhóm theo "Mã chuyn vn hành". Các ct thông tin ca bng gm:
+
+                          Ngun                            Tên ct                             Mã ct            Ví d
+View iu phi - Gi thu chi tit    ID chuyn gi thu                   TenderMasterID
+View iu phi - Gi thu chi tit    Mã chuyn vn hành                  MasterCode                        150662
+View iu phi - Gi thu chi tit    Mã n hàng                         OrderCode
+View iu phi - Gi thu chi tit    Dch v vn chuyn                    ServiceOfOrderName                DI010101
+View Giám sát - Phân phi        Trng thái chuyn                   StatusOfDITOMasterName
+View iu phi - Gi thu chi tit    Thi gian gi thu                   TenderedDate                      8481759153, 8481759168, 8481759271
+View iu phi - Gi thu chi tit    ETD chuyn gi thu                  TenderMasterETD                   Chuyn kho
+View iu phi - Gi thu chi tit    ETA chuyn gi thu                  TenderMasterETA                   ã hoàn thành
+View iu phi - Gi thu chi tit    ATD chuyn vn hành                 MasterATD                         01/11/2025 00:00:00
+View iu phi - Gi thu chi tit    ATA chuyn vn hành                 MasterATA
+                                                                                                    01/11/2025 00:00:00
+
+                                                                                                    01/11/2025 00:00:00
+
+                                                                                                    01/11/2025 00:00:00
+                                                                                                    01/11/2025 00:00:00
+
+                                                                                                    Transform Logistics Intelligently 46
+T L S DNG XE (VFR)
+
+01 SOURCE INFORMATION
+
+                          Ngun                            Tên ct                   Mã ct                     Ví d
+View iu phi - Gi thu chi tit    S xe
+View iu phi - Gi thu chi tit    Tên tài x                         RegNo                   89H-04150
+View iu phi - Gi thu chi tit    Tên ngn nhà thu
+View Giám sát - Phân phi        Mã im nhn                         DriverName1             Trng Hi ng
+View Giám sát - Phân phi        Tên im nhn
+View Giám sát - Phân phi        Mã im giao                        VendorShortName         VAN HO
+View Giám sát - Phân phi        Tên im giao
+View Qun tr - Danh mc các im    Khu vc i xe                       LocationFromCode        VN832
+View Qun tr - Danh mc các im    Loi bc xp
+View iu phi - Gi thu chi tit    Mã hàng hóa                       LocationFromName        Kho ngoài 2 - NKD
+View iu phi - Gi thu chi tit    Tên hàng hóa
+View iu phi - Gi thu chi tit    Tên nhóm hàng                     LocationToCode          NKD
+
+                                                                  LocationToName          Kho trong - NKD
+
+                                                                  Note2                   Other
+
+                                                                  UnloadingTypeID         Other
+
+                                                                  ProductCode             4319267
+
+                                                                  ProductName             COSY MARIE BANH QUY 40GR X 48 HG
+
+                                                                  GroupOfProductName      DRY
+
+                                                                                                 Transform Logistics Intelligently 47
+T L S DNG XE (VFR)
+
+01 SOURCE INFORMATION
+
+                          Ngun                  Tên ct                                                Mã ct          Ví d
+View Gi thu chi tit                                                             TenderGroupOfVehicleName
+View Gi thu chi tit             Loi xe gi thu                                   GroupOfVehicleName           11T
+View Qun tr - Loi xe            Loi xe vn hành                                  Ton                          11T
+View Qun tr - Loi xe            Trng ti (Tn)                                    CBM                          11
+View Giám sát - Phân phi        CBM                                             Ton                          45
+View Giám sát - Phân phi        Tn k hoch                                       TonTransfer                  8
+Databases                       Tn nhn                                          TonBBGN                      8
+View Giám sát - Phân phi        Tn giao                                         OPSCBM                       8
+View Giám sát - Phân phi        S Khi k hoch                                    OPSCBMTransfer               30
+View Giám sát - Phân phi        S khi nhn                                       OPSCBMBBGN                   30
+Tính toán                       S khi giao                                                                   30
+Tính toán                                                                                                    72.73%
+Tính toán                       T l s dng ti theo loi xe gi thu/ vn hành (Tn)                                66.67%
+                                                                                                             72.73%
+                                T l s dng ti theo loi xe gi thu/ vn hành (Khi)
+
+                                T l s dng ti theo loi xe gi thu/ vn hành (Max)
+
+                                                                                                             Transform Logistics Intelligently 48
+      T L S DNG XE (VFR)
+
+02 LOGIC
+
+ WORKFLOW tính t l s dng xe - VFR (Cách bc tính VFR theo chuyn gi thu và chuyn vn hành ging nhau):
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 49
+T L S DNG XE (VFR)
+
+02 LOGIC
+
+Các bc chi tit tính T l s dng xe - VFR (Cách bc tính VFR theo chuyn gi thu và chuyn vn hành ging nhau):
+
+Bc 1: Tính VFR Tn/Khi ca tng chuyn
+  VFR Tn (a) = Tn ch/ Tn ng ký
+  VFR Khi (b) = Khi ch/ Khi ng ký
+-> Ly VFR Max
+
+Bc 2: Phân loi VFR ca chuyn theo VFR Max
+  VFR Max = VFR Tn (a) -> Phân loi VFR = Tn
+  VFR Max = VFR Khi (b) -> Phân loi VFR = Khi
+
+Bc 3: Tính VFR Tn/ Khi ca tng loi bc xp (Ví d: tính VFR cho loi bc xp 1)
+Ly ra các dòng d liu có Loi bc xp = 1, sau ó thc hin tính:
+  VFR Tn (c) = SUM Tn ch (các chuyn có phân loi VFR = Tn ) / SUM Tn ng ký (các chuyn có phân loi VFR = Tn)
+  VFR Khi (d) = SUM Khi ch (các chuyn có phân loi VFR = Khi) / SUM Khi ng ký (các chuyn có phân loi VFR = Khi)
+
+Bc 4: Tính VFR ca loi bc xp (Ví d: tính VFR cho loi bc xp 1)
+  VFR loi bc xp 1 = VFR Tn (c) * (SUM Khi ch (các chuyn có phân loi VFR = Tn) / SUM Khi ng ký (các chuyn có phân loi VFR = Tn)) + VFR Khi
+
+      (d) * (SUM Khi ch (các chuyn có phân loi VFR = Khi) / SUM Khi ng ký (các chuyn có phân loi VFR = Khi))
+
+Bc 5: Tính VFR tng (Ví d: Sau các bc trên ta ã tính c VFR loi bc xp 1, VFR loi bc xp 2,....v.v)
+  VFR tng = VFR loi bc xp 1 * (SUM Khi ch (các chuyn có Loi bc xp 1) / SUM Khi ng ký (các chuyn có Loi bc xp 1)) + VFR loi bc xp 2 *
+
+      (SUM Khi ch (các chuyn có Loi bc xp 2) / SUM Khi ng ký (các chuyn có Loi bc xp 2)) + ...... + VFR loi bc xp n * (SUM Khi ch (các chuyn có
+      Loi bc xp n) / SUM Khi ng ký (các chuyn có Loi bc xp n))
+
+THAM KHO: File Data mu tính % Truck Utilization theo loi xe gi thu
+
+                                                                    Transform Logistics Intelligently 50
+T L S DNG XE (VFR)
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc                          Loi b lc               Tiêu chí lc
+
+Kho ly hàng                               Multi-select    Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khu vc giao hàng                  (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Nhà vn ti
+Loi xe gi thu (b sung                     Multi-select    Gm: Danh sách Tên khu vc t Thit lp khu vc
+9/1/2026, áp dng riêng cho các    (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+chart thuc VFR gi thu)
+Loi xe vn hành (b sung                    Multi-select    Gm: Danh sách Tên ngn t Danh sách nhà xe
+9/1/2026, , áp dng riêng cho các  (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+chart thuc VFR vn hành)
+Dch v n hàng                              Multi-select    Gm: Danh sách Mã t Danh sách loi xe
+Loi ngày                          (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Khong thi gian                                            Phm vi áp dng: Nhóm chart VFR gi thu
+                                          Multi-select
+                                  (cho chn nhiu giá tr)   Gm: Danh sách Mã t Danh sách loi xe
+                                                          Mc nh: chn tt c giá tr
+                                          Multi-select    Phm vi áp dng: Nhóm chart VFR vn hành
+                                  (cho chn nhiu giá tr)
+                                                          Gm: Danh sách Tên t danh mc Loi dch v
+                                          Combo box       Mc nh: chn tt c giá tr
+                                  (cho chn mt giá tr)
+                                                          Gm: ETA chuyn vn hành, ATA chuyn vn hành
+                                  T khong n khong         Mc nh: ATA chuyn vn hành
+
+                                                          Chn ti a 12 tháng
+                                                          Mc nh: Tháng hin ti
+
+                                                                                                       Transform Logistics Intelligently 51
+T L S DNG XE (VFR)
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Các biu  và báo cáo liên quan: gm 12 biu  và 2 báo cáo
+
+                                           Tên biu                                                                            Thông tin
+T l s dng xe <50% (theo chuyn Gi thu/ Vn hành)
+T l s dng xe 50% - 70% (theo chuyn Gi thu/ Vn hành)        Loi biu : Scorecard
+T l s dng xe 70% - 95% (theo chuyn Gi thu/ Vn hành)            Giá tr hin th: S lng chuyn gi thu/ vn hành có VFR < 50%
+T l s dng xe theo khu vc (theo chuyn Gi thu/ Vn hành)
+                                                           Loi biu : Scorecard
+T l s dng xe theo thi gian và khu vc (theo chuyn Gi thu/       Giá tr hin th: S lng chuyn gi thu/ vn hành có 50% < = VFR < 70%
+Vn hành) (b sung 9/1/2026)
+T l s dng xe theo loi xe (theo chuyn Gi thu/ Vn hành)      Loi biu : Scorecard
+                                                               Giá tr hin th: S lng chuyn gi thu/ vn hành có 70% < = VFR < 95%
+T l s dng xe theo loi bc xp (theo chuyn Gi thu/ Vn hành)
+                                                           Loi biu : Mixed chart
+Bng d liu chi tit t l s dng xe (theo chuyn Gi thu/ Vn          Giá tr trc x: Khu vc giao hàng ca im giao cui ca chuyn gi thu/ vn hành
+hành)                                                          Giá tr trc y: S khi k hoch, T l s dng xe
+
+                                                           Loi biu : Table (gm: Tháng, Nm, Khu vc và T l s dng xe)
+
+                                                           Loi biu : Mixed chart
+                                                               Giá tr trc x: Loi xe ca chuyn gi thu/ vn hành
+                                                               Giá tr trc y: S khi k hoch, T l s dng xe
+
+                                                           Loi biu : Mixed chart
+                                                               Giá tr trc x: Loi bc xp ca im giao cui ca chuyn gi thu/ vn hành
+                                                               Giá tr trc y: S khi k hoch, T l s dng xe
+
+                                                           1 bng group data theo ID chuyn gi thu, 1 bng group data theo Mã chuyn vn hành. Các ct
+                                                               thông tin hin th trong báo cáo s ging phn bng d liu chi tit c th hin t slide 21 -> 23
+                                                                                                                                                         Transform Logistics Intelligently 52
+      T L S DNG XE (VFR)
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 53
+      T L S DNG XE (VFR)
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 54
+       CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+01 SOURCE INFORMATION
+
+Ngun: Ly t view Giám sát - Phân phi trên h thng TMS.
+
+View Giám sát - Phân phi.   iu kin d liu u vào:
+                                    Trng thái chuyn
+                                        StatusOfDITOMasterName = Cha vn chuyn/ ang
+                                        vn chuyn/ ã hoàn thành/ ã b khóa 1 phn/ ã b
+                                        khóa toàn b
+                                    Dch v vn chuyn
+                                        ServiceOfOrderName = Xut bán
+
+                                                                      Transform Logistics Intelligently 55
+       CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+01 SOURCE INFORMATION
+
+Bng d liu chi tit: Mi dòng c nhóm theo "n", các ct thông tin ca bng gm:
+
+                            Ngun                   Tên ct             Mã ct                           Ví d
+View Giám sát - Phân phi
+Transform theo slide 32           Mã n hàng                OrderCode               8481759271
+View Giám sát - Phân phi
+View Giám sát - Phân phi          Trng thái n                                      ã hoàn thành
+View Giám sát - Phân phi
+View Giám sát - Phân phi          S chuyn                  DITOMasterCode          DI010101
+View Giám sát - Phân phi                                   StatusOfDITOMasterName  ã hoàn thành
+View Giám sát - Phân phi          Trng thái chuyn          VehicleNo               89H-04150
+View Giám sát - Phân phi                                   DriverName              Trng Hi ng
+View Giám sát - Phân phi          S xe                     VendorShortName         VAN HO
+View Giám sát - Phân phi                                    LocationFromCode       VN832
+                                  Tài x                     LocationFromName       Kho ngoài 2 - NKD
+                                                            LocationToCode         NKD
+                                  Tên ngn nhà vn ti         LocationToName         Kho trong - NKD
+
+                                  Mã im nhn
+
+                                  Tên im nhn
+
+                                  Mã im giao
+
+                                  Tên im giao
+
+                                                                                   Transform Logistics Intelligently 56
+CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+01 SOURCE INFORMATION
+
+                            Ngun                       Tên ct         Mã ct                     Ví d
+View Qun tr - Danh mc các im
+View iu phi - Gi thu chi tit         Khu vc i xe               Note2                     Other
+View iu phi - Gi thu chi tit
+View iu phi - Gi thu chi tit         Thi gian gi thu           TenderedDate              11/29/2025 00:00:00
+View Giám sát - Phân phi                                                                 22/11/2025 00:00:00
+View Giám sát - Phân phi             ETD chuyn gi thu          TenderMasterETD
+View Giám sát - Phân phi
+View Giám sát - Phân phi             ETA chuyn gi thu          TenderMasterETA           22/11/2025 14:00:00
+Xét theo Logic - Slide 32
+Tính toàn (ETD chuyn gi thu-ATA ri)  ETD                       ETD                       22/11/2025 02:00:00
+View Gi thu chi tit
+View Gi thu chi tit                  ATD ri                    DateFromLeave             22/12/2025 16:00:00
+                                                               ETA                       22/11/2025 02:00:00
+                                     ETA n                                               22/12/2025 16:00:00
+                                                                                          Nguy c tr cha hoàn thành
+                                     ATA ri                    DateToLeave                2
+                                                                                          11T
+                                     Tình trng n
+
+                                     S gi tr
+
+                                     Loi xe gi thu             TenderGroupOfVehicleName
+                                                               GroupOfVehicleName
+                                     Loi xe vn hành                                      11T
+
+                                                                                                Transform Logistics Intelligently 57
+CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+01 SOURCE INFORMATION
+
+             Ngun                        Tên ct                      Mã ct           Ví d
+                                                  ProductCode
+View n hàng               Mã hàng                 ProductName               4274269
+                                                  GroupOfProductName
+View n hàng               Hàng hóa                Ton                       KD BBL BO NHO 38GR X 120G
+                                                  TonTransfer
+View n hàng               Nhóm hàng               TonBBGN                   FRESH
+                                                  OPSCBM
+View Giám sát - Phân phi  Tn k hoch               OPSCBMTransfer            0.54
+                                                  OPSCBMBBGN
+View Giám sát - Phân phi  Tn nhn                 Quantity                   0.54
+                                                 QuantityTranfer
+Databases                 Tn giao                QuantityBBGN               0.54
+
+View Giám sát - Phân phi  S Khi k hoch                                      3
+
+View Giám sát - Phân phi  S khi nhn                                         3
+
+View Giám sát - Phân phi  S khi nhn                                         3
+
+Databases                 Sn lng k hoch                                     47
+
+View Giám sát - Phân phi  Sn lng nhn                                        47
+
+View Giám sát - Phân phi  Sn lng giao                                       47
+
+                                                                                   Transform Logistics Intelligently 58
+       CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+02 LOGIC TÍNH THI GIAN BT BUC RI KHO
+
+Ràng buc 1: ETA fresh 1              Logic: Da trên mc ETA ca             Case 2: gi cm ti sau ETA n DO 2 Fresh
+                                     2 n Fresh u tiên và mc cm ti
+Ràng buc 2: vn tc 40km/h cho BKD;    => tính 3 mc thi gian bt buc ri
+50km/h cho NKD (phase sau: setup vn  cng, ly thi gian ri cng sm nht
+tc theo khu vc)
+
+Ràng buc 3: Xe chy 4h ngh 15p
+
+                                                                          Case 3: gi cm ti trc ETA n DO 1 Fresh
+
+                    nh: Mô t mc thi gian bt buc ri kho trong process E2E
+Case 1: gi cm ti trc ETA n DO 2 Fresh, sau ETA n DO 1 Fresh
+
+                                                                                                                 Transform Logistics Intelligently 59
+       CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+02 ALERT N XUT KHO TR
+
+ Mc tiêu cnh báo
+ · Theo dõi các chuyn xut bán có nguy c tr hoc ã tr xut kho
+ · Trng tâm là các chuyn cn ri kho úng hn  m bo giao kp 2 n
+
+      FRESH ti NPP
+ Mc thi gian chính dùng  cnh báo
+ · TG bt buc ri kho: mc chính  theo dõi nguy c tr / tr xut kho
+ · Gi ra cng thc t: dùng  xác nhn chuyn có ri kho tr hay không
+ · ETA giao NPP / ATA giao NPP: dùng  ánh giá kt qu cui cùng là có
+
+      giao tr hay không
+ Scope áp dng
+ · Không áp dng alert chính cho toàn b chuyn k hoch cha chy.
+
+      Ch áp dng alert chính cho các n nm trong chuyn ã bt u
+
+ 1. Chuyn ã bt u + chuyn ã ng tài cha ri kho: ây là nhóm chính 
+ áp dng alert nguy c tr / ã tr xut kho
+ · Now < TG bt buc ri kho ­ 45p: Normal
+ · TG bt buc ri kho ­ 45p <= Now < TG bt buc ri kho: At risk
+ · Now >= TG bt buc ri kho: Late departure open
+ 2. Chuyn ã ri kho cha giao ti NPP
+ · ATD < TG bt buc ri kho: Ontime departure
+ · ATD >= TG bt buc ri kho: Late departure
+ 3. Chuyn ã giao ti NPP
+ · ATA giao NPP > ETA giao NPP: Late delivery
+ · ATA giao NPP <= ETA giao NPP: Ontime delivery
+
+                                                                    Transform Logistics Intelligently 60
+       CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+02 ALERT CHUYN TRÊN NG GIAO
+
+ Mc tiêu cnh báo
+ · Theo dõi các chuyn xut bán có nguy c tr hoc ã tr xut kho
+ · Trng tâm là các chuyn cn ri kho úng hn  m bo giao kp 2 n
+
+      FRESH ti NPP
+ Mc thi gian chính dùng  cnh báo
+ · TG bt buc ri kho: mc chính  theo dõi nguy c tr / tr xut kho
+ · Gi ra cng thc t: dùng  xác nhn chuyn có ri kho tr hay không
+ · ETA giao NPP / ATA giao NPP: dùng  ánh giá kt qu cui cùng là có
+
+      giao tr hay không
+ Scope áp dng
+ · Không áp dng alert chính cho toàn b chuyn k hoch cha chy.
+
+      Ch áp dng alert chính cho các n nm trong chuyn ã bt u
+
+ 1. Chuyn ã bt u + chuyn ã ng tài cha ri kho: ây là nhóm chính 
+ áp dng alert nguy c tr / ã tr xut kho
+ · Now < TG bt buc ri kho ­ 45p: Normal
+ · TG bt buc ri kho ­ 45p <= Now < TG bt buc ri kho: At risk
+ · Now >= TG bt buc ri kho: Late departure open
+ 2. Chuyn ã ri kho cha giao ti NPP
+ · ATD < TG bt buc ri kho: Ontime departure
+ · ATD >= TG bt buc ri kho: Late departure
+ 3. Chuyn ã giao ti NPP
+ · ATA giao NPP > ETA giao NPP: Late delivery
+ · ATA giao NPP <= ETA giao NPP: Ontime delivery
+
+                                                                    Transform Logistics Intelligently 60
+CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc          Loi b lc                 Tiêu chí lc
+
+Kho ly hàng               Multi-select      Gm: Danh sách Tên h thng t Danh mc a im KHO
+im giao hàng      (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+Khu vc giao hàng
+Loi ngày                  Multi-select      Gm: Danh sách Mã t Danh mc các im
+Khong thi gian    (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+
+                          Multi-select      Gm: Danh sách Tên khu vc t Thit lp khu vc
+                  (cho chn nhiu giá tr)     Mc nh: chn tt c giá tr
+
+                          Combo box         Gm: ETA gi thu, ETA n
+                  (cho chn mt giá tr)       Mc nh: ETA gi thu
+
+                  T khong n khong           Chn ti a 12 tháng
+                                            Mc nh: Tháng hin ti
+
+                                                                                         Transform Logistics Intelligently 61
+CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+03 VISUALIZATION (maximum 8-10 chart/tab)               Thông tin
+
+Các biu  và báo cáo liên quan: gm 5 biu  và 1 báo cáo
+
+                                              Tên biu 
+
+Tng n hàng xut bán                        Loi biu : Scorecard
+n nguy c tr                                   Giá tr hin th: S lng lng n xut bán
+n tr cha hoàn thành
+n tr ã hoàn thành                         Loi biu : Scorecard
+                                              Giá tr hin th: S lng n xut bán có nguy c tr & T l chim so vi tng n
+Cnh báo tình trng n hàng theo nhà vn ti
+                                          Loi biu : Scorecard
+Bng d liu chi tit tính trng n hàng            Giá tr hin th: S lng n xut bán tr nhng cha hoàn thành & T l chim so vi tng n
+
+                                          Loi biu : Scorecard
+                                              Giá tr hin th: S lng n xut bán tr nhng ã hoàn thành & T l chim so vi tng n
+
+                                          Loi biu : Bar chart
+                                              Giá tr trc x: Nhà vn ti
+                                              Giá tr trc y: S lng n Trong k hoch/ Nguy c tr/ Tr cha hoàn thành/Tr ã hoàn thành
+
+                                          Mi dòng là 1 n. Các ct thông tin hin th trong báo cáo s ging phn bng d liu chi tit c
+                                              th hin t slide 29 -> 31
+
+                                                                   Transform Logistics Intelligently 62
+       CNH BÁO TÌNH TRNG N TR/ NGUY C TR
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 63
+        TIN  XUT HÀNG THEO LOI XE GI THU, VN
+       HÀNH
+
+01 SOURCE INFORMATION
+
+Ngun: Ly t view Shipment Order, Configuration-Item trên h thng SWM
+
+                                                   Hình 1: View Shipment Order (SWM)  Hình 2: Configuration-Item (SWM)
+
+ iu kin d liu u vào:                                                                                             Transform Logistics Intelligently 64
+         SWM: ch ly các n status = Shipped
+       TIN  XUT HÀNG THEO LOI XE GI THU, VN
+      HÀNH
+
+01 SOURCE INFORMATION
+
+Ngun:
+   Ly t view Giám sát - Phân phi, view iu phi - Gi thu chi tit, view Qun tr-Cung ng-Khu vc & view Giám sát - Giám sát ng tài
+
+      trên h thng STM
+
+  Hình 1: View iu phi - Gi thu chi tit (STM)                           Hình 2: View Qun tr - Cung ng - Khu vc (STM)
+Hình 3: View Giám sát - Phân phi (STM)
+                                               iu kin d liu u vào:
+                                                       SWM: Maintain masterdata Item (quy cách) chính xác gia các kho
+                                                       STM: Maintain masterdata vùng - shipto
+
+                                                                                                               Transform Logistics Intelligently 65
+TIN  XUT HÀNG THEO LOI XE GI THU, VN HÀNH
+
+02 LOGIC CONVERT TRNG THÁI CHUYN                               LOGIC XÁC NH MC ETD CHUYN GI THU
+
+PHM VI: HOT NG XUT HÀNG TRONG KHO                              ETD chuyn gi thu = MIN(ETD gi thu all dn)
+
+Ly tt c n ã c to chuyn gi thu                                  LOGIC TÍNH S CBM/TN PENDING & Ã NHN & K HOCH
+
+   Quy i status                         Logic                   Tính s CBM:
+Cha to chuyn vn
+                           Mã chuyn gi thu NULL                 CBM Pending = CBM k hoch - CBM ã nhn. CBM pending bao gm CBM rt do w
+         hành
+                     Trng thái chuyn: Cha vn chuyn                CBM cha nhn
+     ang ti kho                         Hoc
+                                                                CBM ã nhn = Sum s khi ã nhn ca tt c n. CBM ã nhn c define khi S
+     ã ng tài        Trng thái chuyn: ang vn chuyn
+     ã vào cng                  Gi ng tài NULL                    trng thái Shipped trên h thng
+     ã vào dock
+                             Gi ng tài NOT NULL                 CBM K hoch = Sum s khi k hoch ca tt c n. CBM k hoch do SAP y v
+     ã lên hàng                Gi vào cng NULL
+                                                                  gm khi ca chuyn gi thu + vn hành
+      ã ra dock             Gi vào cng NOT NULL
+      ã ra cng                 Gi vào dock NULL                 %CBM pending = CBM pending/ CBM k hoch * 100
+
+                            Gi vào dock NOT NULL                Tính s Tn:
+                                Gi ra dock NULL
+                                                               · Tn Pending = Tn k hoch - Tn ã nhn. Tn pending bao gm Tn rt + Tn ch
+                            Gi vào dock NOT NULL
+                 Tt c n thuc chuyn có status SHIPPED           · Tn ã nhn = Sum s tn ã nhn ca tt c n. Tn ã nhn c define khi SW
+
+                                Gi ra dock NULL                   trng thái Shipped trên h thng
+                             Gi ra dock NOT NULL
+                                                               · Tn K hoch = Sum s tn k hoch ca tt c n. Tn k hoch do SAP y v S
+                                Gi ra cng NULL
+                             Gi ra cng NOT NULL                   gm tn ca chuyn gi thu + vn hành
+
+                                                                % Tn pending = Tn pending/ Tn k hoch * 100
+
+                                                                Tính s DO:
+
+                                                                DO pending = Count n DO rt + n DO cha giao
+
+                                                                DO k hoch = Count tng n DO
+
+             nh: Bng quy i trng thái ca process tin  xut hàng   DO ã xut = Count n DO ã xut. Bao gm c n DO xut full + n DO rt
+
+LOGIC DEFINE NHÓM HÀNG CA CHUYN                                 Tính s xe:
+
+ Nu chuyn va ch hàng DRY + FRESH => DRY                        · Xe pending = Count chuyn vn hành có trng thái ã vào cng tr v trc
+ Nu chuyn ch only hàng DRY => DRY
+                                                               · Xe cha ra dock = Count chuyn vn hành có trng thái ã vào dock nhng cha ra
+
+                                                               ·  Xe ã ra dock = Count chuyn vn hành có trng thái ã ra dock tr v sau                                                    66
+
+                                                                                                                                                     Transform Logistics Intelligently
+       TIN  XUT HÀNG THEO LOI XE GI THU, VN
+      HÀNH
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+B lc áp dng:
+
+Tên b lc          Loi b lc               Tiêu chí lc
+
+Kho ly hàng               Multi-select    Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khu vc giao hàng  (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Kênh bán hàng
+Nhà vn ti                 Multi-select    Gm: Danh sách Tên khu vc t Thit lp khu vc
+Loi ngày          (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Khong thi gian
+                          Multi-select    Gm: Dánh sách Tên kênh bán hàng t Masterdata Customer
+                  (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                          Multi-select    Gm: Danh sách Tên ngn t Danh sách nhà xe
+                  (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                          Combo box       Gm: Ngày gi thu, ETD gi thu
+                  (cho chn mt giá tr)     Mc nh: Ngày gi thu
+
+                  T khong n khong         Chn ti a 12 tháng
+                                          Mc nh: ngày hin ti - 1
+
+                                                                                                 Transform Logistics Intelligently 67
+       TIN  XUT HÀNG THEO LOI XE GI THU, VN
+      HÀNH
+
+03 VISUALIZATION (maximum 8-10
+         chart/tab)
+
+Report Link Report
+
+                                                                                                                                                                                                                        Transform Logistics Intelligently 68
+       TIN  XUT HÀNG THEO LOI XE GI THU, VN
+      HÀNH
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 69
+       TIN  XUT HÀNG THEO LOI XE GI THU, VN
+      HÀNH
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 70
+       TIN  XUT HÀNG THEO LOI XE GI THU, VN
+      HÀNH
+
+03 VISUALIZATION (maximum 8-10 chart/tab)
+
+Yêu cu: Có row sum tng  phía trên tt c report summary
+
+                                                       Transform Logistics Intelligently 70
+      T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L ÁP NG CHUYN GI THU
+
+Ngun: Ly t view Giám sát - Phân phi & view iu phi - Gi thu chi tit trên h thng TMS.
+
+       View Giám sát - Phân phi.   iu kin d liu u vào:
+View iu phi - Gi thu chi tit.              Trng thái chi tit chuyn vn hành
+                                               StatusOfDITOMaster = ã hoàn thành
+                                           ID chuyn gi thu
+                                               TenderMasterID <> Null
+                                           Loi xe gi thu
+                                               TenderGroupOfVehicleName <> Null
+                                           Loi xe vn hành
+                                               GroupOfVehicleName <> Null
+                                           Dch v vn chuyn
+                                               ServiceOfOrderName = Xut bán
+
+                                                                                           Transform Logistics Intelligently 71
+T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L ÁP NG CHUYN GI THU
+
+Bng d liu chi tit: Mi dòng c nhóm theo "Mã chuyn vn hành" + "ID chuyn gi thu". Các ct thông tin ca bng gm:
+
+                          Ngun                            Tên ct                             Mã ct              Ví d
+View iu phi - Gi thu chi tit    ID chuyn gi thu                   TenderMasterID
+View iu phi - Gi thu chi tit    Mã chuyn vn hành                  MasterCode                        150662
+View iu phi - Gi thu chi tit    Mã n hàng                         OrderCode                         DI010101
+View iu phi - Gi thu chi tit    Dch v vn chuyn                    ServiceOfOrderName
+View Giám sát - Phân phi        Trng thái chuyn                   StatusOfDITOMasterName            8481759153, 8481759168, 8481759271
+View iu phi - Gi thu chi tit    Thi gian gi thu                   TenderedDate                      Chuyn kho
+View iu phi - Gi thu chi tit    ETD chuyn gi thu                  TenderMasterETD                   ã hoàn thành
+View iu phi - Gi thu chi tit    ETA chuyn gi thu                  TenderMasterETA                   01/11/2025 00:00:00
+View iu phi - Gi thu chi tit    ATD chuyn vn hành                 MasterATD
+View iu phi - Gi thu chi tit    ATA chuyn vn hành                 MasterATA                         01/11/2025 00:00:00
+View iu phi - Gi thu chi tit    S xe                               RegNo
+View iu phi - Gi thu chi tit    Tên tài x                          DriverName1                      01/11/2025 00:00:00
+
+                                                                                                    01/11/2025 00:00:00
+                                                                                                    01/11/2025 00:00:00
+
+                                                                                                    89H-04150
+                                                                                                    Trng Hi ng
+
+                                                                                                    Transform Logistics Intelligently 72
+T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L ÁP NG CHUYN GI THU
+
+                          Ngun                            Tên ct                            Mã ct                     Ví d
+View iu phi - Gi thu chi tit    Tên ngn nhà thu                   VendorShortName
+View Giám sát - Phân phi        Mã im nhn                         LocationFromCode                 VAN HO
+View Giám sát - Phân phi        Tên im nhn                        LocationFromName
+View Giám sát - Phân phi        Mã im giao                        LocationToCode                   VN832
+View Giám sát - Phân phi        Tên im giao                       LocationToName
+View Qun tr - Danh mc các im    Khu vc i xe                       Note2                            Kho ngoài 2 - NKD
+View iu phi - Gi thu chi tit    Mã hàng hóa                       ProductCode
+View iu phi - Gi thu chi tit    Tên hàng hóa                      ProductName                      NKD
+View iu phi - Gi thu chi tit    Tên nhóm hàng                     GroupOfProductName
+View Gi thu chi tit             Loi xe gi thu                     TenderGroupOfVehicleName         Kho trong - NKD
+View Gi thu chi tit             Loi xe vn hành                    GroupOfVehicleName
+Xét theo logic                  áp ng gi thu                                                       Other
+View Giám sát - Phân phi        Tn k hoch                         Ton
+View Giám sát - Phân phi        Tn nhn                            TonTransfer                      4319267
+
+                                                                                                   COSY MARIE BANH QUY 40GR X 48 HG
+
+                                                                                                   DRY
+                                                                                                   11T
+
+                                                                                                   11T
+
+                                                                                                   TRUE
+                                                                                                   8
+
+                                                                                                   8
+
+                                                                                                          Transform Logistics Intelligently 73
+T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L ÁP NG CHUYN GI THU
+
+           Ngun                         Tên ct              Mã ct                        Ví d
+                                                                   8
+Databases                 Tn giao               TonBBGN            30
+                          S Khi k hoch                             30
+View Giám sát - Phân phi  S khi nhn             OPSCBM             30
+                          S khi giao
+View Giám sát - Phân phi                        OPSCBMTransfer
+
+View Giám sát - Phân phi                        OPSCBMBBGN
+
+                                                                   Transform Logistics Intelligently 74
+      T L ÁP NG & TUÂN TH
+
+02 LOGIC - T L ÁP NG CHUYN GI THU
+
+Logic xác nh Chuyn gi thu c áp ng & Chuyn gi thu không c áp ng:
+Chuyn gi thu c áp ng, khi tha mãn các ràng buc sau:
+   Mi chuyn gi thu c thc hin úng bng mt xe vn hành (Các chi tit trong 1 chuyn gi thu phi có cùng mã chuyn vn hành)
+Chuyn gi thu không c áp ng, khi vi phm 1 trong các ràng buc sau:
+
+   Nhiu chuyn gi thu c gom chung  vn hành trên cùng mt xe (Nhiu ID chuyn gi thu - TenderMasterID có cùng Mã chuyn vn hành - MasterCode)
+   Mt chuyn gi thu b tách ra và vn hành trên nhiu xe khác nhau (Nhiu Mã chuyn vn hành - MasterCode có cùng ID chuyn gi thu - TenderMasterID)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 75
+T L ÁP NG & TUÂN TH
+
+03 VISUALIZATION (maximum 8-10 chart/tab) - T L ÁP NG CHUYN GI THU
+
+B lc áp dng:                Loi b lc               Tiêu chí lc
+
+                  Tên b lc
+
+Kho ly hàng                         Multi-select    Gm: Danh sách Tên h thng t Danh mc a im KHO
+Khu vc giao hàng            (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Nhà vn ti
+Loi ngày                            Multi-select    Gm: Danh sách Tên khu vc t Thit lp khu vc
+Khong thi gian              (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                                    Multi-select    Gm: Danh sách Tên ngn t Danh sách nhà xe
+                            (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                                    Combo box       Gm: Ngày gi thu, ETA chuyn vn hành, ATA chuyn vn hành
+                            (cho chn mt giá tr)     Mc nh: ATA chuyn vn hành
+
+                            T khong n khong         Chn ti a 12 tháng
+                                                    Mc nh: Tháng hin ti
+
+                                                                                                           Transform Logistics Intelligently 76
+T L ÁP NG & TUÂN TH
+
+03 VISUALIZATION (maximum 8-10 chart/tab) - T L ÁP NG CHUYN GI THU
+
+Các biu  và báo cáo liên quan: gm 7 biu  và 1 báo cáo
+
+                          Tên biu                                                                            Thông tin
+                                              Loi biu : Scorecard
+T l áp ng
+                                                 Giá tr hin th: T l áp ng c áp ng ca chuyn gi thu
+S chuyn gi thu c áp ng
+                                              Loi biu : Scorecard
+S chuyn gi thu không c áp ng                     Giá tr hin th: S lng chuyn gi thu c áp ng
+
+S chuyn gi thu                                Loi biu : Scorecard
+                                                 Giá tr hin th: S lng chuyn gi thu không c áp ng
+S chuyn vn hành
+                                              Loi biu : Scorecard
+T l áp ng theo nhà vn ti                         Giá tr hin th: Tng s lng chuyn gi thu
+
+T l áp ng theo thi gian                       Loi biu : Scorecard
+                                                 Giá tr hin th: Tng s lng chuyn vn hành
+Bng d liu chi tit t l áp ng chuyn gi thu
+                                              Loi biu : Mixed chart
+                                                 Giá tr trc x: Nhà vn ti
+                                                 Giá tr trc y: S lng chuyn gi thu c áp ng/ không c áp ng, T l áp ng
+
+                                              Loi biu : Mixed chart
+                                                 Giá tr trc x: Tun/ Tháng
+                                                 Giá tr trc y: S lng chuyn gi thu c áp ng/ không c áp ng, T l áp ng
+
+                                          1 bng group data theo Mã chuyn vn hành. Các ct thông tin hin th trong báo cáo s ging phn
+                                          bng d liu chi tit c th hin t slide 84 -> 86
+
+                                                                    Transform Logistics Intelligently 77
+      T L ÁP NG & TUÂN TH
+
+03 VISUALIZATION (maximum 8-10 chart/tab) - T L ÁP NG CHUYN GI THU
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 77
+      T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+Ngun: Ly t view Giám sát - Phân phi & view iu phi - Gi thu chi tit trên h thng TMS.
+
+       View Giám sát - Phân phi.   iu kin d liu u vào:
+View iu phi - Gi thu chi tit.              Trng thái chi tit chuyn vn hành
+                                               StatusOfDITOMaster = ã hoàn thành
+                                           Dch v vn chuyn
+                                               ServiceOfOrderName = Xut bán
+
+                                                                                           Transform Logistics Intelligently 71
+T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+Bng d liu chi tit: Mi dòng c nhóm theo "Mã im" (các im ca chuyn vn hành). Các ct thông tin ca bng gm:
+
+                          Ngun                            Tên ct                Mã ct                  Ví d
+View iu phi - Gi thu chi tit    Mã chuyn vn hành
+View iu phi - Gi thu chi tit    Mã n hàng                         MasterCode              DI010101
+View iu phi - Gi thu chi tit    Dch v vn chuyn
+View Giám sát - Phân phi        Trng thái chuyn                   OrderCode               8481759153, 8481759168, 8481759271
+View iu phi - Phân phi          ETD chuyn vn hành                                         Xut bán
+View iu phi - Phân phi          ETA chuyn vn hành                 ServiceOfOrderName      ã hoàn thành
+View iu phi - Gi thu chi tit    ATD chuyn vn hành                                          01/11/2025 00:00:00
+View iu phi - Gi thu chi tit    ATA chuyn vn hành                 StatusOfDITOMasterName   01/11/2025 00:00:00
+View iu phi - Gi thu chi tit    S xe
+View iu phi - Gi thu chi tit    Tên tài x                         MasterETD
+View iu phi - Gi thu chi tit    Tên ngn nhà thu
+View Giám sát - Phân phi        Mã im                             MasterETA
+
+                                                                  MasterATD               01/11/2025 00:00:00
+
+                                                                  MasterATA               01/11/2025 00:00:00
+                                                                   RegNo
+                                                                                          89H-04150
+                                                                  DriverName1             Trng Hi ng
+                                                                                          VAN HO
+                                                                  VendorShortName         VN832
+
+                                                                  LocationCode
+
+                                                                                          Transform Logistics Intelligently 72
+T L ÁP NG & TUÂN TH
+
+01 SOURCE INFORMATION - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+                          Ngun                            Tên ct                            Mã ct                                 Ví d
+View Giám sát - Phân phi        Tên im                            LocationName                         Kho ngoài 2 - NKD
+View Giám sát - Phân phi        Loi im                            TypeOfTOLocationName                 Kho
+View Giám sát - Phân phi         Sn lng k hoch                    Quantity                             30
+View Giám sát - Phân phi        Sn lng nhn                        QuantityTranfer                      30
+View Giám sát - Phân phi        Sn lng giao                       QuantityBBGN                         30
+View Giám sát - Phân phi        Thi gian vào im                   DateCome                             01/11/2025 00:00:00
+Báo cáo 36                      Phng thc vào im                   ActionComeByName                     Mobile app tài x
+Báo cáo 36                      User thao tác vào im              ActionComeBy                         Thanh.lam@smartlog.com
+View Giám sát - Phân phi        Thi gian ra im                    DateLeave                            01/11/2025 00:30:00
+Báo cáo 36                      Phng thc ra im                    ActionLeaveByName                    Mobile app tài x
+Báo cáo 36                      User thao tác ra im               ActionLeaveBy                        Thanh.lam@smartlog.com
+Tính theo công thc              Thi gian load quy nh (gi)         Sn lng giao * Thi gian load 1 thùng  0.25
+                                Thi gian load thc t (gi)          (user setup)
+Tính theo công thc              Tuân th                           Thi gian ra im - Thi gian vào im     0.5
+Xét theo logic                                                                                         False
+
+                                                                                                                 Transform Logistics Intelligently 73
+      T L ÁP NG & TUÂN TH
+
+02 LOGIC - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+Logic xác nh Chuyn vn hành tuân th & Chuyn vn hành không tuân th:
+
+iu kin xét chuyn vn hành tuân th và không tuân th:
+  Phng thc vào im = Mobile app tài x
+  Phng thc ra im = Mobile app tài x
+  Thi gian load quy nh  Thi gian load thc t < 8 gi
+
+       o Thi gian load quy nh = S lng thùng ã giao * Thi gian load/ 1 thùng (user ch ng iu chnh)
+       o Thi gian load thc t = Thi gian ra im - Thi gian vào im
+
+ ===> Chuyn vn hành tuân th, khi tha mãn các iu kin trên: Thông tin ct "Tuân th" = True
+ ===> Chuyn vn hành không tuân th khi vi phm 1 trong các iu kin trên: Thông tin ct "Tuân th" = False
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 75
+T L ÁP NG & TUÂN TH
+
+03 VISUALIZATION (maximum 8-10 chart/tab) - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+B lc áp dng:                Loi b lc               Tiêu chí lc
+
+                  Tên b lc
+
+Mã im                               Multi-select    Gm: Danh sách Tên h thng t Danh mc a im
+Loi im                      (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+Nhà vn ti
+Loi ngày                            Multi-select    Gm: Kho, Giao hàng
+Khong thi gian              (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                                    Multi-select    Gm: Danh sách Tên ngn t Danh sách nhà xe
+                            (cho chn nhiu giá tr)   Mc nh: chn tt c giá tr
+
+                                    Combo box       Gm: ETA chuyn vn hành, ATA chuyn vn hành
+                            (cho chn mt giá tr)     Mc nh: ATA chuyn vn hành
+
+                            T khong n khong         Chn ti a 12 tháng
+                                                    Mc nh: Tháng hin ti
+
+                                                                                              Transform Logistics Intelligently 76
+T L ÁP NG & TUÂN TH
+
+03 VISUALIZATION (maximum 8-10 chart/tab) - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+Các biu  và báo cáo liên quan: gm 4 biu  và 1 báo cáo
+
+                            Tên biu                                                                             Thông tin
+                                                 Loi biu : Scorecard
+Tng s chuyn vn hành
+                                                    Giá tr hin th: S lng chuyn vn hành
+Tng s im vn hành
+                                                 Loi biu : Scorecard
+T l tuân th                                         Giá tr hin th: S lng im vn hành
+
+T l tuân th theo nhà vn ti                       Loi biu : Scorecard
+                                                    Giá tr hin th:T l tun th thao tác ra/ vào im, S im tun th vn hành
+T l tun th theo thi gian
+                                                 Loi biu : Mixed chart
+Bng d liu chi tit t l tuân th chuyn vn hành         Giá tr trc x: Nhà vn ti
+                                                    Giá tr trc y: S lng im tuân th/ S lng im không tuân th/ T l tuân th
+
+                                                Loi biu : Mixed chart
+                                                    Giá tr trc x: Ngày/ Tun/ Tháng
+                                                    Giá tr trc y: S lng im tuân th/ S lng im không tuân th/ T l tuân th
+
+                                             1 bng group data theo im ca chuyn vn hành. Các ct thông tin hin th trong báo cáo s
+                                             ging phn bng d liu chi tit c th hin t slide 100 -101
+
+                                             Transform Logistics Intelligently 77
+      T L ÁP NG & TUÂN TH
+
+03 VISUALIZATION (maximum 8-10 chart/tab) - T L TUÂN TH CHUYN VN HÀNH (Update 06/04/2024)
+
+                                                                                                                                                                                                          Transform Logistics Intelligently 77
+Cám n Quý khách hàng ã theo dõi
+
+TRANSFORM LOGISTICS INTELLIGENTLY
+
+Smartlog Supply Chain
+Solutions Corporation
+
+A CH
+199C2 Nguyn Vn Hng, Phng An Khánh,
+Thành ph H Chí Minh
+WEBSITE: wwww.gwosmawrtlog.c.omgosmartlog.com
+HOTLINE: 0938 545 272
+
