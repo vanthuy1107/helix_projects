@@ -178,7 +178,7 @@ git -C "<projects>" show <sha> --stat
 
 Cả `da-*/` skills và `da-*.md` commands đều được mirror 2 nơi: workspace (`<repo>/.claude/skills/...` và `<repo>/.claude/commands/...` — Claude Code load chỗ này) và projects (`projects/.claude/skills/...` và `projects/.claude/commands/...` — commit để share với team).
 
-**Cách nhanh nhất khi user nói "sync skill"**: chạy slash command `/da-sync` — nó tự gọi script ở chế độ check, show drift, hỏi hướng. Nếu user explicit yêu cầu chạy script trực tiếp (vd để debug), dùng `projects/scripts/sync-da-skills.ps1` với 3 mode:
+**Cách nhanh nhất khi user nói "sync skill"**: gọi skill `/da-sync` — nó tự chạy script `check` trước, show drift, hỏi hướng push/pull/cancel. Nếu user explicit yêu cầu chạy script trực tiếp (vd để debug), dùng `projects/scripts/sync-da-skills.ps1` với 3 mode:
 
 | Mode | Hành động | Khi nào dùng |
 |---|---|---|

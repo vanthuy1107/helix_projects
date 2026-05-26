@@ -36,13 +36,13 @@ The **canonical** copy of each skill lives in **two places** on each developer m
 | `<repo-root>/.claude/skills/da-*/` and `<repo-root>/.claude/commands/da-*.md` | What Claude Code actually loads when you run it inside the main `smartlog-control-tower` workspace. Both prefixes are gitignored from the main repo. |
 | `<repo-root>/projects/.claude/skills/da-*/` and `<repo-root>/projects/.claude/commands/da-*.md` | What gets committed to **this repo** (`helix_projects`) and shared with the team. |
 
-A sync script keeps the two in lockstep. Easiest path: just use the slash command:
+A sync script keeps the two in lockstep. Easiest path: invoke the `da-sync` skill:
 
 ```
 /da-sync
 ```
 
-Claude Code runs the script in `check` mode, shows drift (if any), asks for direction, then runs `push` or `pull`. No need to remember PowerShell syntax.
+Claude Code runs the script in `check` mode, shows drift (if any), asks for direction, then runs `push` or `pull`. No need to remember PowerShell syntax. (`da-sync` is a skill at `.claude/skills/da-sync/SKILL.md`, not a slash command - slash commands don't appear in the chat autocomplete in this Claude Code build.)
 
 If you'd rather run the script directly:
 
