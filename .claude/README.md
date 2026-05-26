@@ -1,31 +1,32 @@
-# `.claude/` - Shared Claude Code skills and commands for the helix_projects team
+# `.claude/` - Shared Claude Code skills for the helix_projects team
 
-This folder ships **Claude Code skills** and **slash commands** along with the per-tenant project workspaces. Teammates who clone `helix_projects` get both the docs they work on AND the `da-*` skills/commands that drive how Claude Code interacts with them.
+This folder ships **Claude Code skills** along with the per-tenant project workspaces. Teammates who clone `helix_projects` get both the docs they work on AND the `da-*` skills that drive how Claude Code interacts with them.
 
 ## What's in here
 
 ```
 .claude/
   skills/
-    da-biz-ba/           Business-analyst persona (process / BPMN / AS-IS-TO-BE)
-    da-ch/               ClickHouse SQL & MV operations
-    da-data/             Metric / KPI definition, ad-hoc SQL
-    da-discovery/        Problem discovery before spec
-    da-ops/              Daily operational pulse from activity log
-    da-ops-release/      Stakeholder PDF release pack
-    da-ops-review/       Audit /da-ops artifacts
-    da-pm/               Sprint / roadmap / risk
-    da-projects/         Git mechanics for this repo (helix_projects)
-    da-retro/            Post-mortem / retrospective
-    da-ship/             Final gate before pushing code to Dev squad review
+    da-biz-ba/             Business-analyst persona (process / BPMN / AS-IS-TO-BE)
+    da-ch/                 ClickHouse SQL & MV operations
+    da-data/               Metric / KPI definition, ad-hoc SQL
+    da-discovery/          Problem discovery before spec
+    da-ops/                Daily operational pulse from activity log
+    da-ops-release/        Stakeholder PDF release pack
+    da-ops-review/         Audit /da-ops artifacts
+    da-pm/                 Sprint / roadmap / risk
+    da-projects/           Git mechanics for this repo (helix_projects)
+    da-retro/              Post-mortem / retrospective
+    da-ship/               Final gate before pushing code to Dev squad review
     da-storytelling-data/  Dashboard storytelling advisor
-    da-trace/            Spec vs implementation drift report
-    da-triage/           Customer bug-list triage
-  commands/
-    da-sync.md           /da-sync - one-shot wrapper for the sync script (check + push/pull)
+    da-sync/               Sync this folder with the workspace (drift check + push/pull)
+    da-trace/              Spec vs implementation drift report
+    da-triage/             Customer bug-list triage
 ```
 
-Skills are Markdown files (`SKILL.md`) plus optional `references/` content. Slash commands are single Markdown files that Claude Code runs when the user types `/<name>`. Both are loaded from `.claude/` at startup.
+Each skill is a Markdown file (`SKILL.md`) plus optional `references/` content. Claude Code loads them at startup and surfaces them in the chat slash menu as `/<skill-name>`.
+
+> Note: we tried slash commands in `.claude/commands/` first but the VSCode-native Claude Code build doesn't show them in chat autocomplete - only skills do. Everything lives under `skills/` now.
 
 ## How the sync works
 
@@ -33,8 +34,8 @@ The **canonical** copy of each skill lives in **two places** on each developer m
 
 | Location | Role |
 |---|---|
-| `<repo-root>/.claude/skills/da-*/` and `<repo-root>/.claude/commands/da-*.md` | What Claude Code actually loads when you run it inside the main `smartlog-control-tower` workspace. Both prefixes are gitignored from the main repo. |
-| `<repo-root>/projects/.claude/skills/da-*/` and `<repo-root>/projects/.claude/commands/da-*.md` | What gets committed to **this repo** (`helix_projects`) and shared with the team. |
+| `<repo-root>/.claude/skills/da-*/` | What Claude Code actually loads when you run it inside the main `smartlog-control-tower` workspace. Gitignored from the main repo. |
+| `<repo-root>/projects/.claude/skills/da-*/` | What gets committed to **this repo** (`helix_projects`) and shared with the team. |
 
 A sync script keeps the two in lockstep. Easiest path: invoke the `da-sync` skill:
 
@@ -42,7 +43,7 @@ A sync script keeps the two in lockstep. Easiest path: invoke the `da-sync` skil
 /da-sync
 ```
 
-Claude Code runs the script in `check` mode, shows drift (if any), asks for direction, then runs `push` or `pull`. No need to remember PowerShell syntax. (`da-sync` is a skill at `.claude/skills/da-sync/SKILL.md`, not a slash command - slash commands don't appear in the chat autocomplete in this Claude Code build.)
+Claude runs the script in `check` mode, shows drift (if any), asks for direction, then runs `push` or `pull`. No need to remember PowerShell syntax.
 
 If you'd rather run the script directly:
 
@@ -50,7 +51,7 @@ If you'd rather run the script directly:
 # Check drift (exit code 1 if any difference)
 .\projects\scripts\sync-da-skills.ps1 -Mode check
 
-# Workspace -> projects  (after YOU edited a skill/command, before commit)
+# Workspace -> projects  (after YOU edited a skill, before commit)
 .\projects\scripts\sync-da-skills.ps1 -Mode push
 
 # Projects -> workspace  (after teammate pushed an update)
@@ -61,22 +62,21 @@ Use `-DryRun` to preview, `-Force` to skip the confirm prompt.
 
 ## Workflows
 
-### When YOU update a skill or command
+### When YOU update a skill
 
 ```
 1. Edit  <repo-root>/.claude/skills/da-<name>/SKILL.md   (or references/)
-   or    <repo-root>/.claude/commands/da-<name>.md
-2. Test locally - reload Claude Code and try it
+2. Test locally - reload Claude Code and try the skill
 3. Run /da-sync, pick "push" when asked
 4. cd projects
-5. git status                      # confirm only .claude/ changed
+5. git status                      # confirm only .claude/skills/ changed
 6. git add .claude/
-7. git commit -m "feat(skills|commands): <what changed and why>"
+7. git commit -m "feat(skills): <what changed and why>"
 8. git push origin main
 9. Tell the team: "pulled helix_projects, run /da-sync and pick pull"
 ```
 
-### When TEAMMATE updated a skill or command
+### When TEAMMATE updated a skill
 
 ```
 1. cd projects
@@ -93,9 +93,8 @@ Use `-DryRun` to preview, `-Force` to skip the confirm prompt.
 1. Clone the main repo:    git clone <smartlog-control-tower>
 2. Clone projects inside:  cd smartlog-control-tower
                            git clone https://github.com/vanthuy1107/helix_projects.git projects
-3. Mirror skills + commands out:
-                           .\projects\scripts\sync-da-skills.ps1 -Mode pull -Force
-4. Open the workspace in Claude Code - skills and /da-sync are now loaded.
+3. Mirror skills out:      .\projects\scripts\sync-da-skills.ps1 -Mode pull -Force
+4. Open the workspace in Claude Code - skills are now loaded.
 ```
 
 ## Rules of the road
@@ -119,6 +118,6 @@ Git submodules would be ideologically cleanest (one canonical skills repo, both 
 1. Create `<repo-root>/.claude/skills/da-<your-skill>/SKILL.md` with valid frontmatter (see existing skills for the schema).
 2. Optionally add `references/*.md` for long-form content.
 3. Test it loads in Claude Code (skill name appears in the available-skills list).
-4. Run `push` -> commit -> push to helix_projects.
+4. Run `/da-sync` (pick push) -> commit -> push to helix_projects.
 
 Skills must be prefixed `da-` to be picked up by this sync. Non-da skill folders are ignored on both sides.

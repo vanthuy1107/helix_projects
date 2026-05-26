@@ -1,14 +1,14 @@
 ---
 name: da-sync
 description: >-
-  Dùng để đồng bộ các skill `da-*` (và phần `da-*.md` trong `.claude/commands/`
-  nếu còn dùng) giữa workspace local và repo `helix_projects`. Skill luôn chạy
-  `projects/scripts/sync-da-skills.ps1 -Mode check` trước để show drift, rồi hỏi
-  user hướng push (workspace → projects) hay pull (projects → workspace) hay
-  cancel, sau đó chạy `-Mode <chosen> -Force`. Trigger trên "sync skill",
-  "sync da", "push skill cho team", "pull skill từ team", "đồng bộ skill",
-  "team có skill mới", "tôi sửa skill xong", "da-sync". KHÔNG dùng để tự sửa
-  nội dung skill (user edit trực tiếp `.claude/skills/da-*/SKILL.md`).
+  Dùng để đồng bộ các skill `da-*` giữa workspace local và repo
+  `helix_projects`. Skill luôn chạy `projects/scripts/sync-da-skills.ps1
+  -Mode check` trước để show drift, rồi hỏi user hướng push (workspace →
+  projects) hay pull (projects → workspace) hay cancel, sau đó chạy `-Mode
+  <chosen> -Force`. Trigger trên "sync skill", "sync da", "push skill cho
+  team", "pull skill từ team", "đồng bộ skill", "team có skill mới", "tôi
+  sửa skill xong", "da-sync". KHÔNG dùng để tự sửa nội dung skill (user
+  edit trực tiếp `.claude/skills/da-*/SKILL.md`).
 user-invocable: true
 ---
 
@@ -92,7 +92,7 @@ User nói `cancel` hoặc mơ hồ → STOP, không chạy.
 - **Luôn check trước.** Không bao giờ push/pull blind.
 - **Strict mirror**: cả push và pull XOÁ file thừa ở phía destination. Show drift trước khi hỏi hướng để user thấy chính xác cái gì sắp move.
 - **Không chạy cả push lẫn pull cùng 1 lần invoke.**
-- **Script chỉ chạm `.claude/skills/da-*/`** (và `.claude/commands/da-*.md` nếu pair commands còn được sync). Non-da assets script ignore — đừng cố mở rộng scope.
+- **Script chỉ chạm `.claude/skills/da-*/`**. Non-da skills script ignore — đừng cố mở rộng scope.
 - **Không tự commit + push** sau khi push sync — luôn để user qua `/da-projects` flow.
 
 ---
