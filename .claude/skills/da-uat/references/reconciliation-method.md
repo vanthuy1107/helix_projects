@@ -50,8 +50,8 @@ Số lệch 80% là do filter chưa align, không phải logic sai. Trước khi
 | Khía cạnh | Spec |
 |---|---|
 | Tenant scope | 1 tenant ID cụ thể, không "all tenant" |
-| Time window | Format đầy đủ: `from=2026-05-25 00:00:00 UTC+7` `to=2026-05-25 23:59:59 UTC+7` |
-| Timezone | Luôn UTC+7. Nếu DB lưu UTC → convert trong SQL |
+| Time window | Format đầy đủ: `from=2026-05-25 00:00:00 UTC` `to=2026-05-25 23:59:59 UTC` (theo timezone DB — MV lưu `DateTime64(3, 'UTC')`) |
+| Timezone | Luôn **UTC** (khớp dashboard). Nếu golden file khách dùng UTC+7 → note rõ và align khi so sánh |
 | Include/exclude rules | Có đơn cancelled trong tổng không? Đơn return có đếm không? |
 | Filter NULL handling | Đơn không có `delivery_time` được coi là late, hay loại khỏi mẫu số? |
 
@@ -63,7 +63,7 @@ Khi diff vượt tolerance, root cause thường thuộc 1 trong 6 nhóm:
 
 | Nhóm root cause | Triệu chứng | Action |
 |---|---|---|
-| **Timezone** | Diff đúng bằng số đơn 1 khoảng giờ giáp ranh | Sửa SQL convert timezone |
+| **Timezone** | Diff đúng bằng số đơn 1 khoảng giờ giáp ranh (vd golden file UTC+7 vs dashboard UTC) | Align cả 2 nguồn về cùng timezone (UTC — theo dashboard) |
 | **Filter alignment** | Diff lớn (>5%), không pattern | Re-check filter cả 2 nguồn |
 | **Include/exclude rule** | Diff = số đơn 1 status đặc biệt (cancelled / return / draft) | Sửa SQL WHERE clause |
 | **NULL handling** | Diff ≈ số đơn có field NULL | Quyết định nghiệp vụ: COALESCE hay loại |

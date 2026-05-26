@@ -171,10 +171,10 @@
 
 | Field | Value |
 |---|---|
-| Mục đích | Verify timezone cutoff UTC+7 — đơn 23:30 UTC+7 hôm nay có nằm trong "hôm nay" không? |
-| Tiền điều kiện | Có đơn test gần cutoff |
-| Steps | Filter date=hôm nay → check đơn 23:30 có trong list |
-| Expected | Có; nếu là 00:30 hôm sau thì KHÔNG có |
+| Mục đích | Verify timezone cutoff UTC — đơn 23:30 UTC hôm nay có nằm trong "hôm nay" không? (Dashboard cắt ngày theo UTC vì MV lưu `DateTime64(3, 'UTC')`) |
+| Tiền điều kiện | Có đơn test gần cutoff UTC (lưu ý: 23:30 UTC = 06:30 sáng hôm sau giờ VN) |
+| Steps | Filter date=hôm nay → check đơn 23:30 UTC có trong list |
+| Expected | Có; nếu là 00:30 UTC hôm sau thì KHÔNG có |
 | Actual | |
 | P/F | |
 | Severity | Major |

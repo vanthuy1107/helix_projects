@@ -16,7 +16,7 @@
 | Golden file received | `<YYYY-MM-DD HH:MM UTC+7>` |
 | SQL raw source | `<ClickHouse analytics_workspace | Postgres LogDbContext | ...>` |
 | Dashboard environment | `<UAT / staging URL>` |
-| Time window | `<từ → đến, UTC+7>` |
+| Time window | `<từ → đến, UTC>` (theo timezone DB — khớp dashboard) |
 | Tolerance ref | Section 7 của `{section}-uat-plan.md` |
 
 ## 1. Status tổng
@@ -42,15 +42,15 @@
 |---|---|
 | Metric | `<vd: Tổng đơn vận chuyển>` |
 | Filter | NPP=ALL, kho=ALL, channel=ALL, date=2026-05-25 |
-| Time window | 2026-05-25 00:00 → 23:59 UTC+7 |
+| Time window | 2026-05-25 00:00 → 23:59 UTC |
 | **Dashboard** | `<số đọc từ widget>` |
 | **SQL raw** | `<số chạy SQL>` — query ref: Q-001 |
 | **Golden file khách** | `<số từ file>` — row ref: `<sheet/row>` |
 | Diff Dashboard − Golden | `<số>` (`<%>`) |
 | Tolerance | ≤ 1% |
 | **Status** | PASS / FAIL / ACCEPTED / DEFERRED |
-| Root cause (nếu FAIL/ACCEPTED) | `<vd: khác cutoff timezone, golden tính 00:00 UTC+7 hôm trước; dashboard 23:00 UTC>` |
-| Action | `<vd: dev FE fix timezone trong widget → retest>` |
+| Root cause (nếu FAIL/ACCEPTED) | `<vd: golden file khách tính theo UTC+7, dashboard cắt ngày theo UTC — đơn 17:00-23:59 UTC rơi sang ngày khác>` |
+| Action | `<vd: align golden file về UTC hoặc note diff do timezone → khách accept>` |
 | Owner | `<tên>` |
 
 ### Row R-002
@@ -59,7 +59,7 @@
 |---|---|
 | Metric | `<vd: % OTIF>` |
 | Filter | NPP=ALL, kho=ALL, date=2026-05-25 |
-| Time window | 2026-05-25 00:00 → 23:59 UTC+7 |
+| Time window | 2026-05-25 00:00 → 23:59 UTC |
 | **Dashboard** | `<%>` |
 | **SQL raw** | `<%>` — Q-002 |
 | **Golden file** | `<%>` |
@@ -125,7 +125,7 @@ Tối thiểu phải có cho 1 section:
 ```sql
 -- Source: <ClickHouse analytics_workspace>
 -- Tenant: <tenant>
--- Time window: 2026-05-25 00:00 → 23:59 UTC+7
+-- Time window: 2026-05-25 00:00 → 23:59 UTC
 -- Run at: 2026-05-26 09:00 UTC+7
 
 SELECT count(*) AS total_orders
