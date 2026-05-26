@@ -1,8 +1,8 @@
 # ClickHouse DDL Snapshot — `analytics_workspace`
 
-> **Generated:** 2026-05-16 03:10 UTC  
+> **Generated:** 2026-05-26 04:14 UTC  
 > **Database:** `analytics_workspace`  
-> **Total objects:** 70
+> **Total objects:** 69
 
 ---
 
@@ -10,19 +10,19 @@
 
 | # | Name | Engine | Rows | Size | Comment |
 |---|------|--------|------|------|---------|
-| 1 | `mv_alert_late_do` | MaterializedView | 66523 | 14.33 MiB |  |
-| 2 | `mv_alert_late_do_base` | MaterializedView | 6527443 | 194.42 MiB |  |
-| 3 | `mv_alert_late_do_concat` | MaterializedView | 66523 | 5.58 MiB |  |
-| 4 | `mv_alert_late_do_so_pick` | MaterializedView | 66523 | 8.31 MiB |  |
-| 5 | `mv_alert_stm_data` | MaterializedView | 3006013 | 32.00 MiB |  |
-| 6 | `mv_alert_stm_swm_data` | MaterializedView | 6527443 | 264.82 MiB |  |
-| 7 | `mv_alert_swm_data` | MaterializedView | 6462890 | 263.59 MiB |  |
+| 1 | `mv_alert_late_do` | MaterializedView | 67349 | 14.53 MiB |  |
+| 2 | `mv_alert_late_do_base` | MaterializedView | 6574269 | 196.58 MiB |  |
+| 3 | `mv_alert_late_do_concat` | MaterializedView | 67349 | 5.65 MiB |  |
+| 4 | `mv_alert_late_do_so_pick` | MaterializedView | 67349 | 8.43 MiB |  |
+| 5 | `mv_alert_stm_data` | MaterializedView | 3046365 | 32.44 MiB |  |
+| 6 | `mv_alert_stm_swm_data` | MaterializedView | 6574269 | 267.75 MiB |  |
+| 7 | `mv_alert_swm_data` | MaterializedView | 6508481 | 265.50 MiB |  |
 | 8 | `mv_copack` | MaterializedView | 4450 | 16.05 KiB |  |
-| 9 | `mv_dap_ung_gui_thau` | MaterializedView | 85763 | 8.65 MiB |  |
-| 10 | `mv_dap_ung_van_hanh` | MaterializedView | 229214 | 8.61 MiB |  |
-| 11 | `mv_dropped_report` | MaterializedView | 42771 | 1.27 MiB |  |
-| 12 | `mv_dropped_stm` | MaterializedView | 2464268 | 12.13 MiB |  |
-| 13 | `mv_dropped_swm` | MaterializedView | 42771 | 1.16 MiB |  |
+| 9 | `mv_dap_ung_gui_thau` | MaterializedView | 86756 | 8.77 MiB |  |
+| 10 | `mv_dap_ung_van_hanh` | MaterializedView | 233538 | 8.76 MiB |  |
+| 11 | `mv_dropped_report` | MaterializedView | 42849 | 1.36 MiB |  |
+| 12 | `mv_dropped_stm` | MaterializedView | 2455677 | 12.16 MiB |  |
+| 13 | `mv_dropped_swm` | MaterializedView | 42849 | 1.26 MiB |  |
 | 14 | `mv_filter_activity` | View | — | — |  |
 | 15 | `mv_filter_cargo_brand` | View | — | — |  |
 | 16 | `mv_filter_channel` | View | — | — |  |
@@ -35,51 +35,50 @@
 | 23 | `mv_filter_date_type_vfr` | View | — | — |  |
 | 24 | `mv_filter_location_tuan_thu` | View | — | — |  |
 | 25 | `mv_filter_location_type_tuan_thu` | View | — | — |  |
-| 26 | `mv_filter_region` | MaterializedView | 34212 | 48.64 KiB |  |
+| 26 | `mv_filter_region` | MaterializedView | 37176 | 53.78 KiB |  |
 | 27 | `mv_filter_type_movement_transaction` | View | — | — |  |
 | 28 | `mv_filter_uom` | View | — | — |  |
 | 29 | `mv_filter_vehicle_type` | View | — | — |  |
 | 30 | `mv_filter_vendor` | View | — | — |  |
 | 31 | `mv_filter_warehouse` | View | — | — |  |
-| 32 | `mv_flash_and_drop_report` | MaterializedView | 6305764 | 292.25 MiB |  |
-| 33 | `mv_flash_report` | MaterializedView | 6262993 | 337.31 MiB |  |
-| 34 | `mv_flrp_stm_data` | MaterializedView | 5192819 | 67.39 MiB |  |
-| 35 | `mv_flrp_swm_data` | MaterializedView | 6262993 | 262.85 MiB |  |
-| 36 | `mv_inbound_transaction_base` | MaterializedView | 26915 | 663.94 KiB |  |
-| 37 | `mv_loose_picking_clickhouse` | MaterializedView | 7666935 | 288.65 MiB |  |
-| 38 | `mv_loose_picking_clickhouse_new` | MaterializedView | 7765173 | 317.80 MiB |  |
-| 39 | `mv_loose_picking_clickhouse_phong_test` | MaterializedView | 7666935 | 288.57 MiB |  |
+| 32 | `mv_flash_and_drop_report` | MaterializedView | 6350315 | 325.00 MiB |  |
+| 33 | `mv_flash_report` | MaterializedView | 6307466 | 329.71 MiB |  |
+| 34 | `mv_flrp_stm_data` | MaterializedView | 5194411 | 67.42 MiB |  |
+| 35 | `mv_flrp_swm_data` | MaterializedView | 6307466 | 225.97 MiB |  |
+| 36 | `mv_inbound_transaction_base` | MaterializedView | 27080 | 666.39 KiB |  |
+| 37 | `mv_loose_picking_clickhouse` | MaterializedView | 7810551 | 291.47 MiB |  |
+| 38 | `mv_loose_picking_clickhouse_new` | MaterializedView | 7820939 | 322.78 MiB |  |
+| 39 | `mv_loose_picking_clickhouse_phong_test` | MaterializedView | 7795322 | 293.67 MiB |  |
 | 40 | `mv_masterdata_kho_stm` | MaterializedView | 9 | 1.16 KiB |  |
-| 41 | `mv_masterdata_location` | MaterializedView | 3540 | 138.85 KiB |  |
-| 42 | `mv_masterdata_ordertype` | MaterializedView | 174 | 3.62 KiB |  |
-| 43 | `mv_masterdata_sku` | MaterializedView | 29284 | 412.09 KiB |  |
-| 44 | `mv_masterdata_vehicle` | MaterializedView | 809 | 9.76 KiB |  |
+| 41 | `mv_masterdata_location` | MaterializedView | 3543 | 139.05 KiB |  |
+| 42 | `mv_masterdata_ordertype` | MaterializedView | 174 | 3.66 KiB |  |
+| 43 | `mv_masterdata_sku` | MaterializedView | 29376 | 415.06 KiB |  |
+| 44 | `mv_masterdata_vehicle` | MaterializedView | 815 | 9.84 KiB |  |
 | 45 | `mv_masterdata_vendor` | MaterializedView | 11 | 1.05 KiB |  |
-| 46 | `mv_mdlz_data_cat_daily` | MaterializedView | 30368 | 394.50 KiB |  |
-| 47 | `mv_mdlz_fact_daily_warehouse_actual_cbm` | MaterializedView | 15706 | 302.76 KiB |  |
-| 48 | `mv_movement_transaction` | MaterializedView | 60505 | 1.60 MiB |  |
-| 49 | `mv_otif` | MaterializedView | 1287164 | 107.33 MiB |  |
-| 50 | `mv_otif_stm_data` | MaterializedView | 2935995 | 40.41 MiB |  |
-| 51 | `mv_otif_swm_data` | MaterializedView | 6580774 | 229.40 MiB |  |
-| 52 | `mv_otif_swm_stm_data` | MaterializedView | 6453075 | 357.61 MiB |  |
-| 53 | `mv_outbound_transaction_base` | MaterializedView | 33590 | 1.05 MiB |  |
-| 54 | `mv_outbound_transaction_raw` | MaterializedView | 7082702 | 104.08 MiB |  |
-| 55 | `mv_psv` | MaterializedView | 38617 | 3.47 MiB |  |
-| 56 | `mv_psv_main` | MaterializedView | 34147 | 2.38 MiB |  |
+| 46 | `mv_mdlz_data_cat_daily` | MaterializedView | 30558 | 397.15 KiB |  |
+| 47 | `mv_mdlz_fact_daily_warehouse_actual_cbm` | MaterializedView | 22503 | 431.07 KiB |  |
+| 48 | `mv_movement_transaction` | MaterializedView | 60898 | 1.61 MiB |  |
+| 49 | `mv_otif` | MaterializedView | 1298047 | 99.80 MiB |  |
+| 50 | `mv_otif_stm_data` | MaterializedView | 2972656 | 40.97 MiB |  |
+| 51 | `mv_otif_swm_data` | MaterializedView | 6631044 | 231.62 MiB |  |
+| 52 | `mv_otif_swm_stm_data` | MaterializedView | 6502817 | 363.10 MiB |  |
+| 53 | `mv_outbound_transaction_base` | MaterializedView | 33820 | 1.06 MiB |  |
+| 54 | `mv_outbound_transaction_raw` | MaterializedView | 7137704 | 104.88 MiB |  |
+| 55 | `mv_psv` | MaterializedView | 39794 | 3.63 MiB | Refreshable MV (EVERY 30 MIN) song song với mv_psv_trigger - đọc thẳng tms_panasonic_prod.dbo_OPS_Optimizer (không qua psv_target). LEGACY: không có cột status_name_detail/reason_change, schema lệch ~10 rows với psv_target do timing. Deprecate candidate - dùng mv_psv_main thay thế. |
+| 56 | `mv_psv_main` | MaterializedView | 35479 | 2.50 MiB | UI-facing PSV MV (REFRESH EVERY 1 HOUR). SELECT FROM psv_target FINAL WHERE is_deleted=0 AND data_report=true, đồng thời shift mọi DateTime sang UTC+7 (cộng 7h). Dùng cho widget/dashboard Smartlog Control Tower - không phải audit (audit nên dùng psv_target FINAL). |
 | 57 | `mv_psv_trigger` | MaterializedView | — | — |  |
-| 58 | `mv_psv_trigger_test` | MaterializedView | — | — |  |
-| 59 | `mv_stm_dropped` | MaterializedView | 3309830 | 48.50 MiB |  |
-| 60 | `mv_stocktype` | MaterializedView | 82 | 4.75 KiB |  |
-| 61 | `mv_swm_dropped` | MaterializedView | 42771 | 2.36 MiB |  |
-| 62 | `mv_test_copack_clickhouse` | MaterializedView | 4499 | 18.96 KiB |  |
-| 63 | `mv_test_goods_receipt` | MaterializedView | 5600 | 14.22 KiB |  |
-| 64 | `mv_test_loose_picking` | MaterializedView | 7666949 | 288.74 MiB |  |
-| 65 | `mv_test_stocktype` | MaterializedView | 79 | 5.98 KiB |  |
-| 66 | `mv_transfer_in_out` | MaterializedView | 6294 | 26.55 KiB |  |
-| 67 | `mv_vfr_gui_thau` | MaterializedView | 79074 | 10.01 MiB |  |
-| 68 | `mv_vfr_van_hanh` | MaterializedView | 71951 | 9.13 MiB |  |
-| 69 | `mv_wh_utilization` | MaterializedView | 33054 | 555.01 KiB |  |
-| 70 | `v_mdlz_masterdata_category_brand` | View | — | — |  |
+| 58 | `mv_stm_dropped` | MaterializedView | 3344564 | 48.84 MiB |  |
+| 59 | `mv_stocktype` | MaterializedView | 82 | 4.75 KiB |  |
+| 60 | `mv_swm_dropped` | MaterializedView | 42858 | 2.36 MiB |  |
+| 61 | `mv_test_copack_clickhouse` | MaterializedView | 4523 | 19.06 KiB |  |
+| 62 | `mv_test_goods_receipt` | MaterializedView | 5600 | 14.22 KiB |  |
+| 63 | `mv_test_loose_picking` | MaterializedView | 7794108 | 290.79 MiB |  |
+| 64 | `mv_test_stocktype` | MaterializedView | 79 | 5.61 KiB |  |
+| 65 | `mv_transfer_in_out` | MaterializedView | 6294 | 26.55 KiB |  |
+| 66 | `mv_vfr_gui_thau` | MaterializedView | 79946 | 10.13 MiB |  |
+| 67 | `mv_vfr_van_hanh` | MaterializedView | 72690 | 9.23 MiB |  |
+| 68 | `mv_wh_utilization` | MaterializedView | 33054 | 555.01 KiB |  |
+| 69 | `v_mdlz_masterdata_category_brand` | View | — | — |  |
 
 ---
 
@@ -1450,6 +1449,8 @@ REFRESH EVERY 15 MINUTE
     `shipped_pl` Nullable(Decimal(38, 8)),
     `delivery_date_1` Nullable(DateTime64(3, 'UTC')),
     `actual_ship_date` Nullable(DateTime64(3, 'UTC')),
+    `ngay_tao_don` Nullable(DateTime64(3, 'UTC')),
+    `ngay_gi` Nullable(DateTime64(3, 'UTC')),
     `remark_2` Nullable(String),
     `id_ord_groupproduct` Nullable(UInt64),
     `ma_don_hang` Nullable(String),
@@ -1570,6 +1571,8 @@ SELECT
     e.shipped_pl,
     e.delivery_date_1,
     e.actual_ship_date,
+    e.ngay_tao_don,
+    e.ngay_gi,
     e.remark_2,
     e.stm_id_ord_groupproduct AS id_ord_groupproduct,
     e.stm_ma_don_hang AS ma_don_hang,
@@ -1725,13 +1728,21 @@ REFRESH EVERY 1 HOUR
     `shipped_cse` Nullable(Decimal(38, 8)),
     `shipped_pl` Nullable(Decimal(38, 8)),
     `delivery_date_1` Nullable(DateTime64(3, 'UTC')),
-    `actual_ship_date` Nullable(DateTime64(3, 'UTC'))
+    `actual_ship_date` Nullable(DateTime64(3, 'UTC')),
+    `ngay_tao_don` Nullable(DateTime64(3, 'UTC')),
+    `ngay_gi` Nullable(DateTime64(3, 'UTC'))
 )
 ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY (so, orderlinenumber)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = helix SQL SECURITY DEFINER
-AS WITH group_pickdetail AS
+AS WITH
+    holiday_set AS
+    (
+        SELECT groupArray(holiday_date) AS holidays
+        FROM analytics_workspace.dim_business_holidays
+    ),
+    group_pickdetail AS
     (
         SELECT
             storer_key,
@@ -1767,18 +1778,20 @@ SELECT
     oh.consignee_key AS customer_code,
     mloc.cus_location_name AS customer_name,
     oh.notes2 AS remark_2,
-    CAST(od.original_qty, 'Nullable(Decimal(38,\r\n 8))') AS original_qty,
-    CAST(od.original_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS original_cbm,
-    CAST(od.original_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS original_kg,
-    CAST(od.original_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n 8))') AS original_cse,
-    CAST(od.original_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n 8))') AS original_pl,
-    CAST(gp.shipped_qty, 'Nullable(Decimal(38,\r\n 8))') AS shipped_qty,
-    CAST(gp.shipped_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS shipped_cbm,
-    CAST(gp.shipped_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS shipped_kg,
-    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n 8))') AS shipped_cse,
-    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n 8))') AS shipped_pl,
+    CAST(od.original_qty, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_qty,
+    CAST(od.original_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_cbm,
+    CAST(od.original_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_kg,
+    CAST(od.original_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_cse,
+    CAST(od.original_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_pl,
+    CAST(gp.shipped_qty, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_qty,
+    CAST(gp.shipped_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_cbm,
+    CAST(gp.shipped_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_kg,
+    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_cse,
+    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_pl,
     if((oh.delivery_date IS NULL) OR (toDate(toDateTime64(oh.delivery_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.delivery_date, 3, 'UTC')) AS delivery_date_1,
-    if((oh.actual_ship_date IS NULL) OR (toDate(toDateTime64(oh.actual_ship_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.actual_ship_date, 3, 'UTC')) AS actual_ship_date
+    if((oh.actual_ship_date IS NULL) OR (toDate(toDateTime64(oh.actual_ship_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.actual_ship_date, 3, 'UTC')) AS actual_ship_date,
+    if((oh.created_date IS NULL) OR (toDate(toDateTime64(oh.created_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.created_date, 3, 'UTC')) AS ngay_tao_don,
+    arrayFirst(d -> ((toDayOfWeek(d) != 7) AND (NOT has(hs.holidays, d))), arrayMap(i -> addDays(toDate(toDateTime64(oh.created_date, 3, 'UTC')), i), range(1, 15))) AS ngay_gi
 FROM swm_dwh_mondelez.dim_orderdetail AS od
 FINAL
 LEFT JOIN analytics_workspace.mv_masterdata_sku AS sku ON (od.sku = sku.item_code) AND (od.whseid = sku.whseid)
@@ -1788,6 +1801,8 @@ LEFT JOIN analytics_workspace.mv_masterdata_location AS mloc ON oh.consignee_key
 LEFT JOIN
 group_pickdetail AS gp ON (od.storer_key = gp.storer_key) AND (od.whseid = gp.whseid) AND (od.order_key = gp.order_key) AND (od.order_line_number = gp.order_line_number)
 LEFT JOIN analytics_workspace.mv_masterdata_ordertype AS ot ON (oh.whseid = ot.whseid) AND (oh.type = ot.code)
+CROSS JOIN
+holiday_set AS hs
 WHERE (od.storer_key = 'MDLZ') AND (od.is_deleted = 0) AND (((od.whseid = 'NKD') AND (oh.type IN ('01', '07', '08', '09', '240', 'XB2BMC', 'XTNPP'))) OR ((od.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (oh.type IN ('01', '240')))) AND (oh.status_code IN ('1', '2')) AND (od.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (oh.extern_order_key IS NOT NULL) AND (od.order_key IS NOT NULL)
 ```
 
@@ -2000,22 +2015,6 @@ CREATE VIEW analytics_workspace.mv_filter_date_type_flashreport
 AS SELECT
     'Ngày GI' AS date_type_name,
     'Ngày GI' AS code
-UNION ALL
-SELECT
-    'Actual Ship Date' AS date_type_name,
-    'Actual Ship Date' AS code
-UNION ALL
-SELECT
-    'ATA đơn' AS date_type_name,
-    'ATA đơn' AS code
-UNION ALL
-SELECT
-    'ETD gửi thầu (đơn)' AS date_type_name,
-    'ETD gửi thầu (đơn)' AS code
-UNION ALL
-SELECT
-    'ETA gửi thầu (đơn)' AS date_type_name,
-    'ETA gửi thầu (đơn)' AS code
 ```
 
 ---
@@ -2407,6 +2406,8 @@ REFRESH EVERY 15 MINUTE
     `shipped_cse` Nullable(Float64),
     `shipped_pl` Nullable(Float64),
     `delivery_date_1` Nullable(DateTime64(3, 'UTC')),
+    `ngay_tao_don` Nullable(DateTime64(3, 'UTC')),
+    `ngay_gi` Nullable(DateTime64(3, 'UTC')),
     `actual_ship_date` Nullable(DateTime64(3, 'UTC')),
     `remark_2` Nullable(String),
     `id_ord_groupproduct` Nullable(UInt64),
@@ -2476,6 +2477,8 @@ AS SELECT
     toFloat64(shipped_cse) AS shipped_cse,
     toFloat64(shipped_pl) AS shipped_pl,
     delivery_date_1,
+    ngay_tao_don,
+    ngay_gi,
     actual_ship_date,
     remark_2,
     id_ord_groupproduct,
@@ -2542,6 +2545,8 @@ SELECT
     toFloat64(shipped_cse) AS shipped_cse,
     toFloat64(shipped_pl) AS shipped_pl,
     delivery_date_1,
+    ngay_tao_don,
+    ngay_gi,
     actual_ship_date,
     remark_2,
     id_ord_groupproduct,
@@ -2619,6 +2624,8 @@ REFRESH EVERY 5 MINUTE
     `shipped_pl` Nullable(Decimal(38, 8)),
     `delivery_date_1` Nullable(DateTime64(3, 'UTC')),
     `actual_ship_date` Nullable(DateTime64(3, 'UTC')),
+    `ngay_tao_don` Nullable(DateTime64(3, 'UTC')),
+    `ngay_gi` Nullable(DateTime64(3, 'UTC')),
     `remark_2` Nullable(String),
     `id_ord_groupproduct` Nullable(UInt64),
     `ma_don_hang` Nullable(String),
@@ -2739,6 +2746,8 @@ SELECT
     e.shipped_pl,
     e.delivery_date_1,
     e.actual_ship_date,
+    e.ngay_tao_don,
+    e.ngay_gi,
     e.remark_2,
     e.stm_id_ord_groupproduct AS id_ord_groupproduct,
     e.stm_ma_don_hang AS ma_don_hang,
@@ -2905,13 +2914,21 @@ REFRESH EVERY 5 MINUTE
     `shipped_cse` Nullable(Decimal(38, 8)),
     `shipped_pl` Nullable(Decimal(38, 8)),
     `delivery_date_1` Nullable(DateTime64(3, 'UTC')),
-    `actual_ship_date` Nullable(DateTime64(3, 'UTC'))
+    `actual_ship_date` Nullable(DateTime64(3, 'UTC')),
+    `ngay_tao_don` Nullable(DateTime64(3, 'UTC')),
+    `ngay_gi` Nullable(DateTime64(3, 'UTC'))
 )
 ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY (so, orderlinenumber)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = helix SQL SECURITY DEFINER
-AS WITH group_pickdetail AS
+AS WITH
+    holiday_set AS
+    (
+        SELECT groupArray(holiday_date) AS holidays
+        FROM analytics_workspace.dim_business_holidays
+    ),
+    group_pickdetail AS
     (
         SELECT
             storer_key,
@@ -2947,18 +2964,20 @@ SELECT
     oh.consignee_key AS customer_code,
     mloc.cus_location_name AS customer_name,
     oh.notes2 AS remark_2,
-    CAST(od.original_qty, 'Nullable(Decimal(38,\r\n 8))') AS original_qty,
-    CAST(od.original_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS original_cbm,
-    CAST(od.original_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS original_kg,
-    CAST(od.original_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n 8))') AS original_cse,
-    CAST(od.original_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n 8))') AS original_pl,
-    CAST(gp.shipped_qty, 'Nullable(Decimal(38,\r\n 8))') AS shipped_qty,
-    CAST(gp.shipped_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS shipped_cbm,
-    CAST(gp.shipped_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n 8))') AS shipped_kg,
-    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n 8))') AS shipped_cse,
-    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n 8))') AS shipped_pl,
+    CAST(od.original_qty, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_qty,
+    CAST(od.original_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_cbm,
+    CAST(od.original_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_kg,
+    CAST(od.original_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_cse,
+    CAST(od.original_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS original_pl,
+    CAST(gp.shipped_qty, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_qty,
+    CAST(gp.shipped_qty * sku.cbm_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_cbm,
+    CAST(gp.shipped_qty * sku.kg_per_masterunit, 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_kg,
+    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_cse, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_cse,
+    CAST(gp.shipped_qty / nullIf(sku.masterunit_per_pallet, 0), 'Nullable(Decimal(38,\r\n\r\n\r\n\r\n 8))') AS shipped_pl,
     if((oh.delivery_date IS NULL) OR (toDate(toDateTime64(oh.delivery_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.delivery_date, 3, 'UTC')) AS delivery_date_1,
-    if((oh.actual_ship_date IS NULL) OR (toDate(toDateTime64(oh.actual_ship_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.actual_ship_date, 3, 'UTC')) AS actual_ship_date
+    if((oh.actual_ship_date IS NULL) OR (toDate(toDateTime64(oh.actual_ship_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.actual_ship_date, 3, 'UTC')) AS actual_ship_date,
+    if((oh.created_date IS NULL) OR (toDate(toDateTime64(oh.created_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(oh.created_date, 3, 'UTC')) AS ngay_tao_don,
+    arrayFirst(d -> ((toDayOfWeek(d) != 7) AND (NOT has(hs.holidays, d))), arrayMap(i -> addDays(toDate(toDateTime64(oh.created_date, 3, 'UTC')), i), range(1, 15))) AS ngay_gi
 FROM swm_dwh_mondelez.dim_orderdetail AS od
 FINAL
 LEFT JOIN analytics_workspace.mv_masterdata_sku AS sku ON (od.sku = sku.item_code) AND (od.whseid = sku.whseid)
@@ -2968,6 +2987,8 @@ LEFT JOIN analytics_workspace.mv_masterdata_location AS mloc ON oh.consignee_key
 LEFT JOIN
 group_pickdetail AS gp ON (od.storer_key = gp.storer_key) AND (od.whseid = gp.whseid) AND (od.order_key = gp.order_key) AND (od.order_line_number = gp.order_line_number)
 LEFT JOIN analytics_workspace.mv_masterdata_ordertype AS ot ON (oh.whseid = ot.whseid) AND (oh.type = ot.code)
+CROSS JOIN
+holiday_set AS hs
 WHERE (od.storer_key = 'MDLZ') AND (od.is_deleted = 0) AND (((od.whseid = 'NKD') AND (oh.type IN ('01', '07', '08', '09', '240', 'XB2BMC', 'XTNPP'))) OR ((od.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (oh.type IN ('01', '240')))) AND (oh.status_code NOT IN ('1', '2')) AND (od.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (oh.extern_order_key IS NOT NULL) AND (od.order_key IS NOT NULL) AND ((upperUTF8(trimBoth(ifNull(oh.sync_status, ''))) = 'SUCCESS') OR (trimBoth(ifNull(oh.sync_status, '')) = ''))
 SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join = 209715200, max_bytes_before_external_group_by = 209715200, max_bytes_before_external_sort = 209715200, min_insert_block_size_bytes = 20971520, min_insert_block_size_rows = 50000, min_bytes_to_use_direct_io = 1
 ```
@@ -5659,7 +5680,7 @@ GROUP BY
 CREATE MATERIALIZED VIEW analytics_workspace.mv_mdlz_fact_daily_warehouse_actual_cbm
 REFRESH EVERY 1 HOUR
 (
-    `etd` Nullable(Date),
+    `etd` Nullable(DateTime64(3, 'UTC')),
     `wh_name` String,
     `work_shift` String,
     `product_type` String,
@@ -5684,7 +5705,7 @@ AS WITH shift_lookup AS
         GROUP BY wh_name
     )
 SELECT
-    toDate(toTimezone(f.delivery_date_1, 'Asia/Ho_Chi_Minh')) AS etd,
+    toDate(toTimezone(f.ngay_gi, 'Asia/Ho_Chi_Minh')) AS etd,
     f.whseid AS wh_name,
     coalesce(s.work_shift, 'UNKNOWN') AS work_shift,
     multiIf(upper(coalesce(f.group_of_cago, '')) = 'DRY', 'Dry', upper(coalesce(f.group_of_cago, '')) = 'FRESH', 'Fresh', coalesce(f.group_of_cago, '')) AS product_type,
@@ -5699,7 +5720,7 @@ FROM analytics_workspace.mv_flrp_swm_data AS f
 LEFT JOIN analytics_workspace.dim_warehouse_region_source AS r ON r.whseid = f.whseid
 LEFT JOIN
 shift_lookup AS s ON s.wh_name = f.whseid
-WHERE (f.delivery_date_1 IS NOT NULL) AND (f.type_description IN ('XUẤT NPP EDI', 'EDI Xuất bán (tích hợp)', 'Shipment for sale', 'Xuất bán')) AND (f.group_of_cago IS NOT NULL)
+WHERE f.ngay_gi IS NOT NULL
 GROUP BY
     etd,
     wh_name,
@@ -6773,6 +6794,8 @@ WHERE sku.group_of_cargo NOT IN ('PM', 'TEST', 'EQUIPMENT')
 
 ### `mv_psv`
 
+> Refreshable MV (EVERY 30 MIN) song song với mv_psv_trigger - đọc thẳng tms_panasonic_prod.dbo_OPS_Optimizer (không qua psv_target). LEGACY: không có cột status_name_detail/reason_change, schema lệch ~10 rows với psv_target do timing. Deprecate candidate - dùng mv_psv_main thay thế.
+
 **Engine:** `MaterializedView`
 
 ```sql
@@ -6841,7 +6864,7 @@ ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY (ops_optimize_id, tracking_id, report_id, version)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = `sql-console:vy.tao@gosmartlog.com` SQL SECURITY DEFINER
-AS SELECT
+AS (SELECT
     ID AS ops_optimize_id,
     _peerdb_version AS version,
     coalesce(SYSCustomerID, -1) AS sys_customer_id,
@@ -6900,12 +6923,15 @@ AS SELECT
     if(empty(JSONExtractString(DataRun, 'DataReport')) OR (JSONExtractString(DataRun, 'DataReport') = '[]'), false, true) AS data_report,
     coalesce(_peerdb_is_deleted, 0) AS is_deleted
 FROM tms_panasonic_prod.dbo_OPS_Optimizer
-LEFT ARRAY JOIN JSONExtractArrayRaw(coalesce(JSONExtractString(DataRun, 'DataReport'), '[]')) AS v
+LEFT ARRAY JOIN JSONExtractArrayRaw(coalesce(JSONExtractString(DataRun, 'DataReport'), '[]')) AS v)
+COMMENT 'Refreshable MV (EVERY 30 MIN) song song với mv_psv_trigger - đọc thẳng tms_panasonic_prod.dbo_OPS_Optimizer (không qua psv_target). LEGACY: không có cột status_name_detail/reason_change, schema lệch ~10 rows với psv_target do timing. Deprecate candidate - dùng mv_psv_main thay thế.'
 ```
 
 ---
 
 ### `mv_psv_main`
+
+> UI-facing PSV MV (REFRESH EVERY 1 HOUR). SELECT FROM psv_target FINAL WHERE is_deleted=0 AND data_report=true, đồng thời shift mọi DateTime sang UTC+7 (cộng 7h). Dùng cho widget/dashboard Smartlog Control Tower - không phải audit (audit nên dùng psv_target FINAL).
 
 **Engine:** `MaterializedView`
 
@@ -6957,7 +6983,7 @@ ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY (tracking_id, order_code)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = helix SQL SECURITY DEFINER
-AS SELECT
+AS (SELECT
     tracking_id,
     optimizer_name,
     created_by,
@@ -6999,7 +7025,8 @@ AS SELECT
     data_report
 FROM analytics_workspace.psv_target
 FINAL
-WHERE (is_deleted = 0) AND (data_report = true)
+WHERE (is_deleted = 0) AND (data_report = true))
+COMMENT 'UI-facing PSV MV (REFRESH EVERY 1 HOUR). SELECT FROM psv_target FINAL WHERE is_deleted=0 AND data_report=true, đồng thời shift mọi DateTime sang UTC+7 (cộng 7h). Dùng cho widget/dashboard Smartlog Control Tower - không phải audit (audit nên dùng psv_target FINAL).'
 ```
 
 ---
@@ -7135,136 +7162,7 @@ AS SELECT
     coalesce(JSONExtractString(v, 'ConstraintNote'), '') AS constraint_note,
     if(empty(JSONExtractString(DataRun, 'DataReport')) OR (JSONExtractString(DataRun, 'DataReport') = '[]'), false, true) AS data_report,
     coalesce(_peerdb_is_deleted, 0) AS is_deleted
-FROM tms_panasonic_prod.dbo_OPS_Optimizer
-LEFT ARRAY JOIN JSONExtractArrayRaw(coalesce(JSONExtractString(DataRun, 'DataReport'), '[]')) AS v
-```
-
----
-
-### `mv_psv_trigger_test`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_psv_trigger_test TO analytics_workspace.psv_target_test
-(
-    `ops_optimize_id` Int32,
-    `version` UInt64,
-    `sys_customer_id` Int32,
-    `optimizer_name` String,
-    `created_date` DateTime64(6),
-    `created_by` LowCardinality(String),
-    `parent_modified_date` DateTime64(6),
-    `parent_modified_by` LowCardinality(String),
-    `date_from` DateTime64(6),
-    `date_to` DateTime64(6),
-    `is_save` Bool,
-    `is_container` Bool,
-    `is_balance_customer` Bool,
-    `is_balance_km_score` Bool,
-    `type_id` Int32,
-    `note` String,
-    `note_1` String,
-    `note_2` String,
-    `tracking_id` String,
-    `report_id` Int64,
-    `is_trip_edit_manual` Bool,
-    `order_code` String,
-    `total_order` Int64,
-    `total_delivery` Int64,
-    `total_ton` Float64,
-    `total_cbm` Float64,
-    `total_cod_unit_price` Float64,
-    `group_of_vehicle_code` LowCardinality(String),
-    `group_of_vehicle_name` LowCardinality(String),
-    `group_of_vehicle_size` LowCardinality(String),
-    `vehicle_no` LowCardinality(String),
-    `max_capacity` Float64,
-    `max_weight` Float64,
-    `vendor_name` LowCardinality(String),
-    `main_cost` Float64,
-    `additional_cost` Float64,
-    `total_cost` Float64,
-    `total_distance` Float64,
-    `master_etd` DateTime,
-    `master_eta` DateTime,
-    `date_come_stock` DateTime,
-    `vehicle_end_time` DateTime,
-    `report_modified_date` DateTime,
-    `group_product_code` String,
-    `group_product_name` String,
-    `product_code` String,
-    `product_name` String,
-    `location_from_code` LowCardinality(String),
-    `location_from_name` LowCardinality(String),
-    `location_to_code` String,
-    `location_to_name` String,
-    `group_ids` String,
-    `order_ids` String,
-    `constraint_name` String,
-    `constraint_note` String,
-    `data_report` Bool,
-    `is_deleted` UInt8
-)
-AS SELECT
-    ID AS ops_optimize_id,
-    _peerdb_version AS version,
-    coalesce(SYSCustomerID, -1) AS sys_customer_id,
-    coalesce(OptimizerName, '') AS optimizer_name,
-    coalesce(CreatedDate, toDateTime64('1970-01-01 00:00:00', 6)) AS created_date,
-    CAST(coalesce(CreatedBy, ''), 'LowCardinality(String)') AS created_by,
-    coalesce(ModifiedDate, toDateTime64('1970-01-01 00:00:00', 6)) AS parent_modified_date,
-    CAST(coalesce(ModifiedBy, ''), 'LowCardinality(String)') AS parent_modified_by,
-    coalesce(DateFrom, toDateTime64('1970-01-01 00:00:00', 6)) AS date_from,
-    coalesce(DateTo, toDateTime64('1970-01-01 00:00:00', 6)) AS date_to,
-    coalesce(IsSave, false) AS is_save,
-    coalesce(IsContainer, false) AS is_container,
-    coalesce(IsBalanceCustomer, false) AS is_balance_customer,
-    coalesce(IsBalanceKMScore, false) AS is_balance_km_score,
-    coalesce(TypeID, -1) AS type_id,
-    coalesce(Note, '') AS note,
-    coalesce(Note1, '') AS note_1,
-    coalesce(Note2, '') AS note_2,
-    coalesce(JSONExtractString(v, 'TrackingID'), '') AS tracking_id,
-    coalesce(JSONExtractInt(v, 'ID'), -1) AS report_id,
-    toBool(coalesce(JSONExtractBool(v, 'IsTripEditManual'), false)) AS is_trip_edit_manual,
-    coalesce(JSONExtractString(v, 'OrderCode'), '') AS order_code,
-    coalesce(JSONExtractInt(v, 'TotalOrder'), 0) AS total_order,
-    coalesce(JSONExtractInt(v, 'TotalDelivery'), 0) AS total_delivery,
-    coalesce(JSONExtractFloat(v, 'TotalTon'), 0) AS total_ton,
-    coalesce(JSONExtractFloat(v, 'TotalCBM'), 0) AS total_cbm,
-    coalesce(JSONExtractFloat(v, 'TotalCODUnitPrice'), 0) AS total_cod_unit_price,
-    CAST(coalesce(JSONExtractString(v, 'GroupOfVehicleCode'), ''), 'LowCardinality(String)') AS group_of_vehicle_code,
-    CAST(coalesce(JSONExtractString(v, 'GroupOfVehicleName'), ''), 'LowCardinality(String)') AS group_of_vehicle_name,
-    CAST(coalesce(JSONExtractString(v, 'GroupOfVehicleSize'), ''), 'LowCardinality(String)') AS group_of_vehicle_size,
-    CAST(coalesce(JSONExtractString(v, 'VehicleNo'), ''), 'LowCardinality(String)') AS vehicle_no,
-    coalesce(JSONExtractFloat(v, 'MaxCapacity'), 0) AS max_capacity,
-    coalesce(JSONExtractFloat(v, 'MaxWeight'), 0) AS max_weight,
-    CAST(coalesce(JSONExtractString(v, 'VendorName'), ''), 'LowCardinality(String)') AS vendor_name,
-    coalesce(JSONExtractFloat(v, 'MainCost'), 0) AS main_cost,
-    coalesce(JSONExtractFloat(v, 'AdditionalCost'), 0) AS additional_cost,
-    coalesce(JSONExtractFloat(v, 'TotalCost'), 0) AS total_cost,
-    coalesce(JSONExtractFloat(v, 'TotalDistance'), 0) AS total_distance,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'MasterETD')), toDateTime('1970-01-01 00:00:00')) AS master_etd,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'MasterETA')), toDateTime('1970-01-01 00:00:00')) AS master_eta,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'DateComeStock')), toDateTime('1970-01-01 00:00:00')) AS date_come_stock,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'VehicleEndTime')), toDateTime('1970-01-01 00:00:00')) AS vehicle_end_time,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'ModifiedDate')), toDateTime('1970-01-01 00:00:00')) AS report_modified_date,
-    coalesce(JSONExtractString(v, 'GroupOfProductCode'), '') AS group_product_code,
-    coalesce(JSONExtractString(v, 'GroupOfProductName'), '') AS group_product_name,
-    coalesce(JSONExtractString(v, 'ProductCode'), '') AS product_code,
-    coalesce(JSONExtractString(v, 'ProductName'), '') AS product_name,
-    CAST(coalesce(JSONExtractString(v, 'LocationFromCode'), ''), 'LowCardinality(String)') AS location_from_code,
-    CAST(coalesce(JSONExtractString(v, 'LocationFromName'), ''), 'LowCardinality(String)') AS location_from_name,
-    coalesce(JSONExtractString(v, 'LocationToCode'), '') AS location_to_code,
-    coalesce(JSONExtractString(v, 'LocationToName'), '') AS location_to_name,
-    coalesce(JSONExtractRaw(v, 'GroupIds'), '[]') AS group_ids,
-    coalesce(JSONExtractRaw(v, 'OrderIds'), '[]') AS order_ids,
-    coalesce(JSONExtractString(v, 'ConstraintName'), '') AS constraint_name,
-    coalesce(JSONExtractString(v, 'ConstraintNote'), '') AS constraint_note,
-    if(empty(JSONExtractString(DataRun, 'DataReport')) OR (JSONExtractString(DataRun, 'DataReport') = '[]'), false, true) AS data_report,
-    coalesce(_peerdb_is_deleted, 0) AS is_deleted
-FROM analytics_workspace.dbo_OPS_Optimizer
+FROM tms_panasonic_ods.dbo_OPS_Optimizer
 LEFT ARRAY JOIN JSONExtractArrayRaw(coalesce(JSONExtractString(DataRun, 'DataReport'), '[]')) AS v
 ```
 

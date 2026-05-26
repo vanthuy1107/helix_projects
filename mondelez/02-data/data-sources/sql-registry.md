@@ -3,7 +3,7 @@
 > **Auto-generated** — Không chỉnh sửa tay. Chạy lại script để cập nhật.
 >
 > Source: [1o768AUAuHj9HFasdkk8B7UFpYX6G49qyKFoaywte48M](https://docs.google.com/spreadsheets/d/1o768AUAuHj9HFasdkk8B7UFpYX6G49qyKFoaywte48M) / sheet `Summary_Report`  
-> Last updated: **2026-05-21 11:10**  
+> Last updated: **2026-05-26 11:14**  
 > Total charts với SQL: **165**
 
 ---
@@ -150,14 +150,13 @@ WITH
             ) AS pallet_cnt
         FROM analytics_workspace.mv_wh_utilization AS wh
         WHERE 1 = 1
-                -- Warehouse
-                AND if(
-                    arraySort([{{whseid}}]) = (
-                        SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
-                    ),
-                    1 = 1,
-                    wh.whseid IN ({{whseid}})
-                )
+            AND if(
+                arraySort([{{whseid}}]) = (
+                    SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
+                ),
+                1 = 1,
+                wh.whseid IN ({{whseid}})
+            )
         GROUP BY
             wh.whseid,
             wh.loc
@@ -189,7 +188,7 @@ WITH
                 whseid = 'BKD1', 4844,
                 whseid = 'BKD2', 5221,
                 whseid = 'BKD3', 5014,
-                whseid = 'NKD', 3935,
+                whseid = 'NKD',  3935,
                 0
             ) AS total_position,
 
@@ -198,39 +197,43 @@ WITH
                     whseid = 'BKD1', 4844,
                     whseid = 'BKD2', 5221,
                     whseid = 'BKD3', 5014,
-                    whseid = 'NKD', 3935,
+                    whseid = 'NKD',  3935,
                     0
                 ) * 0.85,
                 0
             ) AS position_85,
 
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full') AS full_bins,
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial') AS partial_bins,
-            sumIf(max_stacklimit, level_type = 'Tầng cao' AND bin_status = 'Empty') AS empty_bins,
-            sumIf(pallet_cnt, level_type = 'Pickface') AS pickface,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Full')    AS total_full_bins,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Partial') AS total_partial_bins,
+            sumIf(max_stacklimit,level_type = 'Tầng cao' AND bin_status = 'Empty')   AS total_empty_bins,
+            sumIf(pallet_cnt,    level_type = 'Pickface')                             AS total_pickface,
 
             (
                 sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full')
                 + sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial')
                 + sumIf(pallet_cnt, level_type = 'Pickface')
-            ) AS utilized
+            ) AS total_utilized
 
         FROM loc_classified
         GROUP BY whseid
     )
 
 SELECT
-    whseid,
-    total_position,
-    position_85,
-    full_bins,
-    partial_bins,
-    empty_bins,
-    pickface,
-    utilized,
-    round(utilized / nullIf(position_85, 0), 4) AS utilization_pct
+    sum(total_full_bins)                                                    AS full_bins,
+    round(sum(total_full_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS full_bins_pct,
+
+    sum(total_partial_bins)                                                 AS partial_bins,
+    round(sum(total_partial_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS partial_bins_pct,
+
+    sum(total_empty_bins)                                                   AS empty_bins,
+    round(sum(total_empty_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS empty_bins_pct,
+
+    sum(total_pickface)                                                     AS pickface_pallets,
+    round(sum(total_pickface) / nullIf(sum(position_85), 0) * 100, 2)     AS pickface_pct,
+
+    sum(total_utilized)                                                     AS utilized,
+    round(sum(total_utilized) / nullIf(sum(position_85), 0) * 100, 2)     AS util_pct
 FROM wh_summary
-ORDER BY whseid;
 ```
 
 ### Full bins
@@ -353,14 +356,13 @@ WITH
             ) AS pallet_cnt
         FROM analytics_workspace.mv_wh_utilization AS wh
         WHERE 1 = 1
-                -- Warehouse
-                AND if(
-                    arraySort([{{whseid}}]) = (
-                        SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
-                    ),
-                    1 = 1,
-                    wh.whseid IN ({{whseid}})
-                )
+            AND if(
+                arraySort([{{whseid}}]) = (
+                    SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
+                ),
+                1 = 1,
+                wh.whseid IN ({{whseid}})
+            )
         GROUP BY
             wh.whseid,
             wh.loc
@@ -392,7 +394,7 @@ WITH
                 whseid = 'BKD1', 4844,
                 whseid = 'BKD2', 5221,
                 whseid = 'BKD3', 5014,
-                whseid = 'NKD', 3935,
+                whseid = 'NKD',  3935,
                 0
             ) AS total_position,
 
@@ -401,39 +403,43 @@ WITH
                     whseid = 'BKD1', 4844,
                     whseid = 'BKD2', 5221,
                     whseid = 'BKD3', 5014,
-                    whseid = 'NKD', 3935,
+                    whseid = 'NKD',  3935,
                     0
                 ) * 0.85,
                 0
             ) AS position_85,
 
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full') AS full_bins,
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial') AS partial_bins,
-            sumIf(max_stacklimit, level_type = 'Tầng cao' AND bin_status = 'Empty') AS empty_bins,
-            sumIf(pallet_cnt, level_type = 'Pickface') AS pickface,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Full')    AS total_full_bins,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Partial') AS total_partial_bins,
+            sumIf(max_stacklimit,level_type = 'Tầng cao' AND bin_status = 'Empty')   AS total_empty_bins,
+            sumIf(pallet_cnt,    level_type = 'Pickface')                             AS total_pickface,
 
             (
                 sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full')
                 + sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial')
                 + sumIf(pallet_cnt, level_type = 'Pickface')
-            ) AS utilized
+            ) AS total_utilized
 
         FROM loc_classified
         GROUP BY whseid
     )
 
 SELECT
-    whseid,
-    total_position,
-    position_85,
-    full_bins,
-    partial_bins,
-    empty_bins,
-    pickface,
-    utilized,
-    round(utilized / nullIf(position_85, 0), 4) AS utilization_pct
+    sum(total_full_bins)                                                    AS full_bins,
+    round(sum(total_full_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS full_bins_pct,
+
+    sum(total_partial_bins)                                                 AS partial_bins,
+    round(sum(total_partial_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS partial_bins_pct,
+
+    sum(total_empty_bins)                                                   AS empty_bins,
+    round(sum(total_empty_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS empty_bins_pct,
+
+    sum(total_pickface)                                                     AS pickface_pallets,
+    round(sum(total_pickface) / nullIf(sum(position_85), 0) * 100, 2)     AS pickface_pct,
+
+    sum(total_utilized)                                                     AS utilized,
+    round(sum(total_utilized) / nullIf(sum(position_85), 0) * 100, 2)     AS util_pct
 FROM wh_summary
-ORDER BY whseid;
 ```
 
 ### Partial bins
@@ -556,14 +562,13 @@ WITH
             ) AS pallet_cnt
         FROM analytics_workspace.mv_wh_utilization AS wh
         WHERE 1 = 1
-                -- Warehouse
-                AND if(
-                    arraySort([{{whseid}}]) = (
-                        SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
-                    ),
-                    1 = 1,
-                    wh.whseid IN ({{whseid}})
-                )
+            AND if(
+                arraySort([{{whseid}}]) = (
+                    SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
+                ),
+                1 = 1,
+                wh.whseid IN ({{whseid}})
+            )
         GROUP BY
             wh.whseid,
             wh.loc
@@ -595,7 +600,7 @@ WITH
                 whseid = 'BKD1', 4844,
                 whseid = 'BKD2', 5221,
                 whseid = 'BKD3', 5014,
-                whseid = 'NKD', 3935,
+                whseid = 'NKD',  3935,
                 0
             ) AS total_position,
 
@@ -604,39 +609,43 @@ WITH
                     whseid = 'BKD1', 4844,
                     whseid = 'BKD2', 5221,
                     whseid = 'BKD3', 5014,
-                    whseid = 'NKD', 3935,
+                    whseid = 'NKD',  3935,
                     0
                 ) * 0.85,
                 0
             ) AS position_85,
 
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full') AS full_bins,
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial') AS partial_bins,
-            sumIf(max_stacklimit, level_type = 'Tầng cao' AND bin_status = 'Empty') AS empty_bins,
-            sumIf(pallet_cnt, level_type = 'Pickface') AS pickface,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Full')    AS total_full_bins,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Partial') AS total_partial_bins,
+            sumIf(max_stacklimit,level_type = 'Tầng cao' AND bin_status = 'Empty')   AS total_empty_bins,
+            sumIf(pallet_cnt,    level_type = 'Pickface')                             AS total_pickface,
 
             (
                 sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full')
                 + sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial')
                 + sumIf(pallet_cnt, level_type = 'Pickface')
-            ) AS utilized
+            ) AS total_utilized
 
         FROM loc_classified
         GROUP BY whseid
     )
 
 SELECT
-    whseid,
-    total_position,
-    position_85,
-    full_bins,
-    partial_bins,
-    empty_bins,
-    pickface,
-    utilized,
-    round(utilized / nullIf(position_85, 0), 4) AS utilization_pct
+    sum(total_full_bins)                                                    AS full_bins,
+    round(sum(total_full_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS full_bins_pct,
+
+    sum(total_partial_bins)                                                 AS partial_bins,
+    round(sum(total_partial_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS partial_bins_pct,
+
+    sum(total_empty_bins)                                                   AS empty_bins,
+    round(sum(total_empty_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS empty_bins_pct,
+
+    sum(total_pickface)                                                     AS pickface_pallets,
+    round(sum(total_pickface) / nullIf(sum(position_85), 0) * 100, 2)     AS pickface_pct,
+
+    sum(total_utilized)                                                     AS utilized,
+    round(sum(total_utilized) / nullIf(sum(position_85), 0) * 100, 2)     AS util_pct
 FROM wh_summary
-ORDER BY whseid;
 ```
 
 ### Empty bins
@@ -759,14 +768,13 @@ WITH
             ) AS pallet_cnt
         FROM analytics_workspace.mv_wh_utilization AS wh
         WHERE 1 = 1
-                -- Warehouse
-                AND if(
-                    arraySort([{{whseid}}]) = (
-                        SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
-                    ),
-                    1 = 1,
-                    wh.whseid IN ({{whseid}})
-                )
+            AND if(
+                arraySort([{{whseid}}]) = (
+                    SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
+                ),
+                1 = 1,
+                wh.whseid IN ({{whseid}})
+            )
         GROUP BY
             wh.whseid,
             wh.loc
@@ -798,7 +806,7 @@ WITH
                 whseid = 'BKD1', 4844,
                 whseid = 'BKD2', 5221,
                 whseid = 'BKD3', 5014,
-                whseid = 'NKD', 3935,
+                whseid = 'NKD',  3935,
                 0
             ) AS total_position,
 
@@ -807,39 +815,43 @@ WITH
                     whseid = 'BKD1', 4844,
                     whseid = 'BKD2', 5221,
                     whseid = 'BKD3', 5014,
-                    whseid = 'NKD', 3935,
+                    whseid = 'NKD',  3935,
                     0
                 ) * 0.85,
                 0
             ) AS position_85,
 
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full') AS full_bins,
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial') AS partial_bins,
-            sumIf(max_stacklimit, level_type = 'Tầng cao' AND bin_status = 'Empty') AS empty_bins,
-            sumIf(pallet_cnt, level_type = 'Pickface') AS pickface,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Full')    AS total_full_bins,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Partial') AS total_partial_bins,
+            sumIf(max_stacklimit,level_type = 'Tầng cao' AND bin_status = 'Empty')   AS total_empty_bins,
+            sumIf(pallet_cnt,    level_type = 'Pickface')                             AS total_pickface,
 
             (
                 sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full')
                 + sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial')
                 + sumIf(pallet_cnt, level_type = 'Pickface')
-            ) AS utilized
+            ) AS total_utilized
 
         FROM loc_classified
         GROUP BY whseid
     )
 
 SELECT
-    whseid,
-    total_position,
-    position_85,
-    full_bins,
-    partial_bins,
-    empty_bins,
-    pickface,
-    utilized,
-    round(utilized / nullIf(position_85, 0), 4) AS utilization_pct
+    sum(total_full_bins)                                                    AS full_bins,
+    round(sum(total_full_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS full_bins_pct,
+
+    sum(total_partial_bins)                                                 AS partial_bins,
+    round(sum(total_partial_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS partial_bins_pct,
+
+    sum(total_empty_bins)                                                   AS empty_bins,
+    round(sum(total_empty_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS empty_bins_pct,
+
+    sum(total_pickface)                                                     AS pickface_pallets,
+    round(sum(total_pickface) / nullIf(sum(position_85), 0) * 100, 2)     AS pickface_pct,
+
+    sum(total_utilized)                                                     AS utilized,
+    round(sum(total_utilized) / nullIf(sum(position_85), 0) * 100, 2)     AS util_pct
 FROM wh_summary
-ORDER BY whseid;
 ```
 
 ### Pickface
@@ -962,14 +974,13 @@ WITH
             ) AS pallet_cnt
         FROM analytics_workspace.mv_wh_utilization AS wh
         WHERE 1 = 1
-                -- Warehouse
-                AND if(
-                    arraySort([{{whseid}}]) = (
-                        SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
-                    ),
-                    1 = 1,
-                    wh.whseid IN ({{whseid}})
-                )
+            AND if(
+                arraySort([{{whseid}}]) = (
+                    SELECT arraySort(groupArray(DISTINCT whseid)) FROM analytics_workspace.mv_filter_warehouse
+                ),
+                1 = 1,
+                wh.whseid IN ({{whseid}})
+            )
         GROUP BY
             wh.whseid,
             wh.loc
@@ -1001,7 +1012,7 @@ WITH
                 whseid = 'BKD1', 4844,
                 whseid = 'BKD2', 5221,
                 whseid = 'BKD3', 5014,
-                whseid = 'NKD', 3935,
+                whseid = 'NKD',  3935,
                 0
             ) AS total_position,
 
@@ -1010,39 +1021,43 @@ WITH
                     whseid = 'BKD1', 4844,
                     whseid = 'BKD2', 5221,
                     whseid = 'BKD3', 5014,
-                    whseid = 'NKD', 3935,
+                    whseid = 'NKD',  3935,
                     0
                 ) * 0.85,
                 0
             ) AS position_85,
 
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full') AS full_bins,
-            sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial') AS partial_bins,
-            sumIf(max_stacklimit, level_type = 'Tầng cao' AND bin_status = 'Empty') AS empty_bins,
-            sumIf(pallet_cnt, level_type = 'Pickface') AS pickface,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Full')    AS total_full_bins,
+            sumIf(pallet_cnt,    level_type = 'Tầng cao' AND bin_status = 'Partial') AS total_partial_bins,
+            sumIf(max_stacklimit,level_type = 'Tầng cao' AND bin_status = 'Empty')   AS total_empty_bins,
+            sumIf(pallet_cnt,    level_type = 'Pickface')                             AS total_pickface,
 
             (
                 sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Full')
                 + sumIf(pallet_cnt, level_type = 'Tầng cao' AND bin_status = 'Partial')
                 + sumIf(pallet_cnt, level_type = 'Pickface')
-            ) AS utilized
+            ) AS total_utilized
 
         FROM loc_classified
         GROUP BY whseid
     )
 
 SELECT
-    whseid,
-    total_position,
-    position_85,
-    full_bins,
-    partial_bins,
-    empty_bins,
-    pickface,
-    utilized,
-    round(utilized / nullIf(position_85, 0), 4) AS utilization_pct
+    sum(total_full_bins)                                                    AS full_bins,
+    round(sum(total_full_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS full_bins_pct,
+
+    sum(total_partial_bins)                                                 AS partial_bins,
+    round(sum(total_partial_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS partial_bins_pct,
+
+    sum(total_empty_bins)                                                   AS empty_bins,
+    round(sum(total_empty_bins) / nullIf(sum(position_85), 0) * 100, 2)     AS empty_bins_pct,
+
+    sum(total_pickface)                                                     AS pickface_pallets,
+    round(sum(total_pickface) / nullIf(sum(position_85), 0) * 100, 2)     AS pickface_pct,
+
+    sum(total_utilized)                                                     AS utilized,
+    round(sum(total_utilized) / nullIf(sum(position_85), 0) * 100, 2)     AS util_pct
 FROM wh_summary
-ORDER BY whseid;
 ```
 
 ### Utilization by warehouse and level type `Đã sửa`
@@ -3783,16 +3798,40 @@ FROM analytics_workspace.mv_vfr_gui_thau t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -3858,16 +3897,40 @@ FROM analytics_workspace.mv_vfr_gui_thau t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -3934,16 +3997,40 @@ FROM analytics_workspace.mv_vfr_gui_thau t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -4010,16 +4097,40 @@ FROM analytics_workspace.mv_vfr_gui_thau t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -4087,16 +4198,40 @@ FROM analytics_workspace.mv_vfr_gui_thau t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -4317,16 +4452,40 @@ WITH base AS (
     WHERE 1 = 1
     
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -4589,16 +4748,40 @@ WITH base AS (
     WHERE 1 = 1
     
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -4804,16 +4987,40 @@ WITH base AS (
     WHERE 1 = 1
     
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5019,16 +5226,40 @@ WITH base AS (
     WHERE 1 = 1
    
    -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5187,16 +5418,40 @@ FROM analytics_workspace.mv_vfr_gui_thau t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_tender}}, 'ALL') = 'ALL' OR t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_gui_thau IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5262,16 +5517,40 @@ FROM analytics_workspace.mv_vfr_van_hanh t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5337,16 +5616,40 @@ FROM analytics_workspace.mv_vfr_van_hanh t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5413,16 +5716,40 @@ FROM analytics_workspace.mv_vfr_van_hanh t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5487,16 +5814,40 @@ FROM analytics_workspace.mv_vfr_van_hanh t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5562,16 +5913,40 @@ FROM analytics_workspace.mv_vfr_van_hanh t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -5792,16 +6167,40 @@ WITH base AS (
     WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -6064,16 +6463,40 @@ WITH base AS (
     WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -6279,16 +6702,40 @@ WITH base AS (
     WHERE 1 = 1
     
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -6493,16 +6940,40 @@ WITH base AS (
     WHERE 1 = 1
    
    -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (
@@ -6660,16 +7131,40 @@ FROM analytics_workspace.mv_vfr_van_hanh t
 WHERE 1 = 1
 
 -- Warehouse
-AND (coalesce({{whseid}}, 'ALL') = 'ALL' OR t.ma_diem_nhan IN ({{whseid}}))
+AND if(
+    arraySort([{{whseid}}]) = (
+        SELECT arraySort(groupUniqArray(ma_su_dung)) FROM analytics_workspace.mv_masterdata_kho_stm
+    ),
+    1 = 1,
+    t.ma_diem_nhan IN ({{whseid}})
+)
 
 -- Area
-AND (coalesce({{area}}, 'ALL') = 'ALL' OR t.khu_vuc_doi_xe IN ({{area}}))
+AND if(
+    arraySort([{{area}}]) = (
+        SELECT arraySort(groupArray(DISTINCT group_area_code)) FROM analytics_workspace.mv_filter_region
+    ),
+    1 = 1,
+    t.khu_vuc_doi_xe IN ({{area}})
+)
 
 -- Transporter
-AND (coalesce({{transporter}}, 'ALL') = 'ALL' OR t.nha_van_tai IN ({{transporter}}))
+AND if(
+    arraySort([{{transporter}}]) = (
+        SELECT arraySort(groupArray(DISTINCT vendor_code)) FROM analytics_workspace.mv_filter_vendor
+    ),
+    1 = 1,
+    t.nha_van_tai IN ({{transporter}})
+)
 
 -- Vehicle_type_tender
-AND (coalesce({{vehicle_type_ops}}, 'ALL') = 'ALL' OR t.ma_loai_xe_van_hanh IN ({{vehicle_type_ops}}))
+AND if(
+    arraySort([{{vehicle_type_tender}}]) = (
+        SELECT arraySort(groupArray(DISTINCT code)) FROM analytics_workspace.mv_filter_vehicle_type
+    ),
+    1 = 1,
+    t.ma_loai_xe_van_hanh IN ({{vehicle_type_tender}})
+)
 
 -- Date filter (fix robust)
 AND (

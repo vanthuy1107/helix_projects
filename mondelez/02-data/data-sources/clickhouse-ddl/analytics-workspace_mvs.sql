@@ -71,7 +71,7 @@ REFRESH EVERY 5 MINUTE
     `eta_chuyen` Nullable(DateTime64(3, 'UTC')) COMMENT 'ETA chuyến (dim_ops_trip.eta)',
     `ata_chuyen` Nullable(DateTime64(3, 'UTC')) COMMENT 'ATA chuyến (dim_ops_trip.ata)',
     `atd_chuyen` Nullable(DateTime64(3, 'UTC')) COMMENT 'ATD chuyến (dim_ops_trip.atd)',
-    `request_date` Nullable(DateTime64(3, 'UTC')) COMMENT 'Ngày yêu cầu đơn hàng',
+    `request_date` Nullable(DateTimsquad1@gosmartlog.come64(3, 'UTC')) COMMENT 'Ngày yêu cầu đơn hàng',
     `approved_date` Nullable(DateTime64(3, 'UTC')) COMMENT 'Ngày duyệt chuyến',
     `so_km` Nullable(Int64) COMMENT 'Số km từ kho đến điểm giao đầu tiên',
     `van_toc` Nullable(Int64) COMMENT 'Vận tốc'
