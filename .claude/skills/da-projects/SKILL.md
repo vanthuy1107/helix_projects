@@ -174,9 +174,11 @@ git -C "<projects>" log --oneline --graph -20
 git -C "<projects>" show <sha> --stat
 ```
 
-### Task G — Sync da-* skills giữa workspace ↔ projects
+### Task G — Sync da-* skills + commands giữa workspace ↔ projects
 
-Skill `da-*` được mirror 2 nơi: workspace (`<repo>/.claude/skills/da-*/` — Claude Code load chỗ này) và projects (`projects/.claude/skills/da-*/` — commit để share với team). Script đồng bộ ở `projects/scripts/sync-da-skills.ps1` với 3 mode:
+Cả `da-*/` skills và `da-*.md` commands đều được mirror 2 nơi: workspace (`<repo>/.claude/skills/...` và `<repo>/.claude/commands/...` — Claude Code load chỗ này) và projects (`projects/.claude/skills/...` và `projects/.claude/commands/...` — commit để share với team).
+
+**Cách nhanh nhất khi user nói "sync skill"**: chạy slash command `/da-sync` — nó tự gọi script ở chế độ check, show drift, hỏi hướng. Nếu user explicit yêu cầu chạy script trực tiếp (vd để debug), dùng `projects/scripts/sync-da-skills.ps1` với 3 mode:
 
 | Mode | Hành động | Khi nào dùng |
 |---|---|---|
