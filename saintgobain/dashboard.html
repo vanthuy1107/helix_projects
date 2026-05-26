@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Digital View Logistics — Warehouse Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:           #f1f4f9;
+    --bg-2:         #e7ecf3;
+    --surface:      #ffffff;
+    --surface-soft: #f7f9fc;
+    --border:       #e4e8ef;
+    --border-soft:  #eef1f6;
+
+    --ink:          #0f1729;
+    --ink-2:        #2b3447;
+    --muted:        #6b7689;
+    --muted-2:      #94a0b4;
+
+    --brand:        #0a4ea2;   /* Saint-Gobain blue */
+    --brand-2:      #1668c4;
+    --brand-3:      #e8f0fb;
+
+    --orange:       #f97316;
+    --orange-soft:  #fff1e6;
+    --red:          #dc2626;
+    --red-soft:     #fde8e8;
+    --green:        #10b981;
+    --green-soft:   #e5f7f0;
+    --amber:        #f59e0b;
+    --amber-soft:   #fff4e0;
+    --violet:       #7c3aed;
+    --violet-soft:  #f1ebff;
+
+    --dark:         #0f1b2d;
+    --dark-2:       #16243a;
+    --dark-3:       #1f3052;
+
+    --shadow-sm: 0 1px 2px rgba(15,23,41,.04), 0 1px 1px rgba(15,23,41,.03);
+    --shadow:    0 2px 4px rgba(15,23,41,.05), 0 4px 12px rgba(15,23,41,.04);
+    --shadow-lg: 0 4px 8px rgba(15,23,41,.06), 0 12px 32px rgba(15,23,41,.08);
+
+    --radius:     12px;
+    --radius-sm:  8px;
+    --radius-lg:  16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(at 0% 0%, rgba(10,78,162,.04) 0%, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(249,115,22,.03) 0%, transparent 50%);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app { max-width: 1480px; margin: 0 auto; }
+
+  /* ================ HEADER ================ */
+  .header {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-soft);
+    margin-bottom: 18px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 16px; }
+
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    padding-right: 18px;
+    border-right: 1px solid var(--border);
+  }
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    color: white;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(10,78,162,.25);
+  }
+  .logo-mark svg { width: 22px; height: 22px; }
+  .logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--brand);
+    letter-spacing: .5px;
+    line-height: 1.1;
+  }
+  .logo-text small {
+    display: block;
+    font-size: 8px;
+    color: var(--orange);
+    margin-top: 2px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+  }
+
+  .title-block h1 {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .title-block h1 .grid-ico {
+    color: var(--brand);
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    width: 16px; height: 16px;
+  }
+  .title-block h1 .grid-ico span {
+    display: block;
+    background: var(--brand);
+    border-radius: 2px;
+  }
+  .title-block p {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  .pill {
+    background: var(--brand-3);
+    color: var(--brand);
+    border: 1px solid rgba(10,78,162,.15);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .pill:hover { background: #dde9f8; }
+  .pill svg { width: 14px; height: 14px; }
+
+  .clock {
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 4px 16px;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .clock-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .clock-date {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .login-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .login-btn:hover { background: var(--surface-soft); }
+  .login-btn svg { width: 14px; height: 14px; color: var(--muted); }
+
+  /* ================ KPI STRIP ================ */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .kpi {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    box-shadow: var(--shadow-sm);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+  .kpi::before {
+    content: ""; position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .kpi.k1::before { background: linear-gradient(180deg, var(--orange), #fbbf24); }
+  .kpi.k2::before { background: linear-gradient(180deg, var(--violet), #a78bfa); }
+  .kpi.k3::before { background: linear-gradient(180deg, var(--green), #34d399); }
+
+  .kpi-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .kpi-label {
+    font-size: 10.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    font-weight: 700;
+  }
+  .kpi-ico {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+  }
+  .kpi-ico svg { width: 18px; height: 18px; }
+  .kpi.k1 .kpi-ico { background: var(--orange-soft); color: var(--orange); }
+  .kpi.k2 .kpi-ico { background: var(--violet-soft); color: var(--violet); }
+  .kpi.k3 .kpi-ico { background: var(--green-soft); color: var(--green); }
+
+  .kpi-value {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -1.5px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .kpi-foot {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+    font-weight: 500;
+  }
+  .kpi-foot.up { color: var(--green); font-weight: 600; }
+  .kpi-foot.up::before {
+    content: "↑";
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .kpi-foot.check::before { content: "✓"; color: var(--green); font-weight: 700; }
+
+  /* ================ SECTION HEADERS ================ */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card-head {
+    padding: 12px 18px;
+    color: white;
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700;
+    font-size: 12.5px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+  .card-head svg { width: 16px; height: 16px; }
+  .card-head.blue   { background: linear-gradient(90deg, #1668c4, #0a4ea2); }
+  .card-head.orange { background: linear-gradient(90deg, #f97316, #ea580c); }
+  .card-head.slate  { background: linear-gradient(90deg, #475569, #334155); }
+  .card-head.green  { background: linear-gradient(90deg, #10b981, #059669); }
+
+  /* ================ TABLE STYLE ================ */
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 11px 18px;
+    text-transform: none;
+    letter-spacing: .2px;
+    background: var(--surface-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  tbody td {
+    padding: 13px 18px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-soft);
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .12s; }
+  tbody tr:hover { background: var(--surface-soft); }
+
+  .mono { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12.5px; }
+  .mono-strong { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink); font-size: 13px; }
+
+  /* badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+  .badge::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .9;
+  }
+  .badge.nvl    { background: var(--brand-3); color: var(--brand); }
+  .badge.tbo    { background: #e0f2fe; color: #0369a1; }
+  .badge.d2d    { background: var(--violet-soft); color: var(--violet); }
+  .badge.cont   { background: #fce7f3; color: #be185d; }
+  .badge.daden  { background: var(--green-soft); color: #047857; }
+  .badge.chuaden{ background: transparent; color: var(--red); padding-left: 0; }
+  .badge.chuaden::before { display: none; }
+  .badge.dapre  { background: var(--green-soft); color: #047857; }
+  .badge.dapre svg { width: 12px; height: 12px; }
+  .badge.dapre::before { display: none; }
+  .badge.chuapre{ background: transparent; color: var(--red); padding-left: 0; }
+  .badge.chuapre::before { display: none; }
+  .badge.dasoan { background: var(--green-soft); color: #047857; }
+  .badge.dangsoan { background: var(--amber-soft); color: #b45309; }
+
+  /* card foot summary */
+  .card-foot {
+    padding: 13px 18px;
+    display: flex; gap: 28px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    border-top: 1px solid var(--border-soft);
+    font-weight: 500;
+  }
+  .card-foot.blue { background: linear-gradient(90deg, #eff5fd, #f7fafe); }
+  .card-foot.orange { background: linear-gradient(90deg, #fff5ec, #fffaf4); }
+  .card-foot.green { background: linear-gradient(90deg, #e8faf2, #f1fdf7); }
+  .card-foot.slate { background: var(--surface-soft); }
+  .card-foot strong { color: var(--ink); font-weight: 700; }
+  .card-foot .green-num { color: var(--green); font-weight: 700; }
+  .card-foot .red-num   { color: var(--red);   font-weight: 700; }
+  .card-foot .amber-num { color: #b45309; font-weight: 700; }
+
+  /* ================ TWO COLUMN ROW ================ */
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .table-body { min-height: 168px; }
+
+  /* ================ DOCK OPERATION (dark) ================ */
+  .dock-card {
+    background: linear-gradient(135deg, #0f1b2d 0%, #16243a 100%);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #1f3052;
+    box-shadow: var(--shadow);
+  }
+  .dock-card::before {
+    content: ""; position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(249,115,22,.06) 0%, transparent 30%),
+      radial-gradient(circle at 80% 80%, rgba(22,104,196,.08) 0%, transparent 35%);
+    pointer-events: none;
+  }
+  .dock-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #f7fafe;
+    position: relative;
+  }
+  .dock-head svg { width: 18px; height: 18px; color: #5a8cc9; }
+  .dock-head::after {
+    content: ""; flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,.08), transparent);
+    margin-left: 6px;
+  }
+
+  .dock-lines {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    position: relative;
+  }
+  .dock-line {
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 10px;
+    padding: 13px 14px;
+    min-height: 124px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    transition: transform .15s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .dock-line:hover { transform: translateY(-2px); }
+
+  .dock-line-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .dock-line-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    letter-spacing: .2px;
+  }
+  .dock-tag {
+    font-size: 9px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+  .dock-tag.empty { background: rgba(148,160,180,.18); color: #94a0b4; }
+  .dock-tag.out   { background: var(--orange); color: white; }
+  .dock-tag.in    { background: #2563eb; color: white; }
+
+  .dock-truck { color: rgba(255,255,255,.18); }
+  .dock-truck svg { width: 38px; height: 38px; }
+
+  .dock-info { font-size: 11.5px; }
+  .dock-info .plate {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: white;
+    font-size: 13px;
+    margin-bottom: 1px;
+    letter-spacing: .3px;
+  }
+  .dock-info .ord {
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,.55);
+    font-size: 11px;
+  }
+  .dock-info .time {
+    color: rgba(255,255,255,.7);
+    font-size: 11px;
+    margin-top: 4px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .dock-info .time svg { width: 11px; height: 11px; }
+
+  .dock-line.active-out {
+    background: linear-gradient(160deg, #4a1d0a, #2a1208);
+    border-color: var(--orange);
+    box-shadow: 0 0 0 1px rgba(249,115,22,.3), 0 4px 20px rgba(249,115,22,.15);
+  }
+  .dock-line.active-in {
+    background: linear-gradient(160deg, #0f2447, #08152a);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37,99,235,.3), 0 4px 20px rgba(37,99,235,.15);
+  }
+
+  /* responsive */
+  @media (max-width: 1100px) {
+    .row-2 { grid-template-columns: 1fr; }
+    .dock-lines { grid-template-columns: repeat(3, 1fr); }
+    .kpi-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9.5L12 4l9 5.5"/>
+            <path d="M5 10v9h14v-9"/>
+            <path d="M9 19v-5h6v5"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          SAINT-GOBAIN
+          <small>● ● ● ● ●</small>
+        </div>
+      </div>
+      <div class="title-block">
+        <h1>
+          <span class="grid-ico"><span></span><span></span><span></span><span></span></span>
+          DIGITAL VIEW LOGISTICS
+        </h1>
+        <p>Warehouse Management System</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7h18M5 7v12a2 2 0 002 2h10a2 2 0 002-2V7M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
+        </svg>
+        Warehouse
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="clock">
+        <div class="clock-time" id="clock">17:42:54</div>
+        <div class="clock-date">Th 5, 18 thg 12, 2025</div>
+      </div>
+      <button class="login-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
+        </svg>
+        Login
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi k1">
+      <div class="kpi-head">
+        <div class="kpi-label">Pre-picking (New)</div>
+        <div class="kpi-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <path d="M3 10h18M8 4v4M16 4v4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">42</div>
+      <div class="kpi-foot up">+12 orders vs 1h ago</div>
+    </div>
+
+    <div class="kpi k2">
+      <div class="kpi-head">
+        <div class="kpi-label">In Progress</div>
+        <div class="kpi-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="7" x2="20" y2="7"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="17" x2="14" y2="17"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">18</div>
+      <div class="kpi-foot">Avg. pick time: 24m</div>
+    </div>
+
+    <div class="kpi k3">
+      <div class="kpi-head">
+        <div class="kpi-label">Completed (Ready)</div>
+        <div class="kpi-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">156</div>
+      <div class="kpi-foot check">98% On-time</div>
+    </div>
+  </div>
+
+  <!-- ROW: XE NHẬN / XE XUẤT -->
+  <div class="row-2">
+    <div class="card">
+      <div class="card-head blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+        Thông tin xe chuẩn bị nhận
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã đơn</th><th>BSX</th><th>Time DK</th><th>Loại nhận</th><th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr>
+            <td class="mono-strong">IN-001</td>
+            <td class="mono">29H-123.45</td>
+            <td class="mono">14:30</td>
+            <td><span class="badge nvl">NVL</span></td>
+            <td><span class="badge daden">Đã đến</span></td>
+          </tr>
+          <tr>
+            <td class="mono-strong">IN-002</td>
+            <td class="mono">51C-987.65</td>
+            <td class="mono">15:00</td>
+            <td><span class="badge tbo">TBo</span></td>
+            <td><span class="badge chuaden">Chưa đến</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card-foot blue">
+        <span>Total: <strong>2</strong></span>
+        <span style="margin-left:auto">Đến: <span class="green-num">1</span></span>
+        <span>Chưa đến: <span class="red-num">1</span></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head orange">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+        Thông tin xe chuẩn bị xuất
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã đơn</th><th>BSX</th><th>Time DK</th><th>Loại xuất</th><th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr>
+            <td class="mono-strong">OUT-003</td>
+            <td class="mono">60A-555.88</td>
+            <td class="mono">15:15</td>
+            <td><span class="badge d2d">D2D</span></td>
+            <td><span class="badge chuaden">Chưa đến</span></td>
+          </tr>
+          <tr>
+            <td class="mono-strong">OUT-004</td>
+            <td class="mono">30F-999.99</td>
+            <td class="mono">15:30</td>
+            <td><span class="badge cont">Cont</span></td>
+            <td><span class="badge daden">Đã đến</span></td>
+          </tr>
+          <tr>
+            <td class="mono-strong">OUT-005</td>
+            <td class="mono">15C-222.33</td>
+            <td class="mono">16:00</td>
+            <td><span class="badge cont">Cont</span></td>
+            <td><span class="badge chuaden">Chưa đến</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card-foot orange">
+        <span>Total: <strong>3</strong></span>
+        <span style="margin-left:auto">Đến: <span class="green-num">1</span></span>
+        <span>Chưa đến: <span class="red-num">2</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCK OPERATION -->
+  <section class="dock-card">
+    <div class="dock-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 3h5v5"/><path d="M21 3l-7 7"/>
+        <path d="M8 21H3v-5"/><path d="M3 21l7-7"/>
+      </svg>
+      Dock Operation
+    </div>
+    <div class="dock-lines">
+
+      <div class="dock-line">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 3</div>
+          <div class="dock-tag empty">Trống</div>
+        </div>
+        <div class="dock-truck">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dock-line active-out">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 4</div>
+          <div class="dock-tag out">Xuất</div>
+        </div>
+        <div class="dock-info">
+          <div class="plate">14A-111.11</div>
+          <div class="ord">OUT-000</div>
+          <div class="time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>
+            </svg>
+            13:45
+          </div>
+        </div>
+      </div>
+
+      <div class="dock-line">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 5</div>
+          <div class="dock-tag empty">Trống</div>
+        </div>
+        <div class="dock-truck">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dock-line active-in">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 6</div>
+          <div class="dock-tag in">Nhận</div>
+        </div>
+        <div class="dock-info">
+          <div class="plate">29B-000.01</div>
+          <div class="ord">IN-000</div>
+          <div class="time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>
+            </svg>
+            14:00
+          </div>
+        </div>
+      </div>
+
+      <div class="dock-line">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 7</div>
+          <div class="dock-tag empty">Trống</div>
+        </div>
+        <div class="dock-truck">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dock-line">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 17</div>
+          <div class="dock-tag empty">Trống</div>
+        </div>
+        <div class="dock-truck">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dock-line">
+        <div class="dock-line-head">
+          <div class="dock-line-name">Line 21</div>
+          <div class="dock-tag empty">Trống</div>
+        </div>
+        <div class="dock-truck">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM7 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ROW: ĐƠN THÊM MỚI / ĐƠN ĐANG SOẠN -->
+  <div class="row-2">
+    <div class="card">
+      <div class="card-head slate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <path d="M12 9v6M9 12h6"/>
+        </svg>
+        Đơn thêm mới
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã đơn</th><th>Trạng thái Pre</th><th>Time xuất</th><th>Loại xuất</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr>
+            <td class="mono-strong">OUT-003</td>
+            <td>
+              <span class="badge dapre">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/>
+                </svg>
+                Đã Pre
+              </span>
+            </td>
+            <td class="mono">16:00</td>
+            <td><span class="badge d2d">D2D</span></td>
+          </tr>
+          <tr>
+            <td class="mono-strong">OUT-004</td>
+            <td><span class="badge chuapre">Chưa Pre</span></td>
+            <td class="mono">17:00</td>
+            <td><span class="badge cont">Cont</span></td>
+          </tr>
+          <tr>
+            <td class="mono-strong">OUT-005</td>
+            <td><span class="badge chuapre">Chưa Pre</span></td>
+            <td class="mono">17:30</td>
+            <td><span class="badge cont">Cont</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card-foot slate">
+        <span>Total: <strong>3</strong></span>
+        <span style="margin-left:auto">Chưa Pre: <span class="red-num">2</span></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/>
+        </svg>
+        Đơn đang/đã soạn
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã đơn</th><th>Trạng thái</th><th>Time xuất</th><th>Loại xuất</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr>
+            <td class="mono-strong">OUT-000</td>
+            <td><span class="badge dasoan">Đã soạn</span></td>
+            <td class="mono">14:00</td>
+            <td><span class="badge cont">Cont</span></td>
+          </tr>
+          <tr>
+            <td class="mono-strong">OUT-006</td>
+            <td><span class="badge dangsoan">Đang soạn</span></td>
+            <td class="mono">18:00</td>
+            <td><span class="badge tbo">TBo</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card-foot green">
+        <span>Total: <strong>2</strong></span>
+        <span style="margin-left:auto">Đang soạn: <span class="amber-num">1</span></span>
+        <span>Đã soạn: <span class="green-num">1</span></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Đồng hồ realtime
+  function updateClock() {
+    const el = document.getElementById('clock');
+    if (!el) return;
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    el.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+</body>
+</html>
