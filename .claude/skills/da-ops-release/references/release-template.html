@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<!--
+  Smartlog Control Tower Release PDF Template — for /da-ops-release skill
+  Source palette: embedded inline below — single source of truth for this template.
+  Render: Edge headless --print-to-pdf (Windows) or Chrome --headless (cross-platform)
+
+  Placeholder convention: {{TITLE}}, {{TENANT_NAME}}, {{PERIOD}}, {{AUDIENCE_LABEL}}, ...
+  Substitute when generating per-report HTML. Sections are commented "REPLACE" — replace
+  inner content with report-specific narrative; keep wrapper divs/classes intact for branding.
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>{{TITLE}}</title>
+<style>
+/* ─────────────────────────────────────────────────────────────────────
+   Smartlog Control Tower Lightmode Palette
+   Do not introduce gradients, drop-shadows, or font-weight ≥ 700.
+   ──────────────────────────────────────────────────────────────────── */
+:root {
+  --sl-navy-dark:      #14283F;
+  --sl-navy:           #1E3A5F;
+  --sl-navy-light:     #2C5282;
+  --sl-blue:           #2563EB;
+  --sl-blue-pale:      #C5DAEC;
+  --sl-pale:           #EFF4FB;
+  --sl-bg:             #F7FAFD;
+  --sl-white:          #FFFFFF;
+  --sl-text-primary:   #1F2937;
+  --sl-text-secondary: #5B6573;
+  --sl-border:         #D6E0EE;
+  --sl-border-strong:  #B6C5DC;
+  --sl-success:        #16A34A;
+  --sl-success-pale:   #E6F4EC;
+  --sl-danger:         #B0322F;
+  --sl-warning:        #C2750E;
+  --sl-radius-sm:      4px;
+  --sl-radius-md:      8px;
+  --sl-radius-lg:      12px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Page setup — A4 portrait, no browser headers/footers in PDF
+   ──────────────────────────────────────────────────────────────────── */
+@page {
+  size: A4 portrait;
+  margin: 18mm 16mm 20mm 16mm;
+}
+@page :first {
+  margin: 0;  /* cover page goes edge-to-edge */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: var(--sl-text-primary);
+  background: var(--sl-white);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 500;
+  color: var(--sl-navy-dark);
+  margin-top: 0;
+}
+
+p { margin: 0 0 10pt 0; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   COVER PAGE — navy band edge-to-edge
+   ──────────────────────────────────────────────────────────────────── */
+.cover {
+  height: 297mm;        /* A4 height */
+  width: 210mm;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  page-break-after: always;
+  background: var(--sl-white);
+}
+.cover-band {
+  background: var(--sl-navy-dark);
+  color: var(--sl-pale);
+  padding: 28mm 18mm 16mm 18mm;
+  flex: 0 0 auto;
+}
+.cover-brand {
+  font-size: 11pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #B6D4FF;
+  margin-bottom: 6mm;
+}
+.cover-tenant {
+  font-size: 12pt;
+  color: #D6E8FF;
+  margin-bottom: 8mm;
+  letter-spacing: 0.04em;
+}
+.cover-title {
+  font-size: 26pt;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--sl-white);
+  margin-bottom: 4mm;
+}
+.cover-subtitle {
+  font-size: 13pt;
+  color: #D6E8FF;
+  margin-bottom: 0;
+}
+.cover-body {
+  flex: 1 1 auto;
+  padding: 18mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.cover-meta {
+  display: grid;
+  grid-template-columns: 40mm 1fr;
+  row-gap: 4mm;
+  font-size: 11pt;
+}
+.cover-meta dt {
+  color: var(--sl-text-secondary);
+  font-weight: 500;
+}
+.cover-meta dd {
+  color: var(--sl-text-primary);
+  margin: 0;
+}
+.cover-footer {
+  font-size: 9pt;
+  color: var(--sl-text-secondary);
+  border-top: 0.5px solid var(--sl-border);
+  padding-top: 4mm;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   SECTION HEADINGS
+   ──────────────────────────────────────────────────────────────────── */
+h1.section-title {
+  font-size: 18pt;
+  color: var(--sl-navy);
+  border-bottom: 0.5px solid var(--sl-border-strong);
+  padding-bottom: 4pt;
+  margin-bottom: 12pt;
+  page-break-before: auto;
+  page-break-after: avoid;
+}
+h2.chapter-title {
+  font-size: 14pt;
+  color: var(--sl-navy);
+  margin-top: 18pt;
+  margin-bottom: 8pt;
+  page-break-after: avoid;
+}
+h3.sub-title {
+  font-size: 11.5pt;
+  color: var(--sl-navy-dark);
+  margin-top: 12pt;
+  margin-bottom: 6pt;
+  page-break-after: avoid;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   CALLOUT — Điểm nhấn box (pale background, blue left border)
+   ──────────────────────────────────────────────────────────────────── */
+.callout {
+  background: var(--sl-pale);
+  border-left: 4px solid var(--sl-blue);
+  border-radius: 0 var(--sl-radius-md) var(--sl-radius-md) 0;
+  padding: 10pt 14pt;
+  margin: 10pt 0 14pt 0;
+  page-break-inside: avoid;
+}
+.callout h3 {
+  margin: 0 0 6pt 0;
+  font-size: 11pt;
+  color: var(--sl-navy-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout ul {
+  margin: 0;
+  padding-left: 16pt;
+}
+.callout li {
+  margin-bottom: 5pt;
+  color: var(--sl-text-primary);
+}
+.callout li strong {
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+
+/* Variant: warning callout (amber) */
+.callout--warning {
+  background: #FEF3E2;
+  border-left-color: var(--sl-warning);
+}
+.callout--warning h3 { color: #894F0B; }
+
+/* Variant: danger callout (red) */
+.callout--danger {
+  background: #FCEBEB;
+  border-left-color: var(--sl-danger);
+}
+.callout--danger h3 { color: #7A1F1F; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   TABLES — header pale, alternating bg-2 rows, 0.5px borders
+   ──────────────────────────────────────────────────────────────────── */
+table.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin: 8pt 0 14pt 0;
+  page-break-inside: auto;
+}
+table.report-table thead {
+  background: var(--sl-pale);
+}
+table.report-table thead th {
+  color: var(--sl-navy);
+  font-weight: 500;
+  text-align: left;
+  padding: 6pt 8pt;
+  border-bottom: 0.5px solid var(--sl-border-strong);
+  letter-spacing: 0.02em;
+}
+table.report-table tbody td {
+  padding: 5pt 8pt;
+  border-bottom: 0.5px solid var(--sl-border);
+  color: var(--sl-text-primary);
+  vertical-align: top;
+}
+table.report-table tbody tr:nth-child(even) {
+  background: var(--sl-bg);
+}
+table.report-table tbody tr.group-row td {
+  background: var(--sl-pale);
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+table.report-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.report-table .center { text-align: center; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   STATUS BADGES (RAG → trực quan, không gọi tên RAG trong text)
+   ──────────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 2pt 8pt;
+  border-radius: 999px;
+  font-size: 9pt;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.badge--ok      { background: var(--sl-success-pale); color: #14532D; }
+.badge--warn    { background: #FEF3E2;                color: #894F0B; }
+.badge--danger  { background: #FCEBEB;                color: #7A1F1F; }
+.badge--info    { background: var(--sl-pale);         color: var(--sl-navy); }
+
+/* ─────────────────────────────────────────────────────────────────────
+   CSS BAR CHART — pure HTML, no library
+   Usage:
+     <div class="chart-bars">
+       <div class="bar-row">
+         <div class="bar-label">Tender create</div>
+         <div class="bar-track">
+           <div class="bar" style="width: 62%;"></div>
+           <div class="bar-marker" style="left: 100%;" data-label="Mục tiêu"></div>
+         </div>
+         <div class="bar-value">145 đơn (-38%)</div>
+       </div>
+       ...
+     </div>
+   ──────────────────────────────────────────────────────────────────── */
+.chart-bars {
+  margin: 8pt 0 14pt 0;
+  page-break-inside: avoid;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 38mm 1fr 38mm;
+  align-items: center;
+  gap: 6pt;
+  padding: 3pt 0;
+  font-size: 9.5pt;
+}
+.bar-label {
+  color: var(--sl-text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar-track {
+  position: relative;
+  background: var(--sl-bg);
+  border: 0.5px solid var(--sl-border);
+  border-radius: var(--sl-radius-sm);
+  height: 14pt;
+  overflow: visible;
+}
+.bar {
+  background: var(--sl-blue);
+  height: 100%;
+  border-radius: var(--sl-radius-sm) 0 0 var(--sl-radius-sm);
+}
+.bar--warn   { background: var(--sl-warning); }
+.bar--danger { background: var(--sl-danger); }
+.bar--success{ background: var(--sl-success); }
+.bar--neutral{ background: var(--sl-navy); }
+
+/* Reference marker (target / baseline / peer) — vertical dashed line */
+.bar-marker {
+  position: absolute;
+  top: -2pt;
+  bottom: -2pt;
+  width: 0;
+  border-left: 1.5px dashed var(--sl-navy);
+}
+.bar-marker::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -8pt;
+  left: 4pt;
+  font-size: 7.5pt;
+  color: var(--sl-navy);
+  white-space: nowrap;
+}
+
+.bar-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--sl-text-primary);
+}
+
+/* Cumulative line for concentration charts (overlaid) */
+.bar-cumulative {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 0;
+  border-left: 1px solid rgba(37, 99, 235, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   ACTION TABLE — Việc | Ai | Khi (phần Đề xuất hành động)
+   ──────────────────────────────────────────────────────────────────── */
+table.action-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10pt 0 16pt 0;
+  font-size: 10pt;
+  page-break-inside: auto;
+}
+table.action-table thead th {
+  background: var(--sl-navy);
+  color: var(--sl-pale);
+  padding: 7pt 10pt;
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+table.action-table tbody td {
+  padding: 8pt 10pt;
+  border-bottom: 0.5px solid var(--sl-border);
+  color: var(--sl-text-primary);
+  vertical-align: top;
+}
+table.action-table tbody tr:nth-child(even) {
+  background: var(--sl-bg);
+}
+table.action-table .col-when {
+  white-space: nowrap;
+  color: var(--sl-navy-dark);
+  font-weight: 500;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   CLOSING — Lời kết block (soft, neutral background)
+   ──────────────────────────────────────────────────────────────────── */
+.closing {
+  margin: 18pt 0 8pt 0;
+  padding: 14pt 16pt;
+  background: var(--sl-bg);
+  border: 0.5px solid var(--sl-border);
+  border-radius: var(--sl-radius-md);
+  page-break-inside: avoid;
+}
+.closing p {
+  margin: 0;
+  color: var(--sl-text-primary);
+  font-size: 10.5pt;
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   FOOTER — minimal source line at end
+   ──────────────────────────────────────────────────────────────────── */
+.report-footer {
+  margin-top: 24pt;
+  padding-top: 8pt;
+  border-top: 0.5px solid var(--sl-border);
+  font-size: 8.5pt;
+  color: var(--sl-text-secondary);
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   PAGE-BREAK HELPERS
+   ──────────────────────────────────────────────────────────────────── */
+.page-break        { page-break-after: always; }
+.avoid-break       { page-break-inside: avoid; }
+.break-before      { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     COVER PAGE
+     ═════════════════════════════════════════════════════════════════ -->
+<section class="cover">
+  <div class="cover-band">
+    <div class="cover-brand">Smartlog Control Tower · Báo cáo Vận hành</div>
+    <div class="cover-tenant">{{TENANT_NAME}}</div>
+    <div class="cover-title">{{TITLE}}</div>
+    <div class="cover-subtitle">{{SUBTITLE}}</div>
+  </div>
+  <div class="cover-body">
+    <dl class="cover-meta">
+      <dt>Kỳ báo cáo</dt>          <dd>{{PERIOD}}</dd>
+      <dt>Ngày chốt số liệu</dt>   <dd>{{SNAPSHOT_DATE}}</dd>
+      <dt>Đối tượng</dt>           <dd>{{AUDIENCE_LABEL}}</dd>
+      <dt>Phạm vi</dt>             <dd>{{SCOPE}}</dd>
+      <dt>Soạn ngày</dt>           <dd>{{GENERATED_AT}}</dd>
+    </dl>
+    <div class="cover-footer">
+      Báo cáo phát hành · Số liệu chốt từ hệ thống Smartlog Control Tower
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     1. BỐI CẢNH
+     ═════════════════════════════════════════════════════════════════ -->
+<h1 class="section-title">Bối cảnh</h1>
+<!-- REPLACE: 1 đoạn 3-4 dòng văn xuôi, không số kỹ thuật, set the scene -->
+<p>{{CONTEXT_PARAGRAPH}}</p>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     2. ĐIỂM NHẤN
+     ═════════════════════════════════════════════════════════════════ -->
+<div class="callout">
+  <h3>Điểm nhấn</h3>
+  <!-- REPLACE: 3-5 bullet, mỗi bullet = số to + ngữ cảnh -->
+  <ul>
+    <li><strong>{{HIGHLIGHT_1_NUMBER}}</strong> — {{HIGHLIGHT_1_CONTEXT}}</li>
+    <li><strong>{{HIGHLIGHT_2_NUMBER}}</strong> — {{HIGHLIGHT_2_CONTEXT}}</li>
+    <li><strong>{{HIGHLIGHT_3_NUMBER}}</strong> — {{HIGHLIGHT_3_CONTEXT}}</li>
+    <!-- thêm bullet 4, 5 nếu cần -->
+  </ul>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     3. CÂU CHUYỆN — 3-5 chương
+     Mỗi chương: heading so-what + 1 đoạn dẫn + chart hoặc bảng + chú thích
+     ═════════════════════════════════════════════════════════════════ -->
+
+<h1 class="section-title">Phân tích chi tiết</h1>
+
+<!-- ───── CHƯƠNG 1 — REPLACE ───── -->
+<h2 class="chapter-title">{{CHAPTER_1_TITLE}}</h2>
+<p>{{CHAPTER_1_PARAGRAPH}}</p>
+
+<!-- Chart bar block (numeric breakdown ≥ 3 dòng) -->
+<div class="chart-bars">
+  <div class="bar-row">
+    <div class="bar-label">{{BAR_1_LABEL}}</div>
+    <div class="bar-track">
+      <div class="bar" style="width: {{BAR_1_PCT}}%;"></div>
+    </div>
+    <div class="bar-value">{{BAR_1_VALUE}}</div>
+  </div>
+  <!-- thêm bar-row khác... -->
+</div>
+
+<!-- Hoặc bảng dữ liệu -->
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>{{COL_1}}</th>
+      <th>{{COL_2}}</th>
+      <th class="num">{{COL_3}}</th>
+      <th class="center">{{COL_4}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ROW_1_C1}}</td>
+      <td>{{ROW_1_C2}}</td>
+      <td class="num">{{ROW_1_C3}}</td>
+      <td class="center"><span class="badge badge--ok">{{ROW_1_STATUS}}</span></td>
+    </tr>
+    <!-- thêm row khác... -->
+  </tbody>
+</table>
+
+<!-- ───── CHƯƠNG 2 — REPLACE ───── -->
+<h2 class="chapter-title">{{CHAPTER_2_TITLE}}</h2>
+<p>{{CHAPTER_2_PARAGRAPH}}</p>
+<!-- chart hoặc bảng tương tự -->
+
+<!-- ───── CHƯƠNG 3 — REPLACE ───── -->
+<h2 class="chapter-title">{{CHAPTER_3_TITLE}}</h2>
+<p>{{CHAPTER_3_PARAGRAPH}}</p>
+<!-- chart hoặc bảng tương tự -->
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     4. ĐỀ XUẤT HÀNH ĐỘNG
+     ═════════════════════════════════════════════════════════════════ -->
+<h1 class="section-title break-before">Đề xuất hành động</h1>
+
+<table class="action-table">
+  <thead>
+    <tr>
+      <th style="width:55%;">Việc cần làm</th>
+      <th style="width:25%;">Người chịu trách nhiệm</th>
+      <th style="width:20%;" class="col-when">Khi nào</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ACTION_1_WHAT}}</td>
+      <td>{{ACTION_1_WHO}}</td>
+      <td class="col-when">{{ACTION_1_WHEN}}</td>
+    </tr>
+    <tr>
+      <td>{{ACTION_2_WHAT}}</td>
+      <td>{{ACTION_2_WHO}}</td>
+      <td class="col-when">{{ACTION_2_WHEN}}</td>
+    </tr>
+    <!-- tối đa 5 dòng (BOD), 7-8 dòng (SC Manager), 10 dòng (Rollout/Engineering) -->
+  </tbody>
+</table>
+
+<!-- Optional: Lưu ý (chỉ nếu có data caveat impact stakeholder) -->
+<!-- <div class="callout callout--warning">
+  <h3>Lưu ý</h3>
+  <ul><li>{{NOTE_1}}</li></ul>
+</div> -->
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     5. LỜI KẾT
+     ═════════════════════════════════════════════════════════════════ -->
+<h1 class="section-title">Lời kết</h1>
+
+<div class="closing">
+  <p>{{CLOSING_PARAGRAPH}}</p>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     FOOTER (cuối báo cáo, không dính top of page)
+     ═════════════════════════════════════════════════════════════════ -->
+<div class="report-footer">
+  Số liệu chốt từ hệ thống Smartlog Control Tower lúc {{SNAPSHOT_DATE}} · Soạn ngày {{GENERATED_AT}}
+</div>
+
+</body>
+</html>
