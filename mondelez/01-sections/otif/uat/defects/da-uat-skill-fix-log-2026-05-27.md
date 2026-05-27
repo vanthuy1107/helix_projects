@@ -174,6 +174,56 @@ Nếu nghiệp vụ sau này quyết định UTC+7 mới là timezone chuẩn ch
 
 ---
 
+## Lỗi 6 (bổ sung — phát hiện khi re-extract từ ClickHouse 2026-05-27, track data/MV) — STM exclusion không nhất quán khi `ontime_status = NULL`
+
+> Phát hiện khi connect ClickHouse re-extract lại Excel pack (sau khi đã fix #3/#4/#5). KHÔNG nằm trong 5 lỗi review gốc và KHÔNG do fix gây ra — fix #4 (COUNTIF → COUNTIFS) chỉ làm nó lộ ra ở bước reconciliation.
+
+### Triệu chứng
+
+- Detail sheet = **2.986 dòng** nhưng KPI Hero "Tổng đơn" (frozen) = **2.984**.
+- Fail Reason bucket **"Warehouse Infull Failure"**: công thức Excel live (đếm từ Detail) = **9**, số frozen từ registry = **7**.
+
+### Nguyên nhân gốc
+
+Đúng **2 đơn** `8482509670` và `8482509801` có **`ontime_status = NULL`** (nhưng `infull_status = 'Failed Infull'`, `otif_status = 'Failed OTIF'`, `not_infull_reason = 'Warehouse Infull Failure'`, ETA nằm trong window).
+
+Cả pack loại STM bằng predicate `ontime_status != 'Không có dữ liệu STM'`, nhưng hai nhánh xử lý NULL khác nhau:
+
+- **Query frozen** (KPI `uniqExact(so)`, Fail Infull breakdown): predicate chạy độc lập → trong ClickHouse `NULL != 'x'` = NULL → row bị WHERE loại → **2.984 / bucket 7**.
+- **Query Detail** (`run_detail`, có thêm 4 mệnh đề `if(arraySort(...) = ..., 1=1, col IN (...))` bypass + CASE date): cùng predicate nhưng 2 đơn NULL **vẫn lọt** → **2.986 / bucket 9** (đã xác nhận bằng cách chạy thẳng `run_detail()`).
+
+→ Mọi slice chứa 2 đơn này sẽ lệch **+2** giữa công thức live (từ Detail) và số frozen (từ registry).
+
+### Ghi chú quan trọng
+
+Ghi chú "KPI vs Detail row count" trong header script `uat_otif_export.py` trước đây giải thích diff 2.986/2.984 là do **"1 SO split sang nhiều whseid"** — **SAI**. Thực tế 2.986 dòng = 2.986 SO duy nhất (không split); nguyên nhân thật là 2 đơn NULL `ontime_status`. → Đã sửa lại ghi chú này trong script.
+
+### Đề xuất (track data/MV — CHƯA fix lần này)
+
+Chuẩn hóa cách loại STM nhất quán toàn pack + xử lý NULL tường minh:
+- Dùng `coalesce(ontime_status, '') != 'Không có dữ liệu STM'` ở mọi query, HOẶC thống nhất loại STM bằng đúng 1 field (cả registry lẫn Detail).
+- Xác định nghiệp vụ: đơn có `ontime_status = NULL` (chưa chấm ontime) có thuộc scope OTIF report không.
+
+### Query kiểm chứng
+
+```sql
+-- 2 đơn NULL ontime_status trong window
+SELECT so, ontime_status, infull_status, otif_status, not_infull_reason
+FROM analytics_workspace.mv_otif
+WHERE toDate(eta_giao_hang_cho_npp) BETWEEN toDate('2026-05-18') AND toDate('2026-05-22')
+  AND ontime_status IS NULL;
+
+-- Chênh lệch do field dùng để loại STM
+SELECT
+  countIf(ontime_status != 'Không có dữ liệu STM') AS excl_by_ontime,  -- 2984
+  countIf(otif_status   != 'Không có dữ liệu STM') AS excl_by_otif,    -- 2986
+  countIf(ontime_status IS NULL)                   AS null_ontime      -- 2
+FROM analytics_workspace.mv_otif
+WHERE toDate(eta_giao_hang_cho_npp) BETWEEN toDate('2026-05-18') AND toDate('2026-05-22');
+```
+
+---
+
 ## Tổng kết
 
 | # | Lỗi | Ảnh hưởng | Mức độ | File đã fix |
@@ -183,5 +233,6 @@ Nếu nghiệp vụ sau này quyết định UTC+7 mới là timezone chuẩn ch
 | 3 | Kho group vs Kho code | Health Matrix hiển thị 0 cho một số kho | Major | SKILL.md |
 | 4 | COUNTIF vs COUNTIFS | Số fail reason bị thổi phồng | Major | SKILL.md |
 | 5 | Timezone UTC+7 vs UTC | Số đơn theo ngày bị dịch giữa các ngày | Major | SKILL.md, uat-cases.md, uat-reconciliation.md, reconciliation-method.md |
+| 6 | STM exclusion không nhất quán khi `ontime_status` NULL | Detail 2.986 vs KPI 2.984; Fail Infull bucket live 9 vs frozen 7 | Finding (track data/MV) | uat_otif_export.py (sửa ghi chú README sai) — **chưa fix data** |
 
-Cả 5 lỗi đều đã được thêm vào bảng **Common Mistakes** trong SKILL.md để phòng ngừa tái phát.
+Lỗi #1–#5 đã được thêm vào bảng **Common Mistakes** trong SKILL.md để phòng ngừa tái phát. Lỗi #6 là finding tầng data/MV (chưa fix), chờ quyết định chuẩn hóa STM exclusion.
