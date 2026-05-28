@@ -1,0 +1,722 @@
+[
+  {
+    "order": 1,
+    "code": "STT",
+    "label": "STT"
+  },
+  {
+    "order": 2,
+    "code": "MasterCode",
+    "label": "Mã chuyến"
+  },
+  {
+    "order": 3,
+    "code": "MasterCodeRoute1",
+    "label": "Mã chuyến chặng 1"
+  },
+  {
+    "order": 4,
+    "code": "MasterStatus",
+    "label": "Trạng thái chuyến"
+  },
+  {
+    "order": 5,
+    "code": "MasterNote",
+    "label": "Ghi chú chuyến"
+  },
+  {
+    "order": 6,
+    "code": "MasterNote1",
+    "label": "Ghi chú chuyến 1"
+  },
+  {
+    "order": 7,
+    "code": "MasterNote2",
+    "label": "Ghi chú chuyến 2"
+  },
+  {
+    "order": 8,
+    "code": "MasterNote3",
+    "label": "Ghi chú chuyến 3"
+  },
+  {
+    "order": 9,
+    "code": "MasterNote4",
+    "label": "Ghi chú chuyến 4"
+  },
+  {
+    "order": 10,
+    "code": "MasterNote5",
+    "label": "Ghi chú chuyến 5"
+  },
+  {
+    "order": 11,
+    "code": "MasterETD",
+    "label": "ETD chuyến"
+  },
+  {
+    "order": 12,
+    "code": "MasterETA",
+    "label": "ETA chuyến"
+  },
+  {
+    "order": 13,
+    "code": "MasterATD",
+    "label": "ATD chuyến"
+  },
+  {
+    "order": 14,
+    "code": "MasterATA",
+    "label": "ATA chuyến"
+  },
+  {
+    "order": 15,
+    "code": "KM",
+    "label": "KM"
+  },
+  {
+    "order": 16,
+    "code": "KMGPS",
+    "label": "KMGPS"
+  },
+  {
+    "order": 17,
+    "code": "KMGPSMobile",
+    "label": "KMGPSMobile"
+  },
+  {
+    "order": 18,
+    "code": "VehicleRegNoStage1",
+    "label": "Số xe"
+  },
+  {
+    "order": 19,
+    "code": "GroupOfVehicleCode",
+    "label": "Mã loại xe"
+  },
+  {
+    "order": 20,
+    "code": "GroupOfVehicleName",
+    "label": "Tên loại xe"
+  },
+  {
+    "order": 21,
+    "code": "VehicleMaxWeightStage1",
+    "label": "Trọng tải"
+  },
+  {
+    "order": 22,
+    "code": "VehicleNote",
+    "label": "Ghi chú xe"
+  },
+  {
+    "order": 23,
+    "code": "DriverNameStage1",
+    "label": "Tên tài xế"
+  },
+  {
+    "order": 24,
+    "code": "DriverTelStage1",
+    "label": "SĐT tài xế"
+  },
+  {
+    "order": 25,
+    "code": "DriverName2",
+    "label": "Tên phụ lái"
+  },
+  {
+    "order": 26,
+    "code": "DriverName3",
+    "label": "Tên bốc xếp"
+  },
+  {
+    "order": 27,
+    "code": "VendorCode",
+    "label": "Mã nhà xe"
+  },
+  {
+    "order": 28,
+    "code": "VendorName",
+    "label": "Tên nhà xe"
+  },
+  {
+    "order": 29,
+    "code": "VendorShortName",
+    "label": "Tên ngắn nhà xe"
+  },
+  {
+    "order": 30,
+    "code": "TenderedDate",
+    "label": "Thời gian gửi thầu"
+  },
+  {
+    "order": 31,
+    "code": "DeliveryStatus",
+    "label": "Trạng thái giao hàng"
+  },
+  {
+    "order": 32,
+    "code": "QuantityOrder",
+    "label": "Số lượng kế hoạch"
+  },
+  {
+    "order": 33,
+    "code": "QuantityTransfer",
+    "label": "Số lượng lấy"
+  },
+  {
+    "order": 34,
+    "code": "QuantityBBGN",
+    "label": "Số lượng giao"
+  },
+  {
+    "order": 35,
+    "code": "TonOrder",
+    "label": "Tấn kế hoạch"
+  },
+  {
+    "order": 36,
+    "code": "TonTransfer",
+    "label": "Tấn lấy"
+  },
+  {
+    "order": 37,
+    "code": "TonBBGN",
+    "label": "Tấn giao"
+  },
+  {
+    "order": 38,
+    "code": "CBMOrder",
+    "label": "Khối kế hoạch"
+  },
+  {
+    "order": 39,
+    "code": "CBMTransfer",
+    "label": "Khối lấy"
+  },
+  {
+    "order": 40,
+    "code": "CBMBBGN",
+    "label": "Khối giao"
+  },
+  {
+    "order": 41,
+    "code": "ReasonDeliveryName",
+    "label": "Nguyên nhân chênh lệch SL giao"
+  },
+  {
+    "order": 42,
+    "code": "ORDLocationFromCode",
+    "label": "Mã điểm lấy của đơn"
+  },
+  {
+    "order": 43,
+    "code": "ORDLocationFromName",
+    "label": "Tên điểm lấy của đơn"
+  },
+  {
+    "order": 44,
+    "code": "ORDLocationToCode",
+    "label": "Mã điểm giao của đơn"
+  },
+  {
+    "order": 45,
+    "code": "ORDLocationToName",
+    "label": "Tên điểm giao của đơn"
+  },
+  {
+    "order": 46,
+    "code": "StockCode",
+    "label": "Mã điểm lấy"
+  },
+  {
+    "order": 47,
+    "code": "StockName",
+    "label": "Tên điểm lấy"
+  },
+  {
+    "order": 48,
+    "code": "StockAddress",
+    "label": "Địa chỉ điểm lấy"
+  },
+  {
+    "order": 49,
+    "code": "OPSLocationToCode",
+    "label": "Mã điểm giao"
+  },
+  {
+    "order": 50,
+    "code": "OPSLocationToName",
+    "label": "Tên điểm giao"
+  },
+  {
+    "order": 51,
+    "code": "OPSLocationToAddress",
+    "label": "Địa chỉ điểm giao"
+  },
+  {
+    "order": 52,
+    "code": "OPSLocationToProvince",
+    "label": "Tỉnh điểm giao"
+  },
+  {
+    "order": 53,
+    "code": "OPSLocationToDistrict",
+    "label": "Quận điểm giao"
+  },
+  {
+    "order": 54,
+    "code": "OPSLocationToNote",
+    "label": "Ghi chú điểm giao"
+  },
+  {
+    "order": 55,
+    "code": "OPSLocationToCellphone",
+    "label": "SĐT điểm giao"
+  },
+  {
+    "order": 56,
+    "code": "GroupOfLocationToCode",
+    "label": "Mã loại điểm giao"
+  },
+  {
+    "order": 57,
+    "code": "GroupOfLocationToName",
+    "label": "Tên loại điểm giao"
+  },
+  {
+    "order": 58,
+    "code": "PartnerToCode",
+    "label": "Mã hệ thống của nhà phân phối"
+  },
+  {
+    "order": 59,
+    "code": "GroupOfPartnerName",
+    "label": "Nhóm nhà phân phối"
+  },
+  {
+    "order": 60,
+    "code": "DistributorTypeModelName",
+    "label": "Mô hình nhà phân phối"
+  },
+  {
+    "order": 61,
+    "code": "LocationToUnloadingTypeName",
+    "label": "Loại bốc xếp"
+  },
+  {
+    "order": 62,
+    "code": "RoutingAreaToCode",
+    "label": "Khu vực giao"
+  },
+  {
+    "order": 63,
+    "code": "DateFromCome",
+    "label": "Ngày đến điểm lấy"
+  },
+  {
+    "order": 64,
+    "code": "DateFromLoadStart",
+    "label": "Ngày bắt đầu load hàng điểm lấy"
+  },
+  {
+    "order": 65,
+    "code": "DateFromLoadEnd",
+    "label": "Ngày hoàn tất load hàng điểm lấy"
+  },
+  {
+    "order": 66,
+    "code": "DateFromLeave",
+    "label": "Ngày đi (rời) điểm lấy"
+  },
+  {
+    "order": 67,
+    "code": "DateToCome",
+    "label": "Ngày đến điểm giao"
+  },
+  {
+    "order": 68,
+    "code": "DateToLoadStart",
+    "label": "Ngày bắt đầu load hàng điểm giao"
+  },
+  {
+    "order": 69,
+    "code": "DateToLoadEnd",
+    "label": "Ngày hoàn tất load hàng điểm giao"
+  },
+  {
+    "order": 70,
+    "code": "DateToLeave",
+    "label": "Ngày đi (rời) điểm giao"
+  },
+  {
+    "order": 71,
+    "code": "DateComeEstimateFrom",
+    "label": "Ngày đến điểm lấy dự kiến"
+  },
+  {
+    "order": 72,
+    "code": "DateLeaveEstimateFrom",
+    "label": "Ngày đi (rời) điểm lấy dự kiến"
+  },
+  {
+    "order": 73,
+    "code": "DateComeEstimateTo",
+    "label": "Ngày đến điểm giao dự kiến"
+  },
+  {
+    "order": 74,
+    "code": "DateLeaveEstimateTo",
+    "label": "Ngày đi (rời) điểm giao dự kiến"
+  },
+  {
+    "order": 75,
+    "code": "TripTempRoom1",
+    "label": "Nhiệt độ ngăn 1"
+  },
+  {
+    "order": 76,
+    "code": "TripTempRoom2",
+    "label": "Nhiệt độ ngăn 2"
+  },
+  {
+    "order": 77,
+    "code": "OPSGroupNote",
+    "label": "Ghi chú chi tiết chuyến"
+  },
+  {
+    "order": 78,
+    "code": "OPSGroupNote1",
+    "label": "Ghi chú chi tiết chuyến 1"
+  },
+  {
+    "order": 79,
+    "code": "OPSGroupNote2",
+    "label": "Ghi chú chi tiết chuyến 2"
+  },
+  {
+    "order": 80,
+    "code": "PODStatus",
+    "label": "Trạng thái chứng từ"
+  },
+  {
+    "order": 81,
+    "code": "InvoiceDate",
+    "label": "Ngày nhận chứng từ"
+  },
+  {
+    "order": 82,
+    "code": "InvoiceBy",
+    "label": "Người nhận chứng từ"
+  },
+  {
+    "order": 83,
+    "code": "HasUpload",
+    "label": "Đã up hình chứng từ"
+  },
+  {
+    "order": 84,
+    "code": "InvoiceNote",
+    "label": "Ghi chú chứng từ"
+  },
+  {
+    "order": 85,
+    "code": "InvoiceMissingNote",
+    "label": "Ghi chú thiếu chứng từ"
+  },
+  {
+    "order": 86,
+    "code": "OrderCode",
+    "label": "Mã đơn hàng"
+  },
+  {
+    "order": 87,
+    "code": "VesselNo",
+    "label": "Mã tàu"
+  },
+  {
+    "order": 88,
+    "code": "VesselName",
+    "label": "Tên tàu"
+  },
+  {
+    "order": 89,
+    "code": "ServiceOfOrderCode",
+    "label": "Mã dịch vụ"
+  },
+  {
+    "order": 90,
+    "code": "ServiceOfOrderName",
+    "label": "Tên dịch vụ"
+  },
+  {
+    "order": 91,
+    "code": "TransportModeCode",
+    "label": "Mã loại hình vận chuyển"
+  },
+  {
+    "order": 92,
+    "code": "TransportModeName",
+    "label": "Tên loại hình vận chuyển"
+  },
+  {
+    "order": 93,
+    "code": "OrderCreatedBy",
+    "label": "Người tạo đơn"
+  },
+  {
+    "order": 94,
+    "code": "OrderCreatedDate",
+    "label": "Ngày tạo đơn"
+  },
+  {
+    "order": 95,
+    "code": "OrderType",
+    "label": "Loại đơn hàng"
+  },
+  {
+    "order": 96,
+    "code": "OrderStatus",
+    "label": "Trạng thái đơn"
+  },
+  {
+    "order": 97,
+    "code": "ReasonCancel",
+    "label": "Lý do huỷ đơn"
+  },
+  {
+    "order": 98,
+    "code": "ReasonCancelNote",
+    "label": "Ghi chú lý do huỷ đơn"
+  },
+  {
+    "order": 99,
+    "code": "OrderNote",
+    "label": "Ghi chú đơn hàng"
+  },
+  {
+    "order": 100,
+    "code": "RequestDate",
+    "label": "Ngày yêu cầu vận chuyển"
+  },
+  {
+    "order": 101,
+    "code": "ETD",
+    "label": "ETD đơn"
+  },
+  {
+    "order": 102,
+    "code": "ETA",
+    "label": "ETA đơn"
+  },
+  {
+    "order": 103,
+    "code": "OrderContract",
+    "label": "Hợp đồng đơn hàng"
+  },
+  {
+    "order": 104,
+    "code": "PaymentMethod",
+    "label": "Phương thức thanh toán"
+  },
+  {
+    "order": 105,
+    "code": "SORefCode",
+    "label": "Số SO"
+  },
+  {
+    "order": 106,
+    "code": "CustomerCode",
+    "label": "Mã khách hàng"
+  },
+  {
+    "order": 107,
+    "code": "CustomerName",
+    "label": "Tên khách hàng"
+  },
+  {
+    "order": 108,
+    "code": "CustomerShortName",
+    "label": "Tên ngắn khách hàng"
+  },
+  {
+    "order": 109,
+    "code": "TextLocationFromCode",
+    "label": "Text mã điểm nhận"
+  },
+  {
+    "order": 110,
+    "code": "TextLocationFromName",
+    "label": "Text tên điểm nhận"
+  },
+  {
+    "order": 111,
+    "code": "TextLocationFromAddress",
+    "label": "Text địa chỉ điểm nhận"
+  },
+  {
+    "order": 112,
+    "code": "TextLocationFromProvinceCode",
+    "label": "Text mã tỉnh thành điểm nhận"
+  },
+  {
+    "order": 113,
+    "code": "TextLocationFromProvinceName",
+    "label": "Text tên tỉnh thành điểm nhận"
+  },
+  {
+    "order": 114,
+    "code": "TextLocationFromDistrictCode",
+    "label": "Text mã quận huyện điểm nhận"
+  },
+  {
+    "order": 115,
+    "code": "TextLocationFromDistrictName",
+    "label": "Text tên quận huyện điểm nhận"
+  },
+  {
+    "order": 116,
+    "code": "TextLocationFromWardCode",
+    "label": "Text mã xã phường điểm nhận"
+  },
+  {
+    "order": 117,
+    "code": "TextLocationFromWardName",
+    "label": "Text tên xã phường điểm nhận"
+  },
+  {
+    "order": 118,
+    "code": "TextLocationToCode",
+    "label": "Text mã điểm giao"
+  },
+  {
+    "order": 119,
+    "code": "TextLocationToName",
+    "label": "Text tên điểm giao"
+  },
+  {
+    "order": 120,
+    "code": "TextLocationToAddress",
+    "label": "Text địa chỉ điểm giao"
+  },
+  {
+    "order": 121,
+    "code": "TextLocationToProvinceCode",
+    "label": "Text mã tỉnh thành điểm giao"
+  },
+  {
+    "order": 122,
+    "code": "TextLocationToProvinceName",
+    "label": "Text tên tỉnh thành điểm giao"
+  },
+  {
+    "order": 123,
+    "code": "TextLocationToDistrictCode",
+    "label": "Text mã quận huyện điểm giao"
+  },
+  {
+    "order": 124,
+    "code": "TextLocationToDistrictName",
+    "label": "Text tên quận huyện điểm giao"
+  },
+  {
+    "order": 125,
+    "code": "TextLocationToWardCode",
+    "label": "Text mã xã phường điểm giao"
+  },
+  {
+    "order": 126,
+    "code": "TextLocationToWardName",
+    "label": "Text tên xã phường điểm giao"
+  },
+  {
+    "order": 127,
+    "code": "ORDTextLocationFromCode",
+    "label": "Text mã điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 128,
+    "code": "ORDTextLocationFromName",
+    "label": "Text tên điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 129,
+    "code": "ORDTextLocationFromAddress",
+    "label": "Text địa chỉ điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 130,
+    "code": "ORDTextLocationFromProvinceCode",
+    "label": "Text mã tỉnh thành điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 131,
+    "code": "ORDTextLocationFromProvinceName",
+    "label": "Text tên tỉnh thành điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 132,
+    "code": "ORDTextLocationFromDistrictCode",
+    "label": "Text mã quận huyện điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 133,
+    "code": "ORDTextLocationFromDistrictName",
+    "label": "Text tên quận huyện điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 134,
+    "code": "ORDTextLocationFromWardCode",
+    "label": "Text mã xã phường điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 135,
+    "code": "ORDTextLocationFromWardName",
+    "label": "Text tên xã phường điểm nhận chi tiết đơn"
+  },
+  {
+    "order": 136,
+    "code": "ORDTextLocationToCode",
+    "label": "Text mã điểm giao chi tiết đơn"
+  },
+  {
+    "order": 137,
+    "code": "ORDTextLocationToName",
+    "label": "Text tên điểm giao chi tiết đơn"
+  },
+  {
+    "order": 138,
+    "code": "ORDTextLocationToAddress",
+    "label": "Text địa chỉ điểm giao chi tiết đơn"
+  },
+  {
+    "order": 139,
+    "code": "ORDTextLocationToProvinceCode",
+    "label": "Text mã tỉnh thành điểm giao chi tiết đơn"
+  },
+  {
+    "order": 140,
+    "code": "ORDTextLocationToProvinceName",
+    "label": "Text tên tỉnh thành điểm giao chi tiết đơn"
+  },
+  {
+    "order": 141,
+    "code": "ORDTextLocationToDistrictCode",
+    "label": "Text mã quận huyện điểm giao chi tiết đơn"
+  },
+  {
+    "order": 142,
+    "code": "ORDTextLocationToDistrictName",
+    "label": "Text tên quận huyện điểm giao chi tiết đơn"
+  },
+  {
+    "order": 143,
+    "code": "ORDTextLocationToWardCode",
+    "label": "Text mã xã phường điểm giao chi tiết đơn"
+  },
+  {
+    "order": 144,
+    "code": "ORDTextLocationToWardName",
+    "label": "Text tên xã phường điểm giao chi tiết đơn"
+  }
+]
