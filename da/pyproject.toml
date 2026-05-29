@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "da"
+version = "0.1.0"
+description = "Thư viện Data Analysis dùng chung (đa tenant) — Smartlog Control Tower"
+requires-python = ">=3.11"
+dependencies = [
+    "clickhouse-connect>=0.7",
+    "pandas>=2.0",
+    "python-dotenv>=1.0",
+    "tabulate>=0.9",          # pandas.to_markdown() cho save_md()
+]
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.7"]    # chart trong notebook
+excel = ["openpyxl>=3.1"]    # excel_pack()
+
+[tool.setuptools.packages.find]
+include = ["da*"]

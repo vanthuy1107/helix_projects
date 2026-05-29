@@ -127,6 +127,28 @@ ORDER BY pct_ontime ASC
 LIMIT 20
 ```
 
+### 4.5 WMS cross-check — đơn chỉ có ở TMS, không có ở WMS
+
+**Cập nhật 2026-05-29:** MV recreate thêm 2 cột `has_wms` (UInt8) + `wms_match_status`
+(`'Có ở WMS'` | `'Chỉ có ở TMS'`). Cùng logic `mv_otif` (đối chiếu WMS), nhưng
+**KHÔNG ẩn** đơn không có WMS như `mv_otif` — ta GIỮ và ĐÁNH DẤU.
+
+- Khóa đối chiếu: `order_code` (TMS) ↔ `SO` của `analytics_workspace.mv_otif_swm_data`
+  (= `orders.extern_order_key` đã strip `-SP…`).
+- "Có WMS" = đúng **scope OTIF** (whseid `BKD*/NKD/VN821/VN831`, type, status 95/1).
+  → Đơn TMS ngoài scope OTIF (vd kho `VN832`, đơn chưa ship status 'Chờ') mang `has_wms = 0`.
+
+Phân bố hiện tại (2026-05-29): **24,187 Có ở WMS · 7 Chỉ có ở TMS** (0.03%).
+
+```sql
+-- Liệt kê đơn chỉ có ở TMS, không có ở WMS
+SELECT order_code, tendered_date_vn, order_status, delivery_status_first,
+       stock_code, otif_status
+FROM analytics_workspace.mv_mdlz_tms_report_25_order
+WHERE has_wms = 0
+ORDER BY tendered_date_vn DESC
+```
+
 ### 4.4 Join ngược về raw (line detail của 1 đơn)
 
 ```sql
@@ -187,7 +209,7 @@ DROP TABLE IF EXISTS analytics_workspace.mv_mdlz_tms_report_25_order;
 ---
 
 ## ARTIFACT_PATH: mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md
-## MV_PATH: analytics_workspace.mv_mdlz_tms_report_25_order (24,194 rows · 46 cols)
+## MV_PATH: analytics_workspace.mv_mdlz_tms_report_25_order (24,194 rows · 48 cols — +has_wms, +wms_match_status từ 2026-05-29)
 ## DDL_PATH: mondelez/02-data/sql/mv_mdlz_tms_report_25_order.sql
 ## DATA_CONFIDENCE: High — 100% reconciliation vs raw recompute trên cả 8 status × 24,194 đơn
 ## MV_FRESHNESS: 2026-05-28 08:57:26 (first refresh, ~1 phút sau CREATE)

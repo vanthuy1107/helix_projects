@@ -1,0 +1,23 @@
+# Cấu hình tenant Mondelez cho thư viện `da` (đa tenant).
+# Mọi thứ KHÁC NHAU giữa tenant nằm ở đây — lõi `da/` không hardcode.
+# Secret (host/user/password) KHÔNG ở đây — đọc từ .env (gitignored).
+
+database = "analytics_workspace"
+
+[tables]
+# logical name (dùng trong code) -> tên bảng vật lý trên ClickHouse
+tms_report_25 = "mdlz_tms_report_25_trip_order"
+mv_otif       = "mv_otif"
+mv_flash      = "mv_flash_and_drop_report"
+mv_flash_only = "mv_flash_report"
+mv_drop       = "mv_dropped_report"
+
+[scope]
+ontime_grace_min = 30                          # dung sai on-time (phút)
+so_valid         = "position(OrderCode, '-') = 0"   # loại mã đơn không chuẩn "XXXXXXXX-N"
+otif_service     = "Xuất bán"                   # service scope của mv_otif
+default_date_col = "thoi_gian_gui_thau"         # "Ngày gửi thầu" — trục reconcile chung
+
+# Trạng thái dùng cho scope phân tích TMS report #25 (L1–L4 notebook tms)
+analysis_master_statuses = ["Đã hoàn thành", "Đang vận chuyển"]
+analysis_order_statuses  = ["Đã giao hàng"]

@@ -1,8 +1,8 @@
 # ClickHouse DDL Snapshot — `analytics_workspace`
 
-> **Generated:** 2026-05-26 04:14 UTC  
+> **Generated:** 2026-05-29 05:21 UTC  
 > **Database:** `analytics_workspace`  
-> **Total objects:** 69
+> **Total objects:** 65
 
 ---
 
@@ -10,79 +10,268 @@
 
 | # | Name | Engine | Rows | Size | Comment |
 |---|------|--------|------|------|---------|
-| 1 | `mv_alert_late_do` | MaterializedView | 67349 | 14.53 MiB |  |
-| 2 | `mv_alert_late_do_base` | MaterializedView | 6574269 | 196.58 MiB |  |
-| 3 | `mv_alert_late_do_concat` | MaterializedView | 67349 | 5.65 MiB |  |
-| 4 | `mv_alert_late_do_so_pick` | MaterializedView | 67349 | 8.43 MiB |  |
-| 5 | `mv_alert_stm_data` | MaterializedView | 3046365 | 32.44 MiB |  |
-| 6 | `mv_alert_stm_swm_data` | MaterializedView | 6574269 | 267.75 MiB |  |
-| 7 | `mv_alert_swm_data` | MaterializedView | 6508481 | 265.50 MiB |  |
-| 8 | `mv_copack` | MaterializedView | 4450 | 16.05 KiB |  |
-| 9 | `mv_dap_ung_gui_thau` | MaterializedView | 86756 | 8.77 MiB |  |
-| 10 | `mv_dap_ung_van_hanh` | MaterializedView | 233538 | 8.76 MiB |  |
-| 11 | `mv_dropped_report` | MaterializedView | 42849 | 1.36 MiB |  |
-| 12 | `mv_dropped_stm` | MaterializedView | 2455677 | 12.16 MiB |  |
-| 13 | `mv_dropped_swm` | MaterializedView | 42849 | 1.26 MiB |  |
-| 14 | `mv_filter_activity` | View | — | — |  |
-| 15 | `mv_filter_cargo_brand` | View | — | — |  |
-| 16 | `mv_filter_channel` | View | — | — |  |
-| 17 | `mv_filter_date_type_alert` | View | — | — |  |
-| 18 | `mv_filter_date_type_dap_ung` | View | — | — |  |
-| 19 | `mv_filter_date_type_flashreport` | View | — | — |  |
-| 20 | `mv_filter_date_type_movement_transaction` | View | — | — |  |
-| 21 | `mv_filter_date_type_otif` | View | — | — |  |
-| 22 | `mv_filter_date_type_tien_do_xuat_hang` | View | — | — |  |
-| 23 | `mv_filter_date_type_vfr` | View | — | — |  |
-| 24 | `mv_filter_location_tuan_thu` | View | — | — |  |
-| 25 | `mv_filter_location_type_tuan_thu` | View | — | — |  |
-| 26 | `mv_filter_region` | MaterializedView | 37176 | 53.78 KiB |  |
-| 27 | `mv_filter_type_movement_transaction` | View | — | — |  |
-| 28 | `mv_filter_uom` | View | — | — |  |
-| 29 | `mv_filter_vehicle_type` | View | — | — |  |
-| 30 | `mv_filter_vendor` | View | — | — |  |
-| 31 | `mv_filter_warehouse` | View | — | — |  |
-| 32 | `mv_flash_and_drop_report` | MaterializedView | 6350315 | 325.00 MiB |  |
-| 33 | `mv_flash_report` | MaterializedView | 6307466 | 329.71 MiB |  |
-| 34 | `mv_flrp_stm_data` | MaterializedView | 5194411 | 67.42 MiB |  |
-| 35 | `mv_flrp_swm_data` | MaterializedView | 6307466 | 225.97 MiB |  |
-| 36 | `mv_inbound_transaction_base` | MaterializedView | 27080 | 666.39 KiB |  |
-| 37 | `mv_loose_picking_clickhouse` | MaterializedView | 7810551 | 291.47 MiB |  |
-| 38 | `mv_loose_picking_clickhouse_new` | MaterializedView | 7820939 | 322.78 MiB |  |
-| 39 | `mv_loose_picking_clickhouse_phong_test` | MaterializedView | 7795322 | 293.67 MiB |  |
+| 1 | `.tmp.inner_id.1e98e4ec-1832-4167-ac16-1a5987306b6f` | SharedMergeTree | 53588 | 2.22 MiB |  |
+| 2 | `mdlz_tms_report_25_trip_order` | SharedMergeTree | 32262 | 5.38 MiB | MDLZ TMS report #25 (Bao cao theo don hang va chuyen) - staging dump String trung thuc. Refresh: TRUNCATE+reload theo cua so <=5 ngay. Nguon: REPDIOPSPlan_SettingDownload functionid=78 TypeExport=25. Doc: mondelez/02-data/data-sources/mdlz_tms_report_25_trip_order.md |
+| 3 | `mv_alert_late_do` | MaterializedView | 67667 | 14.59 MiB |  |
+| 4 | `mv_alert_late_do_base` | MaterializedView | 6589869 | 192.05 MiB |  |
+| 5 | `mv_alert_late_do_concat` | MaterializedView | 67667 | 5.67 MiB |  |
+| 6 | `mv_alert_late_do_so_pick` | MaterializedView | 67667 | 8.47 MiB |  |
+| 7 | `mv_alert_stm_data` | MaterializedView | 3061459 | 32.58 MiB |  |
+| 8 | `mv_alert_stm_swm_data` | MaterializedView | 6589870 | 240.47 MiB |  |
+| 9 | `mv_alert_swm_data` | MaterializedView | 6523546 | 203.72 MiB |  |
+| 10 | `mv_copack` | MaterializedView | 4534 | 18.42 KiB |  |
+| 11 | `mv_dap_ung_gui_thau` | MaterializedView | 87110 | 8.81 MiB |  |
+| 12 | `mv_dap_ung_van_hanh` | MaterializedView | 234602 | 8.80 MiB |  |
+| 13 | `mv_dropped_report` | MaterializedView | 42900 | 1.36 MiB |  |
+| 14 | `mv_dropped_stm` | MaterializedView | 2457352 | 12.18 MiB |  |
+| 15 | `mv_dropped_swm` | MaterializedView | 42900 | 1.26 MiB |  |
+| 16 | `mv_filter_activity` | View | — | — |  |
+| 17 | `mv_filter_cargo_brand` | View | — | — |  |
+| 18 | `mv_filter_channel` | View | — | — |  |
+| 19 | `mv_filter_date_type_alert` | View | — | — |  |
+| 20 | `mv_filter_date_type_dap_ung` | View | — | — |  |
+| 21 | `mv_filter_date_type_flashreport` | View | — | — |  |
+| 22 | `mv_filter_date_type_movement_transaction` | View | — | — |  |
+| 23 | `mv_filter_date_type_otif` | View | — | — |  |
+| 24 | `mv_filter_date_type_tien_do_xuat_hang` | View | — | — |  |
+| 25 | `mv_filter_date_type_vfr` | View | — | — |  |
+| 26 | `mv_filter_location_tuan_thu` | View | — | — |  |
+| 27 | `mv_filter_location_type_tuan_thu` | View | — | — |  |
+| 28 | `mv_filter_region` | MaterializedView | 38064 | 54.96 KiB |  |
+| 29 | `mv_filter_type_movement_transaction` | View | — | — |  |
+| 30 | `mv_filter_uom` | View | — | — |  |
+| 31 | `mv_filter_vehicle_type` | View | — | — |  |
+| 32 | `mv_filter_vendor` | View | — | — |  |
+| 33 | `mv_filter_warehouse` | View | — | — |  |
+| 34 | `mv_flash_and_drop_report` | MaterializedView | 6364640 | 308.93 MiB |  |
+| 35 | `mv_flash_report` | MaterializedView | 6321740 | 326.91 MiB |  |
+| 36 | `mv_flrp_stm_data` | MaterializedView | 5209456 | 72.13 MiB |  |
+| 37 | `mv_flrp_swm_data` | MaterializedView | 6321740 | 277.77 MiB |  |
+| 38 | `mv_inbound_transaction_base` | MaterializedView | 27133 | 668.27 KiB |  |
+| 39 | `mv_loose_picking_clickhouse_new` | MaterializedView | 7838386 | 323.80 MiB |  |
 | 40 | `mv_masterdata_kho_stm` | MaterializedView | 9 | 1.16 KiB |  |
-| 41 | `mv_masterdata_location` | MaterializedView | 3543 | 139.05 KiB |  |
+| 41 | `mv_masterdata_location` | MaterializedView | 3544 | 138.70 KiB |  |
 | 42 | `mv_masterdata_ordertype` | MaterializedView | 174 | 3.66 KiB |  |
-| 43 | `mv_masterdata_sku` | MaterializedView | 29376 | 415.06 KiB |  |
-| 44 | `mv_masterdata_vehicle` | MaterializedView | 815 | 9.84 KiB |  |
+| 43 | `mv_masterdata_sku` | MaterializedView | 29390 | 414.59 KiB |  |
+| 44 | `mv_masterdata_vehicle` | MaterializedView | 816 | 9.85 KiB |  |
 | 45 | `mv_masterdata_vendor` | MaterializedView | 11 | 1.05 KiB |  |
-| 46 | `mv_mdlz_data_cat_daily` | MaterializedView | 30558 | 397.15 KiB |  |
-| 47 | `mv_mdlz_fact_daily_warehouse_actual_cbm` | MaterializedView | 22503 | 431.07 KiB |  |
-| 48 | `mv_movement_transaction` | MaterializedView | 60898 | 1.61 MiB |  |
-| 49 | `mv_otif` | MaterializedView | 1298047 | 99.80 MiB |  |
-| 50 | `mv_otif_stm_data` | MaterializedView | 2972656 | 40.97 MiB |  |
-| 51 | `mv_otif_swm_data` | MaterializedView | 6631044 | 231.62 MiB |  |
-| 52 | `mv_otif_swm_stm_data` | MaterializedView | 6502817 | 363.10 MiB |  |
-| 53 | `mv_outbound_transaction_base` | MaterializedView | 33820 | 1.06 MiB |  |
-| 54 | `mv_outbound_transaction_raw` | MaterializedView | 7137704 | 104.88 MiB |  |
-| 55 | `mv_psv` | MaterializedView | 39794 | 3.63 MiB | Refreshable MV (EVERY 30 MIN) song song với mv_psv_trigger - đọc thẳng tms_panasonic_prod.dbo_OPS_Optimizer (không qua psv_target). LEGACY: không có cột status_name_detail/reason_change, schema lệch ~10 rows với psv_target do timing. Deprecate candidate - dùng mv_psv_main thay thế. |
-| 56 | `mv_psv_main` | MaterializedView | 35479 | 2.50 MiB | UI-facing PSV MV (REFRESH EVERY 1 HOUR). SELECT FROM psv_target FINAL WHERE is_deleted=0 AND data_report=true, đồng thời shift mọi DateTime sang UTC+7 (cộng 7h). Dùng cho widget/dashboard Smartlog Control Tower - không phải audit (audit nên dùng psv_target FINAL). |
+| 46 | `mv_mdlz_data_cat_daily` | MaterializedView | 30626 | 397.73 KiB |  |
+| 47 | `mv_mdlz_fact_daily_warehouse_actual_cbm` | MaterializedView | 43236 | 835.50 KiB |  |
+| 48 | `mv_mdlz_tms_report_25_order` | MaterializedView | 24194 | 1.11 MiB | MDLZ TMS Report #25 — rollup cấp đơn (1 row = 1 OrderCode). Nguồn: mdlz_tms_report_25_trip_order. Có sẵn: cờ Ontime/Infull/OTIF + cờ WMS cross-check (has_wms / wms_match_status, chuẩn mv_otif_swm_data) + parsed dates + parsed numbers + trip rollup + dimensions. Logic Ontime (≤ETA+30')/Infull (sumBBGN≥maxOrder) lấy từ tms_report_25_explore.ipynb. Refresh 1h. Doc: mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md |
+| 49 | `mv_movement_transaction` | MaterializedView | 61027 | 1.62 MiB |  |
+| 50 | `mv_otif` | MaterializedView | 1299981 | 102.06 MiB |  |
+| 51 | `mv_otif_stm_data` | MaterializedView | 3071934 | 50.07 MiB |  |
+| 52 | `mv_otif_swm_data` | MaterializedView | 6646280 | 183.19 MiB |  |
+| 53 | `mv_otif_swm_stm_data` | MaterializedView | 6485705 | 379.82 MiB |  |
+| 54 | `mv_outbound_transaction_base` | MaterializedView | 33894 | 1.06 MiB |  |
+| 55 | `mv_outbound_transaction_raw` | MaterializedView | 7153054 | 80.00 MiB |  |
+| 56 | `mv_psv_main` | MaterializedView | 36008 | 2.57 MiB | UI-facing PSV MV (REFRESH EVERY 1 HOUR). SELECT FROM psv_target FINAL WHERE is_deleted=0 AND data_report=true, đồng thời shift mọi DateTime sang UTC+7 (cộng 7h). Dùng cho widget/dashboard Smartlog Control Tower - không phải audit (audit nên dùng psv_target FINAL). |
 | 57 | `mv_psv_trigger` | MaterializedView | — | — |  |
-| 58 | `mv_stm_dropped` | MaterializedView | 3344564 | 48.84 MiB |  |
-| 59 | `mv_stocktype` | MaterializedView | 82 | 4.75 KiB |  |
-| 60 | `mv_swm_dropped` | MaterializedView | 42858 | 2.36 MiB |  |
-| 61 | `mv_test_copack_clickhouse` | MaterializedView | 4523 | 19.06 KiB |  |
-| 62 | `mv_test_goods_receipt` | MaterializedView | 5600 | 14.22 KiB |  |
-| 63 | `mv_test_loose_picking` | MaterializedView | 7794108 | 290.79 MiB |  |
-| 64 | `mv_test_stocktype` | MaterializedView | 79 | 5.61 KiB |  |
-| 65 | `mv_transfer_in_out` | MaterializedView | 6294 | 26.55 KiB |  |
-| 66 | `mv_vfr_gui_thau` | MaterializedView | 79946 | 10.13 MiB |  |
-| 67 | `mv_vfr_van_hanh` | MaterializedView | 72690 | 9.23 MiB |  |
-| 68 | `mv_wh_utilization` | MaterializedView | 33054 | 555.01 KiB |  |
-| 69 | `v_mdlz_masterdata_category_brand` | View | — | — |  |
+| 58 | `mv_stm_dropped` | MaterializedView | 3359562 | 49.35 MiB |  |
+| 59 | `mv_stocktype` | MaterializedView | 81 | 4.39 KiB |  |
+| 60 | `mv_swm_dropped` | MaterializedView | 42900 | 1.45 MiB |  |
+| 61 | `mv_transfer_in_out` | MaterializedView | 6467 | 27.24 KiB |  |
+| 62 | `mv_vfr_gui_thau` | MaterializedView | 80270 | 10.17 MiB |  |
+| 63 | `mv_vfr_van_hanh` | MaterializedView | 73022 | 9.27 MiB |  |
+| 64 | `mv_wh_utilization` | MaterializedView | 33670 | 570.81 KiB |  |
+| 65 | `v_mdlz_masterdata_category_brand` | View | — | — |  |
 
 ---
 
 ## DDL Chi tiết
+
+### `.tmp.inner_id.1e98e4ec-1832-4167-ac16-1a5987306b6f`
+
+**Engine:** `SharedMergeTree`
+
+```sql
+CREATE TABLE analytics_workspace.`.tmp.inner_id.1e98e4ec-1832-4167-ac16-1a5987306b6f`
+(
+    `whseid` String,
+    `SO` String,
+    `order_key` String,
+    `actual_ship_date` DateTime64(9),
+    `item_code` String,
+    `product_name` String,
+    `batch` DateTime64(9),
+    `number_of_full_pallets` Nullable(Float64),
+    `cse_full` Nullable(Float64),
+    `cse_loose` Nullable(Float64),
+    `pct_loose_picking` Nullable(Float64),
+    `customer_code` String,
+    `customer_name` String,
+    `region` String
+)
+ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
+ORDER BY tuple()
+SETTINGS allow_nullable_key = 1, index_granularity = 8192
+```
+
+---
+
+### `mdlz_tms_report_25_trip_order`
+
+> MDLZ TMS report #25 (Bao cao theo don hang va chuyen) - staging dump String trung thuc. Refresh: TRUNCATE+reload theo cua so <=5 ngay. Nguon: REPDIOPSPlan_SettingDownload functionid=78 TypeExport=25. Doc: mondelez/02-data/data-sources/mdlz_tms_report_25_trip_order.md
+
+**Engine:** `SharedMergeTree`
+
+```sql
+CREATE TABLE analytics_workspace.mdlz_tms_report_25_trip_order
+(
+    `STT` String COMMENT 'STT',
+    `MasterCode` String COMMENT 'Mã chuyến',
+    `MasterCodeRoute1` String COMMENT 'Mã chuyến chặng 1',
+    `MasterStatus` String COMMENT 'Trạng thái chuyến',
+    `MasterNote` String COMMENT 'Ghi chú chuyến',
+    `MasterNote1` String COMMENT 'Ghi chú chuyến 1',
+    `MasterNote2` String COMMENT 'Ghi chú chuyến 2',
+    `MasterNote3` String COMMENT 'Ghi chú chuyến 3',
+    `MasterNote4` String COMMENT 'Ghi chú chuyến 4',
+    `MasterNote5` String COMMENT 'Ghi chú chuyến 5',
+    `MasterETD` String COMMENT 'ETD chuyến',
+    `MasterETA` String COMMENT 'ETA chuyến',
+    `MasterATD` String COMMENT 'ATD chuyến',
+    `MasterATA` String COMMENT 'ATA chuyến',
+    `KM` String COMMENT 'KM',
+    `KMGPS` String COMMENT 'KMGPS',
+    `KMGPSMobile` String COMMENT 'KMGPSMobile',
+    `VehicleRegNoStage1` String COMMENT 'Số xe',
+    `GroupOfVehicleCode` String COMMENT 'Mã loại xe',
+    `GroupOfVehicleName` String COMMENT 'Tên loại xe',
+    `VehicleMaxWeightStage1` String COMMENT 'Trọng tải',
+    `VehicleNote` String COMMENT 'Ghi chú xe',
+    `DriverNameStage1` String COMMENT 'Tên tài xế',
+    `DriverTelStage1` String COMMENT 'SĐT tài xế',
+    `DriverName2` String COMMENT 'Tên phụ lái',
+    `DriverName3` String COMMENT 'Tên bốc xếp',
+    `VendorCode` String COMMENT 'Mã nhà xe',
+    `VendorName` String COMMENT 'Tên nhà xe',
+    `VendorShortName` String COMMENT 'Tên ngắn nhà xe',
+    `TenderedDate` String COMMENT 'Thời gian gửi thầu',
+    `DeliveryStatus` String COMMENT 'Trạng thái giao hàng',
+    `QuantityOrder` String COMMENT 'Số lượng kế hoạch',
+    `QuantityTransfer` String COMMENT 'Số lượng lấy',
+    `QuantityBBGN` String COMMENT 'Số lượng giao',
+    `TonOrder` String COMMENT 'Tấn kế hoạch',
+    `TonTransfer` String COMMENT 'Tấn lấy',
+    `TonBBGN` String COMMENT 'Tấn giao',
+    `CBMOrder` String COMMENT 'Khối kế hoạch',
+    `CBMTransfer` String COMMENT 'Khối lấy',
+    `CBMBBGN` String COMMENT 'Khối giao',
+    `ReasonDeliveryName` String COMMENT 'Nguyên nhân chênh lệch SL giao',
+    `ORDLocationFromCode` String COMMENT 'Mã điểm lấy của đơn',
+    `ORDLocationFromName` String COMMENT 'Tên điểm lấy của đơn',
+    `ORDLocationToCode` String COMMENT 'Mã điểm giao của đơn',
+    `ORDLocationToName` String COMMENT 'Tên điểm giao của đơn',
+    `StockCode` String COMMENT 'Mã điểm lấy',
+    `StockName` String COMMENT 'Tên điểm lấy',
+    `StockAddress` String COMMENT 'Địa chỉ điểm lấy',
+    `OPSLocationToCode` String COMMENT 'Mã điểm giao',
+    `OPSLocationToName` String COMMENT 'Tên điểm giao',
+    `OPSLocationToAddress` String COMMENT 'Địa chỉ điểm giao',
+    `OPSLocationToProvince` String COMMENT 'Tỉnh điểm giao',
+    `OPSLocationToDistrict` String COMMENT 'Quận điểm giao',
+    `OPSLocationToNote` String COMMENT 'Ghi chú điểm giao',
+    `OPSLocationToCellphone` String COMMENT 'SĐT điểm giao',
+    `GroupOfLocationToCode` String COMMENT 'Mã loại điểm giao',
+    `GroupOfLocationToName` String COMMENT 'Tên loại điểm giao',
+    `PartnerToCode` String COMMENT 'Mã hệ thống của nhà phân phối',
+    `GroupOfPartnerName` String COMMENT 'Nhóm nhà phân phối',
+    `DistributorTypeModelName` String COMMENT 'Mô hình nhà phân phối',
+    `LocationToUnloadingTypeName` String COMMENT 'Loại bốc xếp',
+    `RoutingAreaToCode` String COMMENT 'Khu vực giao',
+    `DateFromCome` String COMMENT 'Ngày đến điểm lấy',
+    `DateFromLoadStart` String COMMENT 'Ngày bắt đầu load hàng điểm lấy',
+    `DateFromLoadEnd` String COMMENT 'Ngày hoàn tất load hàng điểm lấy',
+    `DateFromLeave` String COMMENT 'Ngày đi (rời) điểm lấy',
+    `DateToCome` String COMMENT 'Ngày đến điểm giao',
+    `DateToLoadStart` String COMMENT 'Ngày bắt đầu load hàng điểm giao',
+    `DateToLoadEnd` String COMMENT 'Ngày hoàn tất load hàng điểm giao',
+    `DateToLeave` String COMMENT 'Ngày đi (rời) điểm giao',
+    `DateComeEstimateFrom` String COMMENT 'Ngày đến điểm lấy dự kiến',
+    `DateLeaveEstimateFrom` String COMMENT 'Ngày đi (rời) điểm lấy dự kiến',
+    `DateComeEstimateTo` String COMMENT 'Ngày đến điểm giao dự kiến',
+    `DateLeaveEstimateTo` String COMMENT 'Ngày đi (rời) điểm giao dự kiến',
+    `TripTempRoom1` String COMMENT 'Nhiệt độ ngăn 1',
+    `TripTempRoom2` String COMMENT 'Nhiệt độ ngăn 2',
+    `OPSGroupNote` String COMMENT 'Ghi chú chi tiết chuyến',
+    `OPSGroupNote1` String COMMENT 'Ghi chú chi tiết chuyến 1',
+    `OPSGroupNote2` String COMMENT 'Ghi chú chi tiết chuyến 2',
+    `PODStatus` String COMMENT 'Trạng thái chứng từ',
+    `InvoiceDate` String COMMENT 'Ngày nhận chứng từ',
+    `InvoiceBy` String COMMENT 'Người nhận chứng từ',
+    `HasUpload` String COMMENT 'Đã up hình chứng từ',
+    `InvoiceNote` String COMMENT 'Ghi chú chứng từ',
+    `InvoiceMissingNote` String COMMENT 'Ghi chú thiếu chứng từ',
+    `OrderCode` String COMMENT 'Mã đơn hàng',
+    `VesselNo` String COMMENT 'Mã tàu',
+    `VesselName` String COMMENT 'Tên tàu',
+    `ServiceOfOrderCode` String COMMENT 'Mã dịch vụ',
+    `ServiceOfOrderName` String COMMENT 'Tên dịch vụ',
+    `TransportModeCode` String COMMENT 'Mã loại hình vận chuyển',
+    `TransportModeName` String COMMENT 'Tên loại hình vận chuyển',
+    `OrderCreatedBy` String COMMENT 'Người tạo đơn',
+    `OrderCreatedDate` String COMMENT 'Ngày tạo đơn',
+    `OrderType` String COMMENT 'Loại đơn hàng',
+    `OrderStatus` String COMMENT 'Trạng thái đơn',
+    `ReasonCancel` String COMMENT 'Lý do huỷ đơn',
+    `ReasonCancelNote` String COMMENT 'Ghi chú lý do huỷ đơn',
+    `OrderNote` String COMMENT 'Ghi chú đơn hàng',
+    `RequestDate` String COMMENT 'Ngày yêu cầu vận chuyển',
+    `ETD` String COMMENT 'ETD đơn',
+    `ETA` String COMMENT 'ETA đơn',
+    `OrderContract` String COMMENT 'Hợp đồng đơn hàng',
+    `PaymentMethod` String COMMENT 'Phương thức thanh toán',
+    `SORefCode` String COMMENT 'Số SO',
+    `CustomerCode` String COMMENT 'Mã khách hàng',
+    `CustomerName` String COMMENT 'Tên khách hàng',
+    `CustomerShortName` String COMMENT 'Tên ngắn khách hàng',
+    `TextLocationFromCode` String COMMENT 'Text mã điểm nhận',
+    `TextLocationFromName` String COMMENT 'Text tên điểm nhận',
+    `TextLocationFromAddress` String COMMENT 'Text địa chỉ điểm nhận',
+    `TextLocationFromProvinceCode` String COMMENT 'Text mã tỉnh thành điểm nhận',
+    `TextLocationFromProvinceName` String COMMENT 'Text tên tỉnh thành điểm nhận',
+    `TextLocationFromDistrictCode` String COMMENT 'Text mã quận huyện điểm nhận',
+    `TextLocationFromDistrictName` String COMMENT 'Text tên quận huyện điểm nhận',
+    `TextLocationFromWardCode` String COMMENT 'Text mã xã phường điểm nhận',
+    `TextLocationFromWardName` String COMMENT 'Text tên xã phường điểm nhận',
+    `TextLocationToCode` String COMMENT 'Text mã điểm giao',
+    `TextLocationToName` String COMMENT 'Text tên điểm giao',
+    `TextLocationToAddress` String COMMENT 'Text địa chỉ điểm giao',
+    `TextLocationToProvinceCode` String COMMENT 'Text mã tỉnh thành điểm giao',
+    `TextLocationToProvinceName` String COMMENT 'Text tên tỉnh thành điểm giao',
+    `TextLocationToDistrictCode` String COMMENT 'Text mã quận huyện điểm giao',
+    `TextLocationToDistrictName` String COMMENT 'Text tên quận huyện điểm giao',
+    `TextLocationToWardCode` String COMMENT 'Text mã xã phường điểm giao',
+    `TextLocationToWardName` String COMMENT 'Text tên xã phường điểm giao',
+    `ORDTextLocationFromCode` String COMMENT 'Text mã điểm nhận chi tiết đơn',
+    `ORDTextLocationFromName` String COMMENT 'Text tên điểm nhận chi tiết đơn',
+    `ORDTextLocationFromAddress` String COMMENT 'Text địa chỉ điểm nhận chi tiết đơn',
+    `ORDTextLocationFromProvinceCode` String COMMENT 'Text mã tỉnh thành điểm nhận chi tiết đơn',
+    `ORDTextLocationFromProvinceName` String COMMENT 'Text tên tỉnh thành điểm nhận chi tiết đơn',
+    `ORDTextLocationFromDistrictCode` String COMMENT 'Text mã quận huyện điểm nhận chi tiết đơn',
+    `ORDTextLocationFromDistrictName` String COMMENT 'Text tên quận huyện điểm nhận chi tiết đơn',
+    `ORDTextLocationFromWardCode` String COMMENT 'Text mã xã phường điểm nhận chi tiết đơn',
+    `ORDTextLocationFromWardName` String COMMENT 'Text tên xã phường điểm nhận chi tiết đơn',
+    `ORDTextLocationToCode` String COMMENT 'Text mã điểm giao chi tiết đơn',
+    `ORDTextLocationToName` String COMMENT 'Text tên điểm giao chi tiết đơn',
+    `ORDTextLocationToAddress` String COMMENT 'Text địa chỉ điểm giao chi tiết đơn',
+    `ORDTextLocationToProvinceCode` String COMMENT 'Text mã tỉnh thành điểm giao chi tiết đơn',
+    `ORDTextLocationToProvinceName` String COMMENT 'Text tên tỉnh thành điểm giao chi tiết đơn',
+    `ORDTextLocationToDistrictCode` String COMMENT 'Text mã quận huyện điểm giao chi tiết đơn',
+    `ORDTextLocationToDistrictName` String COMMENT 'Text tên quận huyện điểm giao chi tiết đơn',
+    `ORDTextLocationToWardCode` String COMMENT 'Text mã xã phường điểm giao chi tiết đơn',
+    `ORDTextLocationToWardName` String COMMENT 'Text tên xã phường điểm giao chi tiết đơn',
+    `_src_window` String COMMENT 'Cửa sổ ngày nguồn (yyyy-mm-dd..yyyy-mm-dd)',
+    `_loaded_at` DateTime DEFAULT now() COMMENT 'Thời điểm nạp dữ liệu'
+)
+ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
+ORDER BY (MasterCode, OrderCode)
+SETTINGS index_granularity = 8192
+COMMENT 'MDLZ TMS report #25 (Bao cao theo don hang va chuyen) - staging dump String trung thuc. Refresh: TRUNCATE+reload theo cua so <=5 ngay. Nguon: REPDIOPSPlan_SettingDownload functionid=78 TypeExport=25. Doc: mondelez/02-data/data-sources/mdlz_tms_report_25_trip_order.md'
+```
+
+---
 
 ### `mv_alert_late_do`
 
@@ -90,7 +279,7 @@
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_late_do
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `so_chuyen` Nullable(String) COMMENT 'Mã chuyến vận hành',
     `whseid` Nullable(String) COMMENT 'Mã kho (SWM)',
@@ -302,7 +491,7 @@ LEFT JOIN analytics_workspace.mv_alert_late_do_concat AS c ON a.so_chuyen = c.so
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_late_do_base
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `whseid` Nullable(String),
     `whseid_stm` Nullable(String),
@@ -447,7 +636,7 @@ base
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_late_do_concat
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `so_chuyen` Nullable(String),
     `concat_do_ly_do` Nullable(String),
@@ -500,7 +689,7 @@ GROUP BY so_chuyen
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_late_do_so_pick
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `so_chuyen` Nullable(String),
     `whseid` Nullable(String),
@@ -673,7 +862,7 @@ so_pick AS p ON s.so_chuyen = p.so_chuyen
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_stm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `id_ord_group_product` UInt64 COMMENT 'ID chi tiết đơn hàng (ORD_GroupProduct.ID)',
     `ma_don_hang` Nullable(String) COMMENT 'Mã đơn hàng (ORD_Order.Code)',
@@ -780,7 +969,7 @@ WHERE (ordm.service_name = 'Xuất bán') AND (ordm.customer_id = '9') AND (trip
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_stm_swm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `whseid` Nullable(String) COMMENT 'Mã kho (SWM)',
     `whseid_stm` Nullable(String) COMMENT 'Mã kho STM (BKD1/2/3→BKD)',
@@ -985,7 +1174,7 @@ LEFT JOIN analytics_workspace.mv_masterdata_sku AS ms ON (e.item_code = assumeNo
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_alert_swm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `whseid` String COMMENT 'Mã kho (WHSEID)',
     `whseid_stm` String COMMENT 'Mã kho quy về STM (BKD1/2/3 → BKD)',
@@ -1079,15 +1268,15 @@ WHERE (od.storer_key = 'MDLZ') AND (((od.whseid = 'NKD') AND (o.type IN ('01', '
 CREATE MATERIALIZED VIEW analytics_workspace.mv_copack
 REFRESH EVERY 1 HOUR
 (
-    `whseid` Nullable(String) COMMENT 'Mã kho',
-    `date_in_out` Date COMMENT 'Ngày nhập/xuất copack',
-    `pallet_in` UInt64 COMMENT 'Số pallet nhập (receipt line count theo palletid)',
-    `pallet_out` Float64 COMMENT 'Số pallet xuất (làm tròn lên theo masterunit_per_pallet)'
+    `whseid` String,
+    `date_in_out` Date,
+    `pallet_in` UInt64,
+    `pallet_out` Nullable(Float64)
 )
 ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY whseid
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = helix SQL SECURITY DEFINER
+DEFINER = `sql-console:vy.tao@gosmartlog.com` SQL SECURITY DEFINER
 AS WITH
     in_copack AS
     (
@@ -1095,14 +1284,12 @@ AS WITH
             toDate(r.date_received) AS ngay,
             r.whseid AS kho,
             count(r.palletid) AS pallet_in
-        FROM mondelez_swm_test.dim_receiptdetail AS r
-        FINAL
-        LEFT JOIN mondelez_swm_test.dim_receipt AS rh
-        FINAL ON (rh.storer_key = r.storer_key) AND (rh.whseid = r.whseid) AND (rh.receipt_key = r.receipt_key) AND (rh.is_deleted = 0)
+        FROM swm_dwh_mondelez.dim_receiptdetail AS r
+        LEFT JOIN swm_dwh_mondelez.dim_receipt AS rh ON (rh.storer_key = r.storer_key) AND (rh.whseid = r.whseid) AND (rh.receipt_key = r.receipt_key) AND (rh.is_deleted = 0)
         WHERE (((r.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (((rh.type = 'FGTN') AND ((r.lottable06 IN ('0072', '')) OR (r.lottable06 IS NULL))) OR (rh.type = '05'))) OR ((r.whseid = 'NKD') AND (((rh.type = 'FGTN') AND (r.lottable06 IN ('0032', '0021'))) OR (rh.type = '05')))) AND (r.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (rh.status_code IN ('9', '5')) AND (r.storer_key = 'MDLZ') AND (r.is_deleted = 0)
         GROUP BY
-            ngay,
-            kho
+            1,
+            2
     ),
     group_out_copack AS
     (
@@ -1114,23 +1301,19 @@ AS WITH
             toDate(o.actual_ship_date) AS ngay,
             o.whseid AS kho,
             ceil(sum(p.qty / nullIf(s.masterunit_per_pallet, 0))) AS pallet_out
-        FROM mondelez_swm_test.dim_orderdetail AS o
-        FINAL
-        LEFT JOIN mondelez_swm_test.dim_orders AS o_h
-        FINAL ON (o_h.storer_key = o.storer_key) AND (o_h.whseid = o.whseid) AND (o_h.order_key = o.order_key) AND (o_h.is_deleted = 0)
-        LEFT JOIN mondelez_swm_test.dim_pickdetail AS p
-        FINAL ON (o.storer_key = p.storer_key) AND (o.whseid = p.whseid) AND (o.order_key = p.order_key) AND (o.order_line_number = p.order_line_number) AND (p.is_deleted = 0)
-        LEFT JOIN mondelez_swm_test.dim_receiptdetail AS r
-        FINAL ON (r.storer_key = p.storer_key) AND (r.whseid = p.whseid) AND (r.lpnid = p.lpnid) AND (r.is_deleted = 0)
+        FROM swm_dwh_mondelez.dim_orderdetail AS o
+        LEFT JOIN swm_dwh_mondelez.dim_orders AS o_h ON (o_h.storer_key = o.storer_key) AND (o_h.whseid = o.whseid) AND (o_h.order_key = o.order_key) AND (o_h.is_deleted = 0)
+        LEFT JOIN swm_dwh_mondelez.dim_pickdetail AS p ON (o.storer_key = p.storer_key) AND (o.whseid = p.whseid) AND (o.order_key = p.order_key) AND (o.order_line_number = p.order_line_number) AND (p.is_deleted = 0)
+        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS r ON (r.storer_key = p.storer_key) AND (r.whseid = p.whseid) AND (r.lpnid = p.lpnid) AND (r.is_deleted = 0)
         LEFT JOIN analytics_workspace.mv_masterdata_sku AS s ON (s.whseid = o.whseid) AND (s.item_code = o.sku)
         WHERE (o.storer_key = 'MDLZ') AND (o.status_code IN ('95', '92')) AND (o.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (((o.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (o_h.type IN ('05', 'CPK'))) OR ((o.whseid = 'NKD') AND (o_h.type IN ('04', '05', 'CPK')))) AND (o.is_deleted = 0)
         GROUP BY
-            o_h.extern_order_key,
-            o.order_key,
-            o.sku,
-            batch,
-            ngay,
-            kho
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
     ),
     out_copack AS
     (
@@ -1141,8 +1324,8 @@ AS WITH
         FROM
         group_out_copack
         GROUP BY
-            ngay,
-            kho
+            1,
+            2
     )
 SELECT
     coalesce(i.kho, o.kho) AS whseid,
@@ -1153,6 +1336,7 @@ FROM
 in_copack AS i
 FULL OUTER JOIN
 out_copack AS o ON (i.ngay = o.ngay) AND (i.kho = o.kho)
+SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join = '200M', max_bytes_before_external_group_by = '200M', max_bytes_before_external_sort = '200M', min_insert_block_size_bytes = 20971520, min_insert_block_size_rows = 50000, min_bytes_to_use_direct_io = 1
 ```
 
 ---
@@ -2377,7 +2561,7 @@ SELECT
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_flash_and_drop_report
-REFRESH EVERY 15 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `biz_key` String,
     `whseid` String,
@@ -2594,7 +2778,7 @@ FROM analytics_workspace.mv_dropped_report
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_flash_report
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `biz_key` String,
     `whseid` String,
@@ -2782,7 +2966,7 @@ SELECT
     e.san_luong_giao_cbm,
     e.san_luong_giao_kg,
     e.san_luong_giao_pl,
-    multiIf(((e.status = 'ShipCompleted') AND (e.stm_trang_thai_don_hang IN ('Đã giao hàng', 'Nhận 1 phần chứng từ', 'Đã nhận chứng từ'))) OR (e.stm_ata_den IS NOT NULL), 'Đã vận chuyển', e.status = 'New', 'Chưa xuất kho', (e.status IN ('PartAllocate', 'Allocated', 'PartPick', 'Picked', 'PartShipped')), 'Đang xuất kho', (e.status = 'ShipCompleted') AND (e.stm_thoi_gian_di IS NOT NULL), 'Đang vận chuyển', e.status = 'ShipCompleted', 'Đã xuất kho', NULL) AS trang_thai_don_do
+    multiIf(((e.status = 'ShipCompleted') AND (e.stm_trang_thai_don_hang IN ('Đã giao hàng', 'Nhận 1 phần chứng từ', 'Đã nhận chứng từ'))) OR (e.stm_ata_roi IS NOT NULL), 'Đã vận chuyển', e.status = 'New', 'Chưa xuất kho', (e.status IN ('PartAllocate', 'Allocated', 'PartPick', 'Picked', 'PartShipped')), 'Đang xuất kho', (e.status = 'ShipCompleted') AND (e.stm_thoi_gian_di IS NOT NULL), 'Đang vận chuyển', e.status = 'ShipCompleted', 'Đã xuất kho', NULL) AS trang_thai_don_do
 FROM
 enriched AS e
 SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join = 209715200, max_bytes_before_external_group_by = 209715200, max_bytes_before_external_sort = 209715200, min_insert_block_size_bytes = 20971520, min_insert_block_size_rows = 50000, min_bytes_to_use_direct_io = 1
@@ -2796,12 +2980,13 @@ SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_flrp_stm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `id_ord_groupproduct` UInt64 COMMENT 'ID dim_ord_product_group',
     `ma_don_hang` String COMMENT 'Mã đơn STM (dim_ord_order.code)',
     `trang_thai_don_hang` Nullable(String) COMMENT 'Tên trạng thái đơn (dim_ord_order.status_name)',
     `line_no` String COMMENT 'LineNo từ code_sync (bỏ 1 ký tự cuối)',
+    `item_code` Nullable(String),
     `quantity_bbgn` Nullable(Decimal(38, 8)) COMMENT 'Số lượng giao BBGN',
     `thoi_gian_gui_thau` Nullable(DateTime64(3, 'UTC')) COMMENT 'Tender date',
     `eta_giao_hang_cho_npp` Nullable(DateTime64(3, 'UTC')) COMMENT 'ETA chi tiết chuyến',
@@ -2822,7 +3007,7 @@ REFRESH EVERY 5 MINUTE
     `tai_xe` Nullable(String) COMMENT 'Tài xế'
 )
 ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY (ma_don_hang, line_no)
+ORDER BY (ma_don_hang, line_no, item_code)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = helix SQL SECURITY DEFINER
 AS WITH dock_end AS
@@ -2839,6 +3024,7 @@ SELECT
     ord.code AS ma_don_hang,
     ord.status_name AS trang_thai_don_hang,
     left(opg.code_sync, greatest(lengthUTF8(trimBoth(opg.code_sync)) - 1, 0)) AS line_no,
+    sub_prod.code AS item_code,
     ifNull(dtd.quantity_bbgn, toDecimal64(0, 8)) AS quantity_bbgn,
     if((dtd.tender_date IS NULL) OR (toDate(toDateTime64(dtd.tender_date, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(dtd.tender_date, 3, 'UTC')) AS thoi_gian_gui_thau,
     if((dtd.eta IS NULL) OR (toDate(toDateTime64(dtd.eta, 3, 'UTC')) = toDate('1970-01-01')), NULL, toDateTime64(dtd.eta, 3, 'UTC')) AS eta_giao_hang_cho_npp,
@@ -2872,6 +3058,8 @@ LEFT JOIN
 dock_end AS dr ON dr.dito_master_id = trip.id
 LEFT JOIN analytics_workspace.mv_masterdata_vendor AS mv ON trip.vendor_id = toInt64(mv.id)
 LEFT JOIN analytics_workspace.mv_masterdata_vehicle AS mveh ON trip.vehicle_id = toInt64(mveh.id_vehicle)
+LEFT JOIN stm_dwh_mondelez.dim_ord_product AS ord_prod ON (ord_prod.group_product_id = opg.id) AND (ifNull(toUInt8(ord_prod.is_deleted), 0) = 0)
+LEFT JOIN stm_dwh_mondelez.subdim_cus_product AS sub_prod ON sub_prod.key_sk = ord_prod.subcus_product_sk
 WHERE (ord.is_deleted = 0) AND (ord.service_name = 'Xuất bán') AND (ord.customer_id = '9') AND (opg.order_id IS NOT NULL) AND (opg.code_sync IS NOT NULL) AND (trimBoth(opg.code_sync) != '') AND ((dtd.sort_order = 1) OR (dtd.sort_order = -1))
 SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join = 209715200, max_bytes_before_external_group_by = 209715200, max_bytes_before_external_sort = 209715200, min_insert_block_size_bytes = 20971520, min_insert_block_size_rows = 50000, min_bytes_to_use_direct_io = 1
 ```
@@ -2884,7 +3072,7 @@ SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_flrp_swm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `biz_key` String,
     `whseid` String,
@@ -4894,162 +5082,6 @@ inbound_shrink_wrap
 
 ---
 
-### `mv_loose_picking_clickhouse`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_loose_picking_clickhouse
-REFRESH EVERY 1 HOUR
-(
-    `whseid` String,
-    `SO` String,
-    `order_key` String,
-    `actual_ship_date` DateTime64(9),
-    `item_code` String,
-    `product_name` String,
-    `batch` DateTime64(9),
-    `number_of_full_pallets` Nullable(Float64),
-    `cse_full` Nullable(Float64),
-    `cse_loose` Nullable(Float64),
-    `pct_loose_picking` Nullable(Float64),
-    `customer_code` String,
-    `customer_name` String,
-    `region` String
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY tuple()
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = helix SQL SECURITY DEFINER
-AS WITH
-    sku_stm AS
-    (
-        SELECT
-            products.id AS id_cus,
-            products.code AS item_code_raw,
-            replaceRegexpAll(trimBoth(products.code), '[ /-].*$', '') AS item_code,
-            row_number() OVER (PARTITION BY replaceRegexpAll(trimBoth(products.code), '[ /-].*$', '') ORDER BY products.id ASC) AS rn
-        FROM stm_dwh_mondelez.subdim_cus_product AS products
-        LEFT JOIN stm_dwh_mondelez.subdim_cus_group_of_product AS group_products ON (products.group_of_product_id = group_products.id) AND (group_products.is_deleted = 0)
-        WHERE products.is_deleted = 0
-    ),
-    masterdata_sku AS
-    (
-        SELECT
-            sku_stm.id_cus,
-            sku.whseid AS whseid,
-            sku.sku AS item_code,
-            sku.descr AS sku_name,
-            sku.category,
-            multiIf((upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (left(sku.sku, 1) = '2'), 'PM', (upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (sku.sku LIKE '%SAMPLE%'), 'TEST', (upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (left(sku.sku, 1) != '2') AND (sku.sku NOT LIKE '%SAMPLE%'), 'EQUIPMENT', (upper(trimBoth(sku.category)) IN ('MOONCAKE')), 'MOONCAKE', (upper(trimBoth(sku.category)) IN ('PALLET')), 'EQUIPMENT', (upper(trimBoth(sku.category)) IN ('POSM', 'OFFBOM')), 'POSM/OFFBOM', (upper(trimBoth(sku.category)) IN ('TEST')), 'TEST', (upper(trimBoth(sku.category)) IN ('BUN', 'BUN1', 'BUN2')), 'FRESH', (upper(trimBoth(sku.category)) IN ('FRESH')), 'FRESH', (upper(trimBoth(sku.category)) IN ('DRY')), 'DRY', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (left(sku.sku, 1) = '2'), 'PM', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (sku.sku LIKE '%SAMPLE%'), 'TEST', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (left(sku.sku, 1) != '2') AND (sku.sku NOT LIKE '%SAMPLE%'), convert_cargo.convert_skugroup, (sku.category IS NULL) AND (left(sku.sku, 2) = 'ZW'), 'POSM/OFFBOM', (sku.category IS NULL) AND (left(sku.sku, 1) = '2'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%BAO BI%'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%BAOBI%'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%PL%'), 'EQUIPMENT', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%PPE%'), 'EQUIPMENT', NULL) AS group_of_cargo,
-            multiIf(substring(sku.sku, 1, 1) != '4', 'Other', match(upper(sku.descr), '(^| )SOLITE( |$)'), 'Solite', match(upper(sku.descr), '(^|[^A-Z0-9])AFC([^A-Z0-9]|$)'), 'AFC', match(upper(sku.descr), '(^|[^A-Z0-9])LU([^A-Z0-9]|$)'), 'Lu', match(upper(sku.descr), '(^|[^A-Z0-9])COSY([^A-Z0-9]|$)'), 'Cosy', match(upper(sku.descr), '(^|[^A-Z0-9])OREO([^A-Z0-9]|$)'), 'Oreo', match(upper(sku.descr), '(^|[^A-Z0-9])TET([^A-Z0-9]|$)'), 'Tết', match(upper(sku.descr), '(^|[^A-Z0-9])TRUNG THU([^A-Z0-9]|$)'), 'Trung Thu', match(upper(sku.descr), '(^|[^A-Z0-9])SLIDE([^A-Z0-9]|$)'), 'Slide', match(upper(sku.descr), '(^|[^A-Z0-9])(KD|KINH ĐÔ|KINH DO)([^A-Z0-9]|$)'), 'KD', match(upper(sku.descr), '(^|[^A-Z0-9])RITZ([^A-Z0-9]|$)'), 'RITZ', match(upper(sku.descr), '(^|[^A-Z0-9])TOBLERONE([^A-Z0-9]|$)'), 'Toblerone', NULL) AS brand,
-            sku.std_cube AS cbm_per_masterunit,
-            sku.std_grossweight AS kg_per_masterunit,
-            pack.inner_pack AS masterunit_per_cse,
-            pack.pallet AS masterunit_per_pallet
-        FROM
-        sku_stm
-        FULL OUTER JOIN swm_dwh_mondelez.dim_sku AS sku ON (sku.storer_key = 'MDLZ') AND (sku_stm.rn = 1) AND (sku_stm.item_code = sku.sku) AND (sku.is_deleted = 0)
-        LEFT JOIN swm_dwh_mondelez.dim_pack AS pack ON (pack.whseid = sku.whseid) AND (pack.pack_key = sku.pack_key) AND (pack.is_deleted = 0)
-        LEFT JOIN internal.convert_cargo AS convert_cargo ON (convert_cargo.whseid = 'BKD1') AND (sku.sku = convert_cargo.sku)
-        WHERE (sku.storer_key = 'MDLZ') AND (sku.is_deleted = 0)
-    ),
-    group_pickdetail AS
-    (
-        SELECT
-            pickdetail.storer_key,
-            pickdetail.whseid,
-            pickdetail.order_key,
-            pickdetail.order_line_number,
-            pickdetail.lpnid,
-            sum(pickdetail.qty) AS SHIPPED
-        FROM swm_dwh_mondelez.dim_pickdetail AS pickdetail
-        WHERE pickdetail.is_deleted = 0
-        GROUP BY
-            1,
-            2,
-            3,
-            4,
-            5
-    ),
-    enriching_data AS
-    (
-        SELECT
-            orders.whseid AS whseid,
-            orders.extern_order_key AS SO,
-            orders.order_key AS order_key,
-            orders.actual_ship_date AS actual_ship_date,
-            orderdetail.order_line_number,
-            orders.consignee_key AS `Customer Code`,
-            masterdata_location.cus_location_name AS `Customer Name`,
-            masterdata_location.group_area_name AS `Khu vực đội xe`,
-            orderdetail.sku AS item_code,
-            masterdata_sku.sku_name AS product_name,
-            masterdata_sku.group_of_cargo AS `Group of Cago`,
-            rd.lottable04 AS batch,
-            orderdetail.original_qty AS ORIGINAL,
-            orderdetail.original_qty * cbm_per_masterunit AS `ORIGINAL CBM`,
-            orderdetail.original_qty * kg_per_masterunit AS `ORIGINAL KG`,
-            orderdetail.original_qty / nullIf(masterunit_per_cse, 0) AS `ORIGINAL CSE`,
-            orderdetail.original_qty / nullIf(masterunit_per_pallet, 0) AS `ORIGINAL PL`,
-            p.SHIPPED AS SHIPPED,
-            p.SHIPPED * cbm_per_masterunit AS `SHIPPED CBM`,
-            p.SHIPPED * kg_per_masterunit AS `SHIPPED KG`,
-            p.SHIPPED / nullIf(masterunit_per_cse, 0) AS `SHIPPED CSE`,
-            p.SHIPPED / nullIf(masterunit_per_pallet, 0) AS `SHIPPED PL`,
-            cbm_per_masterunit,
-            kg_per_masterunit,
-            masterunit_per_cse,
-            masterunit_per_pallet,
-            masterunit_per_pallet / nullIf(masterunit_per_cse, 0) AS cse_per_pallet
-        FROM swm_dwh_mondelez.dim_orderdetail AS orderdetail
-        LEFT JOIN
-        masterdata_sku ON (orderdetail.whseid = masterdata_sku.whseid) AND (orderdetail.sku = masterdata_sku.item_code)
-        LEFT JOIN swm_dwh_mondelez.dim_orders AS orders ON (orderdetail.storer_key = orders.storer_key) AND (orderdetail.whseid = orders.whseid) AND (orderdetail.order_key = orders.order_key) AND (orders.is_deleted = 0)
-        LEFT JOIN
-        group_pickdetail AS p ON (orderdetail.storer_key = p.storer_key) AND (orderdetail.whseid = p.whseid) AND (orderdetail.order_key = p.order_key) AND (orderdetail.order_line_number = p.order_line_number)
-        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS rd ON (rd.storer_key = p.storer_key) AND (rd.whseid = p.whseid) AND (rd.lpnid = p.lpnid) AND (rd.is_deleted = 0)
-        LEFT JOIN analytics_workspace.mv_masterdata_location AS masterdata_location ON orders.consignee_key = masterdata_location.cus_location_code
-        WHERE (orderdetail.storer_key = 'MDLZ') AND (orders.status_code = '95') AND (orderdetail.is_deleted = 0) AND (orderdetail.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (orders.extern_order_key IS NOT NULL) AND (orderdetail.order_key IS NOT NULL) AND (((orderdetail.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (orders.type IN ('01', '240'))) OR ((orderdetail.whseid = 'NKD') AND (orders.type IN ('01', '07', '08', '09', '240', 'XB2BMC', 'XTNPP'))))
-    ),
-    summary AS
-    (
-        SELECT
-            whseid,
-            SO,
-            order_key,
-            actual_ship_date,
-            item_code,
-            product_name,
-            batch,
-            floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) AS number_of_full_pallets,
-            floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet) AS cse_full,
-            sum(`SHIPPED CSE`) - (floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet)) AS cse_loose,
-            (sum(`SHIPPED CSE`) - (floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet))) / nullIf(sum(`SHIPPED CSE`), 0) AS pct_loose_picking
-        FROM
-        enriching_data
-        GROUP BY
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-    )
-SELECT
-    summary.*,
-    enriching_data.`Customer Code` AS customer_code,
-    enriching_data.`Customer Name` AS customer_name,
-    enriching_data.`Khu vực đội xe` AS region
-FROM
-summary
-LEFT JOIN
-enriching_data ON (summary.SO = enriching_data.SO) AND (summary.item_code = enriching_data.item_code) AND (summary.batch = enriching_data.batch)
-```
-
----
-
 ### `mv_loose_picking_clickhouse_new`
 
 **Engine:** `MaterializedView`
@@ -5207,169 +5239,13 @@ SETTINGS join_algorithm = 'grace_hash', max_block_size = 1024, max_bytes_in_join
 
 ---
 
-### `mv_loose_picking_clickhouse_phong_test`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_loose_picking_clickhouse_phong_test
-REFRESH EVERY 1 HOUR
-(
-    `whseid` String,
-    `SO` String,
-    `order_key` String,
-    `actual_ship_date` DateTime64(9),
-    `item_code` String,
-    `product_name` String,
-    `batch` DateTime64(9),
-    `number_of_full_pallets` Nullable(Float64),
-    `cse_full` Nullable(Float64),
-    `cse_loose` Nullable(Float64),
-    `pct_loose_picking` Nullable(Float64),
-    `customer_code` String,
-    `customer_name` String,
-    `region` String
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY tuple()
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = helix SQL SECURITY DEFINER
-AS WITH
-    sku_stm AS
-    (
-        SELECT
-            products.id AS id_cus,
-            products.code AS item_code_raw,
-            replaceRegexpAll(trimBoth(products.code), '[ /-].*$', '') AS item_code,
-            row_number() OVER (PARTITION BY replaceRegexpAll(trimBoth(products.code), '[ /-].*$', '') ORDER BY products.id ASC) AS rn
-        FROM stm_dwh_mondelez.subdim_cus_product AS products
-        LEFT JOIN stm_dwh_mondelez.subdim_cus_group_of_product AS group_products ON (products.group_of_product_id = group_products.id) AND (group_products.is_deleted = 0)
-        WHERE products.is_deleted = 0
-    ),
-    masterdata_sku AS
-    (
-        SELECT
-            sku_stm.id_cus,
-            sku.whseid AS whseid,
-            sku.sku AS item_code,
-            sku.descr AS sku_name,
-            sku.category,
-            multiIf((upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (left(sku.sku, 1) = '2'), 'PM', (upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (sku.sku LIKE '%SAMPLE%'), 'TEST', (upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (left(sku.sku, 1) != '2') AND (sku.sku NOT LIKE '%SAMPLE%'), 'EQUIPMENT', (upper(trimBoth(sku.category)) IN ('MOONCAKE')), 'MOONCAKE', (upper(trimBoth(sku.category)) IN ('PALLET')), 'EQUIPMENT', (upper(trimBoth(sku.category)) IN ('POSM', 'OFFBOM')), 'POSM/OFFBOM', (upper(trimBoth(sku.category)) IN ('TEST')), 'TEST', (upper(trimBoth(sku.category)) IN ('BUN', 'BUN1', 'BUN2')), 'FRESH', (upper(trimBoth(sku.category)) IN ('FRESH')), 'FRESH', (upper(trimBoth(sku.category)) IN ('DRY')), 'DRY', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (left(sku.sku, 1) = '2'), 'PM', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (sku.sku LIKE '%SAMPLE%'), 'TEST', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (left(sku.sku, 1) != '2') AND (sku.sku NOT LIKE '%SAMPLE%'), convert_cargo.convert_skugroup, (sku.category IS NULL) AND (left(sku.sku, 2) = 'ZW'), 'POSM/OFFBOM', (sku.category IS NULL) AND (left(sku.sku, 1) = '2'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%BAO BI%'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%BAOBI%'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%PL%'), 'EQUIPMENT', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%PPE%'), 'EQUIPMENT', NULL) AS group_of_cargo,
-            multiIf(substring(sku.sku, 1, 1) != '4', 'Other', match(upper(sku.descr), '(^| )SOLITE( |$)'), 'Solite', match(upper(sku.descr), '(^|[^A-Z0-9])AFC([^A-Z0-9]|$)'), 'AFC', match(upper(sku.descr), '(^|[^A-Z0-9])LU([^A-Z0-9]|$)'), 'Lu', match(upper(sku.descr), '(^|[^A-Z0-9])COSY([^A-Z0-9]|$)'), 'Cosy', match(upper(sku.descr), '(^|[^A-Z0-9])OREO([^A-Z0-9]|$)'), 'Oreo', match(upper(sku.descr), '(^|[^A-Z0-9])TET([^A-Z0-9]|$)'), 'Tết', match(upper(sku.descr), '(^|[^A-Z0-9])TRUNG THU([^A-Z0-9]|$)'), 'Trung Thu', match(upper(sku.descr), '(^|[^A-Z0-9])SLIDE([^A-Z0-9]|$)'), 'Slide', match(upper(sku.descr), '(^|[^A-Z0-9])(KD|KINH ĐÔ|KINH DO)([^A-Z0-9]|$)'), 'KD', match(upper(sku.descr), '(^|[^A-Z0-9])RITZ([^A-Z0-9]|$)'), 'RITZ', match(upper(sku.descr), '(^|[^A-Z0-9])TOBLERONE([^A-Z0-9]|$)'), 'Toblerone', NULL) AS brand,
-            sku.std_cube AS cbm_per_masterunit,
-            sku.std_grossweight AS kg_per_masterunit,
-            pack.inner_pack AS masterunit_per_cse,
-            pack.pallet AS masterunit_per_pallet
-        FROM
-        sku_stm
-        FULL OUTER JOIN swm_dwh_mondelez.dim_sku AS sku ON (sku.storer_key = 'MDLZ') AND (sku_stm.rn = 1) AND (sku_stm.item_code = sku.sku) AND (sku.is_deleted = 0)
-        LEFT JOIN swm_dwh_mondelez.dim_pack AS pack ON (pack.whseid = sku.whseid) AND (pack.pack_key = sku.pack_key) AND (pack.is_deleted = 0)
-        LEFT JOIN internal.convert_cargo AS convert_cargo ON (convert_cargo.whseid = 'BKD1') AND (sku.sku = convert_cargo.sku)
-        WHERE (sku.storer_key = 'MDLZ') AND (sku.is_deleted = 0)
-    ),
-    group_pickdetail AS
-    (
-        SELECT
-            pickdetail.storer_key,
-            pickdetail.whseid,
-            pickdetail.order_key,
-            pickdetail.order_line_number,
-            pickdetail.lpnid,
-            sum(pickdetail.qty) AS SHIPPED
-        FROM swm_dwh_mondelez.dim_pickdetail AS pickdetail
-        WHERE pickdetail.is_deleted = 0
-        GROUP BY
-            1,
-            2,
-            3,
-            4,
-            5
-    ),
-    enriching_data AS
-    (
-        SELECT
-            orders.whseid AS whseid,
-            orders.extern_order_key AS SO,
-            orders.order_key AS order_key,
-            orders.actual_ship_date - toIntervalHour(7) AS actual_ship_date,
-            orderdetail.order_line_number,
-            orders.consignee_key AS `Customer Code`,
-            masterdata_location.cus_location_name AS `Customer Name`,
-            masterdata_location.group_area_name AS `Khu vực đội xe`,
-            orderdetail.sku AS item_code,
-            masterdata_sku.sku_name AS product_name,
-            masterdata_sku.group_of_cargo AS `Group of Cago`,
-            rd.lottable04 - toIntervalHour(7) AS batch,
-            orderdetail.original_qty AS ORIGINAL,
-            orderdetail.original_qty * cbm_per_masterunit AS `ORIGINAL CBM`,
-            orderdetail.original_qty * kg_per_masterunit AS `ORIGINAL KG`,
-            orderdetail.original_qty / nullIf(masterunit_per_cse, 0) AS `ORIGINAL CSE`,
-            orderdetail.original_qty / nullIf(masterunit_per_pallet, 0) AS `ORIGINAL PL`,
-            p.SHIPPED AS SHIPPED,
-            p.SHIPPED * cbm_per_masterunit AS `SHIPPED CBM`,
-            p.SHIPPED * kg_per_masterunit AS `SHIPPED KG`,
-            p.SHIPPED / nullIf(masterunit_per_cse, 0) AS `SHIPPED CSE`,
-            p.SHIPPED / nullIf(masterunit_per_pallet, 0) AS `SHIPPED PL`,
-            cbm_per_masterunit,
-            kg_per_masterunit,
-            masterunit_per_cse,
-            masterunit_per_pallet,
-            masterunit_per_pallet / nullIf(masterunit_per_cse, 0) AS cse_per_pallet
-        FROM swm_dwh_mondelez.dim_orderdetail AS orderdetail
-        LEFT JOIN
-        masterdata_sku ON (orderdetail.whseid = masterdata_sku.whseid) AND (orderdetail.sku = masterdata_sku.item_code)
-        LEFT JOIN swm_dwh_mondelez.dim_orders AS orders ON (orderdetail.storer_key = orders.storer_key) AND (orderdetail.whseid = orders.whseid) AND (orderdetail.order_key = orders.order_key) AND (orders.is_deleted = 0)
-        LEFT JOIN
-        group_pickdetail AS p ON (orderdetail.storer_key = p.storer_key) AND (orderdetail.whseid = p.whseid) AND (orderdetail.order_key = p.order_key) AND (orderdetail.order_line_number = p.order_line_number)
-        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS rd ON (rd.storer_key = p.storer_key) AND (rd.whseid = p.whseid) AND (rd.lpnid = p.lpnid) AND (rd.is_deleted = 0)
-        LEFT JOIN analytics_workspace.mv_masterdata_location AS masterdata_location ON orders.consignee_key = masterdata_location.cus_location_code
-        WHERE (orderdetail.storer_key = 'MDLZ') AND (orders.status_code = '95') AND (orderdetail.is_deleted = 0) AND (orderdetail.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (orders.extern_order_key IS NOT NULL) AND (orderdetail.order_key IS NOT NULL) AND (((orderdetail.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (orders.type IN ('01', '240'))) OR ((orderdetail.whseid = 'NKD') AND (orders.type IN ('01', '07', '08', '09', '240', 'XB2BMC', 'XTNPP'))))
-    ),
-    summary AS
-    (
-        SELECT
-            whseid,
-            SO,
-            order_key,
-            actual_ship_date,
-            item_code,
-            product_name,
-            batch,
-            floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) AS number_of_full_pallets,
-            floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet) AS cse_full,
-            sum(`SHIPPED CSE`) - (floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet)) AS cse_loose,
-            (sum(`SHIPPED CSE`) - (floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet))) / nullIf(sum(`SHIPPED CSE`), 0) AS pct_loose_picking
-        FROM
-        enriching_data
-        GROUP BY
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-    )
-SELECT
-    summary.*,
-    enriching_data.`Customer Code` AS customer_code,
-    enriching_data.`Customer Name` AS customer_name,
-    enriching_data.`Khu vực đội xe` AS region
-FROM
-summary
-LEFT JOIN
-enriching_data ON (summary.SO = enriching_data.SO) AND (summary.item_code = enriching_data.item_code) AND (summary.batch = enriching_data.batch)
-```
-
----
-
 ### `mv_masterdata_kho_stm`
 
 **Engine:** `MaterializedView`
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_masterdata_kho_stm
-REFRESH EVERY 3 MINUTE
+REFRESH EVERY 1 HOUR
 (
     `id_kho` Int32,
     `ten_he_thong` Nullable(String),
@@ -5405,7 +5281,7 @@ WHERE (main.cus_partner_sk = 0) AND (main.cus_customer_sk = 9)
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_masterdata_location
-REFRESH EVERY 3 MINUTE
+REFRESH EVERY 1 HOUR
 (
     `id_cus` Int32,
     `id_cat` Int32,
@@ -5468,7 +5344,7 @@ WHERE STT = 1
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_masterdata_ordertype
-REFRESH EVERY 6 MINUTE
+REFRESH EVERY 1 HOUR
 (
     `whseid` String,
     `code` String,
@@ -5552,7 +5428,7 @@ WHERE sku.storer_key = 'MDLZ'
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_masterdata_vehicle
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `id_vehicle` Int32,
     `id_group_vehicle` Int32,
@@ -5585,7 +5461,7 @@ WHERE CAT_GroupOfVehicle.is_deleted = 0
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_masterdata_vendor
-REFRESH EVERY 3 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `id` Int32,
     `code` String,
@@ -5680,7 +5556,7 @@ GROUP BY
 CREATE MATERIALIZED VIEW analytics_workspace.mv_mdlz_fact_daily_warehouse_actual_cbm
 REFRESH EVERY 1 HOUR
 (
-    `etd` Nullable(DateTime64(3, 'UTC')),
+    `etd` Nullable(Date),
     `wh_name` String,
     `work_shift` String,
     `product_type` String,
@@ -5696,19 +5572,32 @@ ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY (etd, wh_name, work_shift, product_type, customergroupcode)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = helix SQL SECURITY DEFINER
-AS WITH shift_lookup AS
+AS WITH
+    shift_lookup AS
     (
         SELECT
             wh_name,
-            anyHeavy(work_shift) AS work_shift
+            area_name,
+            argMax(work_shift, updated_at) AS work_shift
         FROM analytics_workspace.dim_work_shift_source
-        GROUP BY wh_name
+        GROUP BY
+            wh_name,
+            area_name
+    ),
+    consignee_area AS
+    (
+        SELECT
+            cus_location_code,
+            argMax(group_area_name, STT) AS group_area_name
+        FROM analytics_workspace.mv_masterdata_location
+        WHERE cus_location_code != ''
+        GROUP BY cus_location_code
     )
 SELECT
-    toDate(toTimezone(f.ngay_gi, 'Asia/Ho_Chi_Minh')) AS etd,
+    toDate(toTimezone(f.delivery_date_1, 'Asia/Ho_Chi_Minh')) AS etd,
     f.whseid AS wh_name,
-    coalesce(s.work_shift, 'UNKNOWN') AS work_shift,
-    multiIf(upper(coalesce(f.group_of_cago, '')) = 'DRY', 'Dry', upper(coalesce(f.group_of_cago, '')) = 'FRESH', 'Fresh', coalesce(f.group_of_cago, '')) AS product_type,
+    coalesce(nullIf(s.work_shift, ''), 'UNKNOWN') AS work_shift,
+    multiIf(upper(coalesce(f.group_of_cago, '')) = 'DRY', 'Dry', upper(coalesce(f.group_of_cago, '')) = 'FRESH', 'Fresh', (upper(coalesce(f.group_of_cago, '')) IN ('OFFBOM', 'POSM', 'POSM/OFFBOM')), 'Offbom', (upper(coalesce(f.group_of_cago, '')) IN ('MC', 'TET', 'MOONCAKE', 'SEASONAL (MC/TET)')), 'Seasonal (MC/Tet)', coalesce(f.group_of_cago, '')) AS product_type,
     coalesce(f.group_name, '') AS customergroupcode,
     coalesce(r.region, '') AS region,
     coalesce(r.wh_type, 'external') AS wh_type,
@@ -5719,8 +5608,10 @@ SELECT
 FROM analytics_workspace.mv_flrp_swm_data AS f
 LEFT JOIN analytics_workspace.dim_warehouse_region_source AS r ON r.whseid = f.whseid
 LEFT JOIN
-shift_lookup AS s ON s.wh_name = f.whseid
-WHERE f.ngay_gi IS NOT NULL
+consignee_area AS mloc ON mloc.cus_location_code = f.customer_code
+LEFT JOIN
+shift_lookup AS s ON (s.wh_name = f.whseid) AND (s.area_name = mloc.group_area_name)
+WHERE (f.delivery_date_1 IS NOT NULL) AND (f.type_description IN ('XUẤT NPP EDI', 'EDI Xuất bán (tích hợp)', 'Shipment for sale', 'Xuất bán')) AND (f.group_of_cago IS NOT NULL)
 GROUP BY
     etd,
     wh_name,
@@ -5729,6 +5620,229 @@ GROUP BY
     customergroupcode,
     region,
     wh_type
+```
+
+---
+
+### `mv_mdlz_tms_report_25_order`
+
+> MDLZ TMS Report #25 — rollup cấp đơn (1 row = 1 OrderCode). Nguồn: mdlz_tms_report_25_trip_order. Có sẵn: cờ Ontime/Infull/OTIF + cờ WMS cross-check (has_wms / wms_match_status, chuẩn mv_otif_swm_data) + parsed dates + parsed numbers + trip rollup + dimensions. Logic Ontime (≤ETA+30')/Infull (sumBBGN≥maxOrder) lấy từ tms_report_25_explore.ipynb. Refresh 1h. Doc: mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md
+
+**Engine:** `MaterializedView`
+
+```sql
+CREATE MATERIALIZED VIEW analytics_workspace.mv_mdlz_tms_report_25_order
+REFRESH EVERY 1 HOUR
+(
+    `order_code` String,
+    `tendered_date_vn` Date COMMENT 'toDate(TenderedDate) theo VN — dùng partition + filter chính',
+    `ontime_status` LowCardinality(String) COMMENT 'Ontime | Failed Ontime | Chưa giao | Thiếu thời gian',
+    `infull_status` LowCardinality(String) COMMENT 'Infull | Failed Infull | Chưa giao | KH = 0',
+    `otif_status` LowCardinality(String) COMMENT 'OTIF Pass | Failed Ontime | Failed Infull | Failed Both | Not Evaluable',
+    `has_wms` UInt8 COMMENT '1 = order_code có ở lớp WMS OTIF (mv_otif_swm_data); 0 = chỉ có ở TMS report 25',
+    `wms_match_status` LowCardinality(String) COMMENT 'Có ở WMS | Chỉ có ở TMS',
+    `dong_tong` UInt32 COMMENT 'Tổng dòng Order × Trip của đơn',
+    `dong_da_giao` UInt32 COMMENT 'countIf(DeliveryStatus = Hoàn tất)',
+    `dong_eval_ot` UInt32 COMMENT 'Số dòng đã giao có đủ ETA + DateToCome để chấm Ontime',
+    `dong_tre` UInt32 COMMENT 'Số dòng đã giao bị trễ (DateToCome > ETA + 30 phút)',
+    `kh_qty` Float64 COMMENT 'max(QuantityOrder) — KH cấp đơn, KHÔNG cộng dồn qua chuyến',
+    `gn_qty` Float64 COMMENT 'sum(QuantityBBGN) — thực giao cộng dồn tất cả chuyến',
+    `chenh_qty` Float64 COMMENT 'gn_qty − kh_qty',
+    `kh_ton` Float64,
+    `gn_ton` Float64,
+    `kh_cbm` Float64,
+    `gn_cbm` Float64,
+    `late_phut_max` Nullable(Int64) COMMENT 'max(dateDiff(minute, ETA, DateToCome)) — chuyến trễ nhất. NULL nếu không có chuyến nào đủ ETA + DateToCome',
+    `late_phut_min` Nullable(Int64) COMMENT 'min(dateDiff) — chuyến sớm nhất (âm = sớm hơn ETA)',
+    `so_chuyen` UInt32 COMMENT 'uniqExactIf(MasterCode, MasterCode != "")',
+    `master_codes` Array(String) COMMENT 'groupUniqArrayIf(MasterCode, MasterCode != "")',
+    `master_statuses` Array(String) COMMENT 'groupUniqArrayIf(MasterStatus, MasterStatus != "")',
+    `master_status_has_active` UInt8 COMMENT '1 nếu có chuyến MasterStatus IN (Đã hoàn thành, Đang vận chuyển) — scope notebook L1-L4',
+    `service_of_order_name` LowCardinality(String),
+    `order_type` LowCardinality(String),
+    `order_status` LowCardinality(String),
+    `delivery_status_first` LowCardinality(String) COMMENT 'DeliveryStatus của 1 dòng bất kỳ (any) — dùng cho lọc nhanh',
+    `order_created_date` Nullable(DateTime),
+    `request_date` Nullable(DateTime),
+    `tendered_date` Nullable(DateTime),
+    `eta` Nullable(DateTime) COMMENT 'ETA của đơn (any — đa số 1 đơn 1 ETA)',
+    `etd` Nullable(DateTime),
+    `date_to_come_max` Nullable(DateTime) COMMENT 'max(DateToCome) — mốc giao cuối cùng của đơn',
+    `customer_code` String,
+    `customer_name` String,
+    `vendor_code` String,
+    `vendor_name` String,
+    `vendor_short_name` String,
+    `stock_code` String,
+    `stock_name` String,
+    `ops_location_to_code` String,
+    `ops_location_to_name` String,
+    `ops_location_to_province` LowCardinality(String),
+    `ops_location_to_district` String,
+    `group_of_vehicle_name` LowCardinality(String),
+    `src_loaded_at` DateTime COMMENT 'max(_loaded_at) — thời điểm dòng cuối cùng của đơn được nạp vào staging',
+    `_refreshed_at` DateTime DEFAULT now() COMMENT 'Thời điểm MV refresh sinh ra row này'
+)
+ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
+PARTITION BY toYYYYMM(tendered_date_vn)
+ORDER BY (tendered_date_vn, order_code)
+SETTINGS index_granularity = 8192
+DEFINER = helix SQL SECURITY DEFINER
+AS (WITH
+    base AS
+    (
+        SELECT
+            t.OrderCode AS order_code,
+            t.MasterCode,
+            t.MasterStatus,
+            t.DeliveryStatus,
+            t.OrderStatus,
+            t.OrderType,
+            t.ServiceOfOrderName,
+            t.VendorCode,
+            t.VendorName,
+            t.VendorShortName,
+            t.StockCode,
+            t.StockName,
+            t.CustomerCode,
+            t.CustomerName,
+            t.OPSLocationToCode,
+            t.OPSLocationToName,
+            t.OPSLocationToProvince,
+            t.OPSLocationToDistrict,
+            t.GroupOfVehicleName,
+            parseDateTimeBestEffortOrNull(nullIf(t.OrderCreatedDate, '')) AS dt_order_created,
+            parseDateTimeBestEffortOrNull(nullIf(t.RequestDate, '')) AS dt_request,
+            parseDateTimeBestEffortOrNull(nullIf(t.TenderedDate, '')) AS dt_tendered,
+            parseDateTimeBestEffortOrNull(nullIf(t.ETD, '')) AS dt_etd,
+            parseDateTimeBestEffortOrNull(nullIf(t.ETA, '')) AS dt_eta,
+            parseDateTimeBestEffortOrNull(nullIf(t.DateToCome, '')) AS dt_to_come,
+            toFloat64OrZero(t.QuantityOrder) AS n_qty_order,
+            toFloat64OrZero(t.QuantityBBGN) AS n_qty_bbgn,
+            toFloat64OrZero(t.TonOrder) AS n_ton_order,
+            toFloat64OrZero(t.TonBBGN) AS n_ton_bbgn,
+            toFloat64OrZero(t.CBMOrder) AS n_cbm_order,
+            toFloat64OrZero(t.CBMBBGN) AS n_cbm_bbgn,
+            t._loaded_at AS src_loaded_at
+        FROM analytics_workspace.mdlz_tms_report_25_trip_order AS t
+        WHERE (position(t.OrderCode, '-') = 0) AND (t.OrderCode != '')
+    ),
+    wms_so AS
+    (
+        SELECT DISTINCT SO AS so
+        FROM analytics_workspace.mv_otif_swm_data
+        WHERE (SO IS NOT NULL) AND (SO != '')
+    ),
+    rolled AS
+    (
+        SELECT
+            order_code,
+            count() AS dong_tong,
+            countIf(DeliveryStatus = 'Hoàn tất') AS dong_da_giao,
+            countIf((DeliveryStatus = 'Hoàn tất') AND (dt_to_come IS NOT NULL) AND (dt_eta IS NOT NULL)) AS dong_eval_ot,
+            countIf((DeliveryStatus = 'Hoàn tất') AND (dt_to_come IS NOT NULL) AND (dt_eta IS NOT NULL) AND (dt_to_come > addMinutes(dt_eta, 30))) AS dong_tre,
+            max(n_qty_order) AS kh_qty,
+            sum(n_qty_bbgn) AS gn_qty,
+            max(n_ton_order) AS kh_ton,
+            sum(n_ton_bbgn) AS gn_ton,
+            max(n_cbm_order) AS kh_cbm,
+            sum(n_cbm_bbgn) AS gn_cbm,
+            maxOrNull(dateDiff('minute', dt_eta, dt_to_come)) AS late_phut_max,
+            minOrNull(dateDiff('minute', dt_eta, dt_to_come)) AS late_phut_min,
+            uniqExactIf(MasterCode, MasterCode != '') AS so_chuyen,
+            groupUniqArrayIf(MasterCode, MasterCode != '') AS master_codes,
+            groupUniqArrayIf(MasterStatus, MasterStatus != '') AS master_statuses,
+            toUInt8(countIf(MasterStatus IN ('Đã hoàn thành', 'Đang vận chuyển')) > 0) AS master_status_has_active,
+            any(ServiceOfOrderName) AS service_of_order_name,
+            any(OrderType) AS order_type,
+            any(OrderStatus) AS order_status,
+            any(DeliveryStatus) AS delivery_status_first,
+            any(dt_order_created) AS order_created_date,
+            any(dt_request) AS request_date,
+            any(dt_tendered) AS tendered_date,
+            any(dt_eta) AS eta,
+            any(dt_etd) AS etd,
+            maxOrNull(dt_to_come) AS date_to_come_max,
+            any(CustomerCode) AS customer_code,
+            any(CustomerName) AS customer_name,
+            any(VendorCode) AS vendor_code,
+            any(VendorName) AS vendor_name,
+            any(VendorShortName) AS vendor_short_name,
+            any(StockCode) AS stock_code,
+            any(StockName) AS stock_name,
+            any(OPSLocationToCode) AS ops_location_to_code,
+            any(OPSLocationToName) AS ops_location_to_name,
+            any(OPSLocationToProvince) AS ops_location_to_province,
+            any(OPSLocationToDistrict) AS ops_location_to_district,
+            any(GroupOfVehicleName) AS group_of_vehicle_name,
+            max(src_loaded_at) AS src_loaded_at
+        FROM
+        base
+        GROUP BY order_code
+    ),
+    marked AS
+    (
+        SELECT
+            rolled.*,
+            toUInt8(order_code IN (
+                SELECT so
+                FROM
+                wms_so
+            )) AS has_wms
+        FROM
+        rolled
+    )
+SELECT
+    order_code,
+    ifNull(toDate(tendered_date), toDate('1970-01-01')) AS tendered_date_vn,
+    multiIf(dong_da_giao = 0, 'Chưa giao', dong_eval_ot = 0, 'Thiếu thời gian', dong_tre > 0, 'Failed Ontime', 'Ontime') AS ontime_status,
+    multiIf(dong_da_giao = 0, 'Chưa giao', kh_qty = 0, 'KH = 0', gn_qty >= kh_qty, 'Infull', 'Failed Infull') AS infull_status,
+    multiIf(dong_da_giao = 0, 'Not Evaluable', (dong_eval_ot = 0) OR (kh_qty = 0), 'Not Evaluable', (dong_tre > 0) AND (gn_qty < kh_qty), 'Failed Both', dong_tre > 0, 'Failed Ontime', gn_qty < kh_qty, 'Failed Infull', 'OTIF Pass') AS otif_status,
+    has_wms,
+    if(has_wms = 1, 'Có ở WMS', 'Chỉ có ở TMS') AS wms_match_status,
+    dong_tong,
+    dong_da_giao,
+    dong_eval_ot,
+    dong_tre,
+    kh_qty,
+    gn_qty,
+    gn_qty - kh_qty AS chenh_qty,
+    kh_ton,
+    gn_ton,
+    kh_cbm,
+    gn_cbm,
+    late_phut_max,
+    late_phut_min,
+    so_chuyen,
+    master_codes,
+    master_statuses,
+    master_status_has_active,
+    service_of_order_name,
+    order_type,
+    order_status,
+    delivery_status_first,
+    order_created_date,
+    request_date,
+    tendered_date,
+    eta,
+    etd,
+    date_to_come_max,
+    customer_code,
+    customer_name,
+    vendor_code,
+    vendor_name,
+    vendor_short_name,
+    stock_code,
+    stock_name,
+    ops_location_to_code,
+    ops_location_to_name,
+    ops_location_to_province,
+    ops_location_to_district,
+    group_of_vehicle_name,
+    src_loaded_at
+FROM
+marked)
+COMMENT 'MDLZ TMS Report #25 — rollup cấp đơn (1 row = 1 OrderCode). Nguồn: mdlz_tms_report_25_trip_order. Có sẵn: cờ Ontime/Infull/OTIF + cờ WMS cross-check (has_wms / wms_match_status, chuẩn mv_otif_swm_data) + parsed dates + parsed numbers + trip rollup + dimensions. Logic Ontime (≤ETA+30\')/Infull (sumBBGN≥maxOrder) lấy từ tms_report_25_explore.ipynb. Refresh 1h. Doc: mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md'
 ```
 
 ---
@@ -5803,7 +5917,7 @@ ORDER BY
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_otif
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `so` Nullable(String),
     `whseid` String,
@@ -5905,21 +6019,21 @@ AS WITH
     (
         SELECT
             b.SO,
-            sum(coalesce(b.ORIGINAL, 0)) AS sum_original,
-            sum(coalesce(b.`ORIGINAL CBM`, 0)) AS sum_original_cbm,
-            sum(coalesce(b.`ORIGINAL KG`, 0)) AS sum_original_kg,
-            sum(coalesce(b.`ORIGINAL CSE`, 0)) AS sum_original_cse,
-            sum(coalesce(b.`ORIGINAL PL`, 0)) AS sum_original_pl,
-            sum(coalesce(b.SHIPPED, 0)) AS sum_shipped,
-            sum(coalesce(b.`SHIPPED CBM`, 0)) AS sum_shipped_cbm,
-            sum(coalesce(b.`SHIPPED KG`, 0)) AS sum_shipped_kg,
-            sum(coalesce(b.`SHIPPED CSE`, 0)) AS sum_shipped_cse,
-            sum(coalesce(b.`SHIPPED PL`, 0)) AS sum_shipped_pl,
-            sum(b.`Sản lượng giao`) AS sum_giao,
-            sum(b.`Sản lượng giao CBM`) AS sum_giao_cbm,
-            sum(b.`Sản lượng giao KG`) AS sum_giao_kg,
-            sum(b.`Sản lượng giao CSE`) AS sum_giao_cse,
-            sum(b.`Sản lượng giao PL`) AS sum_giao_pl,
+            round(sum(coalesce(b.ORIGINAL, 0)), 4) AS sum_original,
+            round(sum(coalesce(b.`ORIGINAL CBM`, 0)), 4) AS sum_original_cbm,
+            round(sum(coalesce(b.`ORIGINAL KG`, 0)), 4) AS sum_original_kg,
+            round(sum(coalesce(b.`ORIGINAL CSE`, 0)), 4) AS sum_original_cse,
+            round(sum(coalesce(b.`ORIGINAL PL`, 0)), 4) AS sum_original_pl,
+            round(sum(coalesce(b.SHIPPED, 0)), 4) AS sum_shipped,
+            round(sum(coalesce(b.`SHIPPED CBM`, 0)), 4) AS sum_shipped_cbm,
+            round(sum(coalesce(b.`SHIPPED KG`, 0)), 4) AS sum_shipped_kg,
+            round(sum(coalesce(b.`SHIPPED CSE`, 0)), 4) AS sum_shipped_cse,
+            round(sum(coalesce(b.`SHIPPED PL`, 0)), 4) AS sum_shipped_pl,
+            round(sum(b.`Sản lượng giao`), 4) AS sum_giao,
+            round(sum(b.`Sản lượng giao CBM`), 4) AS sum_giao_cbm,
+            round(sum(b.`Sản lượng giao KG`), 4) AS sum_giao_kg,
+            round(sum(b.`Sản lượng giao CSE`), 4) AS sum_giao_cse,
+            round(sum(b.`Sản lượng giao PL`), 4) AS sum_giao_pl,
             max(b.has_stm_line) AS has_stm_order,
             minIf(b.`ETA (Giao hàng cho NPP)`, b.has_stm_line = 1) AS `ETA (Giao hàng cho NPP)`,
             maxIf(b.`ATA rời`, b.has_stm_line = 1) AS `ATA rời`,
@@ -5995,18 +6109,18 @@ SELECT
     dateDiff('minute', p.`ATA đến`, p.`ATA rời`) AS tg_load_hang_min,
     dateDiff('hour', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) AS chenh_lech_tg_thuc_te_du_kien_hour,
     multiIf((p.`ETA (Giao hàng cho NPP)` IS NOT NULL) AND (p.`ATA đến` IS NOT NULL) AND (dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30), 'Failed Ontime', (p.`ETA (Giao hàng cho NPP)` IS NOT NULL) AND (p.`ATA đến` IS NOT NULL) AND (dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) <= 30), 'Ontime', coalesce(s.has_stm_order, 0) = 0, 'Không có dữ liệu STM', NULL) AS ontime_status,
-    multiIf(coalesce(s.has_stm_order, 0) = 0, 'Không có dữ liệu STM', (round(toFloat64(s.sum_original_cse), 4) > round(toFloat64(s.sum_shipped_cse), 4)) OR (round(toFloat64(s.sum_shipped_cse), 4) > round(toFloat64(s.sum_giao_cse), 4)), 'Failed Infull', (round(toFloat64(s.sum_original_cse), 4) = round(toFloat64(s.sum_shipped_cse), 4)) AND (round(toFloat64(s.sum_shipped_cse), 4) = round(toFloat64(s.sum_giao_cse), 4)), 'Infull', NULL) AS infull_status,
-    multiIf((if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, 0, if(p.`ETA (Giao hàng cho NPP)` >= p.`ATA đến`, 1, NULL)) = 1) AND (if((s.sum_original_cse > s.sum_shipped_cse) OR (s.sum_shipped_cse > s.sum_giao_cse), 0, if((s.sum_original_cse = s.sum_shipped_cse) AND (s.sum_shipped_cse = s.sum_giao_cse), 1, NULL)) = 1), 'OTIF', coalesce(s.has_stm_order, 0) = 0, 'Không có dữ liệu STM', 'Failed OTIF') AS otif_status,
-    multiIf((p.`ETA (Giao hàng cho NPP)` IS NULL) OR (p.`ATA đến` IS NULL), NULL, p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, toFloat64(0), toFloat64(s.sum_giao_cse)) AS cse_otif,
-    if(coalesce(s.sum_original_cse, 0) = 0, NULL, multiIf((p.`ETA (Giao hàng cho NPP)` IS NULL) OR (p.`ATA đến` IS NULL), NULL, p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, toFloat64(0), toFloat64(s.sum_giao_cse)) / toFloat64(s.sum_original_cse)) AS pct_otif,
+    multiIf(coalesce(s.has_stm_order, 0) = 0, 'Không có dữ liệu STM', ((toFloat64(s.sum_original_cse) - toFloat64(s.sum_shipped_cse)) > 0.001) OR ((toFloat64(s.sum_shipped_cse) - toFloat64(s.sum_giao_cse)) > 0.001), 'Failed Infull', 'Infull') AS infull_status,
+    if((ontime_status = 'Ontime') AND (infull_status = 'Infull'), 'OTIF', if(has_stm_order = 0, 'Không có dữ liệu STM', 'Failed OTIF')) AS otif_status,
+    multiIf((p.`ETA (Giao hàng cho NPP)` IS NULL) OR (p.`ATA đến` IS NULL), NULL, dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, toFloat64(0), toFloat64(s.sum_giao_cse)) AS cse_otif,
+    if(coalesce(s.sum_original_cse, 0) = 0, NULL, multiIf((p.`ETA (Giao hàng cho NPP)` IS NULL) OR (p.`ATA đến` IS NULL), NULL, dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, toFloat64(0), toFloat64(s.sum_giao_cse)) / toFloat64(s.sum_original_cse)) AS pct_otif,
     multiIf(coalesce(s.has_stm_order, 0) = 0, 'Không có dữ liệu STM', (round(toFloat64(s.sum_original_cse), 4) > round(toFloat64(s.sum_shipped_cse), 4)) AND (round(toFloat64(s.sum_shipped_cse), 4) > round(toFloat64(s.sum_giao_cse), 4)), 'Warehouse + Transport Infull Failure', (round(toFloat64(s.sum_original_cse), 4) > round(toFloat64(s.sum_shipped_cse), 4)) AND (round(toFloat64(s.sum_shipped_cse), 4) = round(toFloat64(s.sum_giao_cse), 4)), 'Warehouse Infull Failure', (round(toFloat64(s.sum_original_cse), 4) = round(toFloat64(s.sum_shipped_cse), 4)) AND (round(toFloat64(s.sum_shipped_cse), 4) > round(toFloat64(s.sum_giao_cse), 4)), 'Transport Infull Failure', (round(toFloat64(s.sum_original_cse), 4) = round(toFloat64(s.sum_shipped_cse), 4)) AND (round(toFloat64(s.sum_shipped_cse), 4) = round(toFloat64(s.sum_giao_cse), 4)), NULL, round(toFloat64(s.sum_original_cse), 4) > round(toFloat64(s.sum_shipped_cse), 4), 'Warehouse Infull Failure', NULL) AS not_infull_reason,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, coalesce(nullIf(replaceRegexpAll(concatWithSeparator('', if((toStartOfMinute(toDateTime64(p.`Giờ gọi xe`, 3)) < toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3))) AND (toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) < toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))), 'Late arrival by Transport', ''), if(toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) < toStartOfMinute(toDateTime64(p.`Giờ đăng tài`, 3)), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late arrival by Transport', ''), if((toStartOfMinute(toDateTime64(p.`Giờ đăng tài`, 3)) < toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3))) AND (toStartOfMinute(toDateTime64(p.`Giờ gọi xe`, 3)) > toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3))), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late warehouse call by Warehouse', ''), if((toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) > toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))) AND (toDateTime64(p.`Actual Ship Date`, 3) > subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10)), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late pickup by Warehouse', ''), if((toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) > toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))) AND (toDateTime64(p.`Actual Ship Date`, 3) < subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10)) AND (toDateTime64(p.`TG bắt buộc rời kho`, 3) < toStartOfMinute(toDateTime64(p.`Giờ ra cổng`, 3))), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late departure by Transport', ''), if((toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) > toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))) AND (toDateTime64(p.`Actual Ship Date`, 3) < subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10)) AND (toDateTime64(p.`TG bắt buộc rời kho`, 3) > toStartOfMinute(toDateTime64(p.`Giờ ra cổng`, 3))) AND (p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late delivery by Transport', '')), '^[,\r\n\r\n\r\n\r\n\r\n\r\n ]+|[,\r\n\r\n\r\n\r\n\r\n\r\n ]+$', ''), ''), 'Thiếu dữ liệu đăng ký dock'), NULL) AS not_ontime_reason,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, if(dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ đăng tài`) > 0, dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ đăng tài`), NULL), NULL) AS delay_xe_dang_tai,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, if(dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ gọi xe`) > 0, dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ gọi xe`), NULL), NULL) AS delay_goi_xe,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, if(dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ vào cổng`) > 0, dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ vào cổng`), NULL), NULL) AS delay_vao_cong,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, if(dateDiff('minute', subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10), toDateTime64(p.`Actual Ship Date`, 3)) > 0, dateDiff('minute', subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10), toDateTime64(p.`Actual Ship Date`, 3)), NULL), NULL) AS delay_xuat_kho_tre,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, if(dateDiff('minute', p.`TG bắt buộc rời kho`, p.`Giờ ra cổng`) > 0, dateDiff('minute', p.`TG bắt buộc rời kho`, p.`Giờ ra cổng`), NULL), NULL) AS delay_roi_kho_tre,
-    if(p.`ETA (Giao hàng cho NPP)` < p.`ATA đến`, if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA rời`) > 0, dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA rời`), NULL), NULL) AS delay_tren_duong,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, coalesce(nullIf(replaceRegexpAll(concatWithSeparator('', if((toStartOfMinute(toDateTime64(p.`Giờ gọi xe`, 3)) < toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3))) AND (toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) < toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))), 'Late arrival by Transport', ''), if(toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) < toStartOfMinute(toDateTime64(p.`Giờ đăng tài`, 3)), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late arrival by Transport', ''), if((toStartOfMinute(toDateTime64(p.`Giờ đăng tài`, 3)) < toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3))) AND (toStartOfMinute(toDateTime64(p.`Giờ gọi xe`, 3)) > toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3))), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late warehouse call by Warehouse', ''), if((toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) > toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))) AND (toDateTime64(p.`Actual Ship Date`, 3) > subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10)), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late pickup by Warehouse', ''), if((toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) > toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))) AND (toDateTime64(p.`Actual Ship Date`, 3) < subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10)) AND (toDateTime64(p.`TG bắt buộc rời kho`, 3) < toStartOfMinute(toDateTime64(p.`Giờ ra cổng`, 3))), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late departure by Transport', ''), if((toStartOfMinute(toDateTime64(p.`ETD chuyến gửi thầu`, 3)) > toStartOfMinute(toDateTime64(p.`Giờ vào cổng`, 3))) AND (toDateTime64(p.`Actual Ship Date`, 3) < subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10)) AND (toDateTime64(p.`TG bắt buộc rời kho`, 3) > toStartOfMinute(toDateTime64(p.`Giờ ra cổng`, 3))) AND (dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30), ',\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Late delivery by Transport', '')), '^[,\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n ]+|[,\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n ]+$', ''), ''), 'Thiếu dữ liệu đăng ký dock'), NULL) AS not_ontime_reason,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, if(dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ đăng tài`) > 0, dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ đăng tài`), NULL), NULL) AS delay_xe_dang_tai,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, if(dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ gọi xe`) > 0, dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ gọi xe`), NULL), NULL) AS delay_goi_xe,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, if(dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ vào cổng`) > 0, dateDiff('minute', p.`ETD chuyến gửi thầu`, p.`Giờ vào cổng`), NULL), NULL) AS delay_vao_cong,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, if(dateDiff('minute', subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10), toDateTime64(p.`Actual Ship Date`, 3)) > 0, dateDiff('minute', subtractMinutes(toDateTime64(p.`TG bắt buộc rời kho`, 3), 10), toDateTime64(p.`Actual Ship Date`, 3)), NULL), NULL) AS delay_xuat_kho_tre,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, if(dateDiff('minute', p.`TG bắt buộc rời kho`, p.`Giờ ra cổng`) > 0, dateDiff('minute', p.`TG bắt buộc rời kho`, p.`Giờ ra cổng`), NULL), NULL) AS delay_roi_kho_tre,
+    if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA đến`) > 30, if(dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA rời`) > 0, dateDiff('minute', p.`ETA (Giao hàng cho NPP)`, p.`ATA rời`), NULL), NULL) AS delay_tren_duong,
     p.`Ngày duyệt chuyến` AS ngay_duyet_chuyen,
     p.`Delivery Date 1` AS ngay_gi,
     coalesce(p.`Ngày tạo đơn`, ordm_direct.created_date) AS ngay_tao_don
@@ -6025,7 +6139,7 @@ LEFT JOIN stm_dwh_mondelez.dim_ord_order AS ordm_direct ON (s.SO = ordm_direct.c
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_otif_stm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `ID_ORD_GroupProduct` Int32,
     `Mã đơn hàng` Nullable(String),
@@ -6105,12 +6219,12 @@ LEFT JOIN
 (
     SELECT
         dito_master_id,
-        argMin(register_date, NULL) AS register_date,
-        argMin(called_date, NULL) AS called_date,
-        argMin(gate_in, NULL) AS gate_in,
-        argMin(loading_start, NULL) AS loading_start,
-        argMin(loading_end, NULL) AS loading_end,
-        argMin(gate_out, NULL) AS gate_out
+        minIf(register_date, toYear(register_date) > 1970) AS register_date,
+        minIf(called_date, toYear(called_date) > 1970) AS called_date,
+        minIf(gate_in, toYear(gate_in) > 1970) AS gate_in,
+        minIf(loading_start, toYear(loading_start) > 1970) AS loading_start,
+        minIf(loading_end, toYear(loading_end) > 1970) AS loading_end,
+        minIf(gate_out, toYear(gate_out) > 1970) AS gate_out
     FROM stm_dwh_mondelez.dim_ops_dock_register
     WHERE ifNull(toUInt8(is_deleted), 0) = 0
     GROUP BY dito_master_id
@@ -6119,7 +6233,7 @@ LEFT JOIN stm_dwh_mondelez.dim_ops_trip AS tender ON dtd.trip_tender_id = tender
 LEFT JOIN stm_dwh_mondelez.subdim_cat_group_of_vehicle AS lxgt ON (tender.tender_group_vehicle_sk = lxgt.id) AND (ifNull(toUInt8(lxgt.is_deleted), 0) = 0)
 LEFT JOIN stm_dwh_mondelez.dim_ord_product AS ord_prod ON (ord_prod.group_product_id = opg.id) AND (ifNull(toUInt8(ord_prod.is_deleted), 0) = 0)
 LEFT JOIN stm_dwh_mondelez.subdim_cus_product AS sub_prod ON (sub_prod.key_sk = ord_prod.subcus_product_sk) AND (ifNull(toUInt8(sub_prod.is_deleted), 0) = 0)
-WHERE (ordm.service_name = 'Xuất bán') AND (ordm.status_of_order_id IN (62, 63, 64)) AND (ordm.customer_id = 9) AND (ifNull(toUInt8(ordm.is_deleted), 0) = 0) AND (ifNull(toUInt8(opg.is_deleted), 0) = 0) AND (opg.order_id IS NOT NULL) AND (opg.code_sync IS NOT NULL) AND (opg.code_sync != '') AND (ifNull(toUInt8(dtd.is_deleted), 0) = 0) AND ((toString(dtd.sort_order) = '1') OR (dtd.sort_order = '-1')) AND (ifNull(toUInt8(trip.is_deleted), 0) = 0) AND (ifNull(toUInt8(tender.is_deleted), 0) = 0)
+WHERE (ordm.service_name = 'Xuất bán') AND (ordm.status_of_order_id IN (62, 63, 64)) AND (ordm.customer_id = 9) AND (ifNull(toUInt8(ordm.is_deleted), 0) = 0) AND (ifNull(toUInt8(opg.is_deleted), 0) = 0) AND (opg.order_id IS NOT NULL) AND (ifNull(toUInt8(dtd.is_deleted), 0) = 0) AND ((toString(dtd.sort_order) = '1') OR (dtd.sort_order = '-1')) AND (ifNull(toUInt8(trip.is_deleted), 0) = 0) AND (ifNull(toUInt8(tender.is_deleted), 0) = 0)
 ```
 
 ---
@@ -6130,7 +6244,7 @@ WHERE (ordm.service_name = 'Xuất bán') AND (ordm.status_of_order_id IN (62, 6
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_otif_swm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `whseid` String,
     `WHSEID_stm` String,
@@ -6231,7 +6345,7 @@ WHERE (orderdetail.storer_key = 'MDLZ') AND (orderdetail.order_key IS NOT NULL) 
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_otif_swm_stm_data
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `whseid` String,
     `WHSEID_stm` String,
@@ -6304,21 +6418,87 @@ REFRESH EVERY 5 MINUTE
     `ExpiryDate` Nullable(DateTime64(3, 'UTC'))
 )
 ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY (SO, ORDERLINENUMBER)
+ORDER BY (SO, `Item Code`)
 SETTINGS allow_nullable_key = 1, index_granularity = 8192
 DEFINER = helix SQL SECURITY DEFINER
 AS WITH
     stm_deduped AS
     (
-        SELECT *
+        SELECT
+            `Mã đơn hàng`,
+            LineNo,
+            productCode,
+            sum(toFloat64(QuantityBBGN)) AS QuantityBBGN,
+            any(ID_ORD_GroupProduct) AS ID_ORD_GroupProduct,
+            any(`Thời gian gửi thầu`) AS `Thời gian gửi thầu`,
+            any(`ETA (Giao hàng cho NPP)`) AS `ETA (Giao hàng cho NPP)`,
+            any(`ATA đến`) AS `ATA đến`,
+            any(`ATA rời`) AS `ATA rời`,
+            any(`ID chuyến gửi thầu`) AS `ID chuyến gửi thầu`,
+            any(`Tên ngắn nhà vận tải`) AS `Tên ngắn nhà vận tải`,
+            any(`Mã nhà xe`) AS `Mã nhà xe`,
+            any(`Loại xe vận hành`) AS `Loại xe vận hành`,
+            any(`Loại xe gửi thầu`) AS `Loại xe gửi thầu`,
+            any(`Ngày tạo chuyến`) AS `Ngày tạo chuyến`,
+            any(`ETD chuyến gửi thầu`) AS `ETD chuyến gửi thầu`,
+            any(`Giờ đăng tài`) AS `Giờ đăng tài`,
+            any(`Giờ gọi xe`) AS `Giờ gọi xe`,
+            any(`Giờ vào cổng`) AS `Giờ vào cổng`,
+            any(`Giờ vào dock`) AS `Giờ vào dock`,
+            any(`TG bắt buộc rời kho`) AS `TG bắt buộc rời kho`,
+            any(`Giờ ra dock`) AS `Giờ ra dock`,
+            any(`Giờ ra cổng`) AS `Giờ ra cổng`,
+            any(`Số chuyến`) AS `Số chuyến`,
+            any(`Số xe`) AS `Số xe`,
+            any(`Tài xế`) AS `Tài xế`,
+            any(`Ngày duyệt chuyến`) AS `Ngày duyệt chuyến`,
+            any(`Ngày tạo đơn`) AS `Ngày tạo đơn`,
+            any(Note1) AS Note1,
+            any(ExpiryDate) AS ExpiryDate
+        FROM analytics_workspace.mv_otif_stm_data
+        GROUP BY
+            `Mã đơn hàng`,
+            LineNo,
+            productCode
+    ),
+    stm_prod AS
+    (
+        SELECT
+            `Mã đơn hàng`,
+            productCode,
+            sum(toFloat64(QuantityBBGN)) AS QuantityBBGN,
+            any(ID_ORD_GroupProduct) AS ID_ORD_GroupProduct,
+            any(LineNo) AS LineNo,
+            any(`Thời gian gửi thầu`) AS `Thời gian gửi thầu`,
+            any(`ETA (Giao hàng cho NPP)`) AS `ETA (Giao hàng cho NPP)`,
+            any(`ATA đến`) AS `ATA đến`,
+            any(`ATA rời`) AS `ATA rời`,
+            any(`ID chuyến gửi thầu`) AS `ID chuyến gửi thầu`,
+            any(`Tên ngắn nhà vận tải`) AS `Tên ngắn nhà vận tải`,
+            any(`Mã nhà xe`) AS `Mã nhà xe`,
+            any(`Loại xe vận hành`) AS `Loại xe vận hành`,
+            any(`Loại xe gửi thầu`) AS `Loại xe gửi thầu`,
+            any(`Ngày tạo chuyến`) AS `Ngày tạo chuyến`,
+            any(`ETD chuyến gửi thầu`) AS `ETD chuyến gửi thầu`,
+            any(`Giờ đăng tài`) AS `Giờ đăng tài`,
+            any(`Giờ gọi xe`) AS `Giờ gọi xe`,
+            any(`Giờ vào cổng`) AS `Giờ vào cổng`,
+            any(`Giờ vào dock`) AS `Giờ vào dock`,
+            any(`TG bắt buộc rời kho`) AS `TG bắt buộc rời kho`,
+            any(`Giờ ra dock`) AS `Giờ ra dock`,
+            any(`Giờ ra cổng`) AS `Giờ ra cổng`,
+            any(`Số chuyến`) AS `Số chuyến`,
+            any(`Số xe`) AS `Số xe`,
+            any(`Tài xế`) AS `Tài xế`,
+            any(`Ngày duyệt chuyến`) AS `Ngày duyệt chuyến`,
+            any(`Ngày tạo đơn`) AS `Ngày tạo đơn`,
+            any(Note1) AS Note1,
+            any(ExpiryDate) AS ExpiryDate
         FROM
-        (
-            SELECT
-                *,
-                row_number() OVER (PARTITION BY `Mã đơn hàng`, LineNo, productCode ORDER BY (Note1 IS NOT NULL) AND (Note1 != '') DESC, ExpiryDate IS NOT NULL DESC, QuantityBBGN DESC) AS _rn
-            FROM analytics_workspace.mv_otif_stm_data
-        )
-        WHERE _rn = 1
+        stm_deduped
+        GROUP BY
+            `Mã đơn hàng`,
+            productCode
     ),
     swm_stm_enrich AS
     (
@@ -6328,13 +6508,13 @@ AS WITH
             masterdata_locationfrom.cus_location_code AS `Mã đối tác nhận`,
             masterdata_locationfrom.cus_location_name AS `Tên đối tác nhận`,
             masterdata_locationto.group_area_name AS `Khu vực đội xe`,
-            if(upperUTF8(trimBoth(ifNull(swm_data.UOM, ''))) = 'CSE', CAST(stm_data.QuantityBBGN, 'Nullable(Decimal(18,\r\n 4))'), NULL) AS `Sản lượng giao CSE1`,
-            if((upperUTF8(trimBoth(ifNull(swm_data.UOM, ''))) IN ('PCE', 'PC', 'EA')), CAST(stm_data.QuantityBBGN, 'Nullable(Decimal(18,\r\n 4))'), NULL) AS `Sản lượng giao1`,
-            if(upperUTF8(trimBoth(ifNull(swm_data.UOM, ''))) = 'PALLET', CAST(stm_data.QuantityBBGN, 'Nullable(Decimal(18,\r\n 4))'), NULL) AS `Sản lượng giao PL1`,
+            if(upperUTF8(trimBoth(ifNull(swm_data.UOM, ''))) = 'CSE', CAST(stm_data.QuantityBBGN, 'Nullable(Decimal(18,\r\n\r\n\r\n 4))'), NULL) AS `Sản lượng giao CSE1`,
+            if((upperUTF8(trimBoth(ifNull(swm_data.UOM, ''))) IN ('PCE', 'PC', 'EA')), CAST(stm_data.QuantityBBGN, 'Nullable(Decimal(18,\r\n\r\n\r\n 4))'), NULL) AS `Sản lượng giao1`,
+            if(upperUTF8(trimBoth(ifNull(swm_data.UOM, ''))) = 'PALLET', CAST(stm_data.QuantityBBGN, 'Nullable(Decimal(18,\r\n\r\n\r\n 4))'), NULL) AS `Sản lượng giao PL1`,
             if(stm_data.`Mã đơn hàng` IS NOT NULL, 1, 0) AS has_stm_line
         FROM analytics_workspace.mv_otif_swm_data AS swm_data
         LEFT JOIN
-        stm_deduped AS stm_data ON (swm_data.SO = stm_data.`Mã đơn hàng`) AND (swm_data.`Item Code` = stm_data.productCode) AND (toString(swm_data.ORDERLINENUMBER) = toString(stm_data.LineNo)) AND ((stm_data.Note1 IS NULL) OR (stm_data.Note1 = '') OR (ifNull(swm_data.lottable01, '') = stm_data.Note1)) AND ((stm_data.ExpiryDate IS NULL) OR (toDate(swm_data.lottable05) = toDate(stm_data.ExpiryDate)))
+        stm_prod AS stm_data ON (swm_data.SO = stm_data.`Mã đơn hàng`) AND (swm_data.`Item Code` = stm_data.productCode)
         LEFT JOIN analytics_workspace.mv_masterdata_location AS masterdata_locationfrom ON toString(swm_data.WHSEID_stm) = toString(masterdata_locationfrom.code)
         LEFT JOIN analytics_workspace.mv_masterdata_location AS masterdata_locationto ON toString(swm_data.`Customer Code`) = toString(masterdata_locationto.code)
     ),
@@ -6356,11 +6536,11 @@ SELECT
     any(WHSEID_stm) AS WHSEID_stm,
     any(orderkey) AS orderkey,
     SO,
-    ORDERLINENUMBER,
+    any(ORDERLINENUMBER) AS ORDERLINENUMBER,
     any(TYPE) AS TYPE,
     any(`Type Description`) AS `Type Description`,
     `Item Code`,
-    any(UOM) AS UOM,
+    UOM,
     any(`Group of Cago`) AS `Group of Cago`,
     any(Group) AS Group,
     any(`Customer Code`) AS `Customer Code`,
@@ -6426,7 +6606,7 @@ mapped
 GROUP BY
     SO,
     `Item Code`,
-    ORDERLINENUMBER
+    UOM
 ```
 
 ---
@@ -6792,143 +6972,6 @@ WHERE sku.group_of_cargo NOT IN ('PM', 'TEST', 'EQUIPMENT')
 
 ---
 
-### `mv_psv`
-
-> Refreshable MV (EVERY 30 MIN) song song với mv_psv_trigger - đọc thẳng tms_panasonic_prod.dbo_OPS_Optimizer (không qua psv_target). LEGACY: không có cột status_name_detail/reason_change, schema lệch ~10 rows với psv_target do timing. Deprecate candidate - dùng mv_psv_main thay thế.
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_psv
-REFRESH EVERY 30 MINUTE
-(
-    `ops_optimize_id` Int32,
-    `version` UInt64,
-    `sys_customer_id` Int32,
-    `optimizer_name` String,
-    `created_date` DateTime64(6),
-    `created_by` LowCardinality(String),
-    `parent_modified_date` DateTime64(6),
-    `parent_modified_by` LowCardinality(String),
-    `date_from` DateTime64(6),
-    `date_to` DateTime64(6),
-    `is_save` Bool,
-    `is_container` Bool,
-    `is_balance_customer` Bool,
-    `is_balance_km_score` Bool,
-    `type_id` Int32,
-    `note` String,
-    `note_1` String,
-    `note_2` String,
-    `tracking_id` String,
-    `report_id` Int64,
-    `is_trip_edit_manual` Bool,
-    `order_code` String,
-    `total_order` Int64,
-    `total_delivery` Int64,
-    `total_ton` Float64,
-    `total_cbm` Float64,
-    `total_cod_unit_price` Float64,
-    `group_of_vehicle_code` LowCardinality(String),
-    `group_of_vehicle_name` LowCardinality(String),
-    `group_of_vehicle_size` LowCardinality(String),
-    `vehicle_no` LowCardinality(String),
-    `max_capacity` Float64,
-    `max_weight` Float64,
-    `vendor_name` LowCardinality(String),
-    `main_cost` Float64,
-    `additional_cost` Float64,
-    `total_cost` Float64,
-    `total_distance` Float64,
-    `master_etd` DateTime,
-    `master_eta` DateTime,
-    `date_come_stock` DateTime,
-    `vehicle_end_time` DateTime,
-    `report_modified_date` DateTime,
-    `group_product_code` String,
-    `group_product_name` String,
-    `product_code` String,
-    `product_name` String,
-    `location_from_code` LowCardinality(String),
-    `location_from_name` LowCardinality(String),
-    `location_to_code` String,
-    `location_to_name` String,
-    `group_ids` String,
-    `order_ids` String,
-    `constraint_name` String,
-    `constraint_note` String,
-    `data_report` Bool,
-    `is_deleted` UInt8
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY (ops_optimize_id, tracking_id, report_id, version)
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = `sql-console:vy.tao@gosmartlog.com` SQL SECURITY DEFINER
-AS (SELECT
-    ID AS ops_optimize_id,
-    _peerdb_version AS version,
-    coalesce(SYSCustomerID, -1) AS sys_customer_id,
-    coalesce(OptimizerName, '') AS optimizer_name,
-    coalesce(CreatedDate, toDateTime64('1970-01-01 00:00:00', 6)) AS created_date,
-    CAST(coalesce(CreatedBy, ''), 'LowCardinality(String)') AS created_by,
-    coalesce(ModifiedDate, toDateTime64('1970-01-01 00:00:00', 6)) AS parent_modified_date,
-    CAST(coalesce(ModifiedBy, ''), 'LowCardinality(String)') AS parent_modified_by,
-    coalesce(DateFrom, toDateTime64('1970-01-01 00:00:00', 6)) AS date_from,
-    coalesce(DateTo, toDateTime64('1970-01-01 00:00:00', 6)) AS date_to,
-    coalesce(IsSave, false) AS is_save,
-    coalesce(IsContainer, false) AS is_container,
-    coalesce(IsBalanceCustomer, false) AS is_balance_customer,
-    coalesce(IsBalanceKMScore, false) AS is_balance_km_score,
-    coalesce(TypeID, -1) AS type_id,
-    coalesce(Note, '') AS note,
-    coalesce(Note1, '') AS note_1,
-    coalesce(Note2, '') AS note_2,
-    coalesce(JSONExtractString(v, 'TrackingID'), '') AS tracking_id,
-    coalesce(JSONExtractInt(v, 'ID'), -1) AS report_id,
-    toBool(coalesce(JSONExtractBool(v, 'IsTripEditManual'), false)) AS is_trip_edit_manual,
-    coalesce(JSONExtractString(v, 'OrderCode'), '') AS order_code,
-    coalesce(JSONExtractInt(v, 'TotalOrder'), 0) AS total_order,
-    coalesce(JSONExtractInt(v, 'TotalDelivery'), 0) AS total_delivery,
-    coalesce(JSONExtractFloat(v, 'TotalTon'), 0) AS total_ton,
-    coalesce(JSONExtractFloat(v, 'TotalCBM'), 0) AS total_cbm,
-    coalesce(JSONExtractFloat(v, 'TotalCODUnitPrice'), 0) AS total_cod_unit_price,
-    CAST(coalesce(JSONExtractString(v, 'GroupOfVehicleCode'), ''), 'LowCardinality(String)') AS group_of_vehicle_code,
-    CAST(coalesce(JSONExtractString(v, 'GroupOfVehicleName'), ''), 'LowCardinality(String)') AS group_of_vehicle_name,
-    CAST(coalesce(JSONExtractString(v, 'GroupOfVehicleSize'), ''), 'LowCardinality(String)') AS group_of_vehicle_size,
-    CAST(coalesce(JSONExtractString(v, 'VehicleNo'), ''), 'LowCardinality(String)') AS vehicle_no,
-    coalesce(JSONExtractFloat(v, 'MaxCapacity'), 0) AS max_capacity,
-    coalesce(JSONExtractFloat(v, 'MaxWeight'), 0) AS max_weight,
-    CAST(coalesce(JSONExtractString(v, 'VendorName'), ''), 'LowCardinality(String)') AS vendor_name,
-    coalesce(JSONExtractFloat(v, 'MainCost'), 0) AS main_cost,
-    coalesce(JSONExtractFloat(v, 'AdditionalCost'), 0) AS additional_cost,
-    coalesce(JSONExtractFloat(v, 'TotalCost'), 0) AS total_cost,
-    coalesce(JSONExtractFloat(v, 'TotalDistance'), 0) AS total_distance,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'MasterETD')), toDateTime('1970-01-01 00:00:00')) AS master_etd,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'MasterETA')), toDateTime('1970-01-01 00:00:00')) AS master_eta,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'DateComeStock')), toDateTime('1970-01-01 00:00:00')) AS date_come_stock,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'VehicleEndTime')), toDateTime('1970-01-01 00:00:00')) AS vehicle_end_time,
-    coalesce(parseDateTimeBestEffortOrNull(JSONExtractString(v, 'ModifiedDate')), toDateTime('1970-01-01 00:00:00')) AS report_modified_date,
-    coalesce(JSONExtractString(v, 'GroupOfProductCode'), '') AS group_product_code,
-    coalesce(JSONExtractString(v, 'GroupOfProductName'), '') AS group_product_name,
-    coalesce(JSONExtractString(v, 'ProductCode'), '') AS product_code,
-    coalesce(JSONExtractString(v, 'ProductName'), '') AS product_name,
-    CAST(coalesce(JSONExtractString(v, 'LocationFromCode'), ''), 'LowCardinality(String)') AS location_from_code,
-    CAST(coalesce(JSONExtractString(v, 'LocationFromName'), ''), 'LowCardinality(String)') AS location_from_name,
-    coalesce(JSONExtractString(v, 'LocationToCode'), '') AS location_to_code,
-    coalesce(JSONExtractString(v, 'LocationToName'), '') AS location_to_name,
-    coalesce(JSONExtractRaw(v, 'GroupIds'), '[]') AS group_ids,
-    coalesce(JSONExtractRaw(v, 'OrderIds'), '[]') AS order_ids,
-    coalesce(JSONExtractString(v, 'ConstraintName'), '') AS constraint_name,
-    coalesce(JSONExtractString(v, 'ConstraintNote'), '') AS constraint_note,
-    if(empty(JSONExtractString(DataRun, 'DataReport')) OR (JSONExtractString(DataRun, 'DataReport') = '[]'), false, true) AS data_report,
-    coalesce(_peerdb_is_deleted, 0) AS is_deleted
-FROM tms_panasonic_prod.dbo_OPS_Optimizer
-LEFT ARRAY JOIN JSONExtractArrayRaw(coalesce(JSONExtractString(DataRun, 'DataReport'), '[]')) AS v)
-COMMENT 'Refreshable MV (EVERY 30 MIN) song song với mv_psv_trigger - đọc thẳng tms_panasonic_prod.dbo_OPS_Optimizer (không qua psv_target). LEGACY: không có cột status_name_detail/reason_change, schema lệch ~10 rows với psv_target do timing. Deprecate candidate - dùng mv_psv_main thay thế.'
-```
-
----
-
 ### `mv_psv_main`
 
 > UI-facing PSV MV (REFRESH EVERY 1 HOUR). SELECT FROM psv_target FINAL WHERE is_deleted=0 AND data_report=true, đồng thời shift mọi DateTime sang UTC+7 (cộng 7h). Dùng cho widget/dashboard Smartlog Control Tower - không phải audit (audit nên dùng psv_target FINAL).
@@ -7174,7 +7217,7 @@ LEFT ARRAY JOIN JSONExtractArrayRaw(coalesce(JSONExtractString(DataRun, 'DataRep
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_stm_dropped
-REFRESH EVERY 8 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `ID_ORD_GroupProduct` Int32,
     `Mã đơn hàng` String,
@@ -7250,21 +7293,21 @@ REFRESH EVERY 1 HOUR
     `brand` Nullable(String) COMMENT 'Brand',
     `storer_key` String COMMENT 'Mã chủ hàng',
     `whseid` String COMMENT 'Mã kho',
-    `qty` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn,\r\n đơn vị masterunit/PCE/EA',
-    `qty_cbm` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn,\r\n đơn vị CBM',
-    `qty_ton` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn,\r\n đơn vị TON',
-    `qty_cse` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn,\r\n đơn vị CSE',
-    `qty_pl` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn,\r\n đơn vị PALLET',
-    `qty_allocated` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã allocated,\r\n đơn vị masterunit/PCE/EA',
-    `qty_allocated_cbm` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã allocated,\r\n đơn vị CBM',
-    `qty_allocated_ton` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã allocated,\r\n đơn vị TON',
-    `qty_allocated_cse` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã allocated,\r\n đơn vị CSE',
-    `qty_allocated_pl` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã allocated,\r\n đơn vị PALLET',
-    `qty_picked` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã picked,\r\n đơn vị masterunit/PCE/EA',
-    `qty_picked_cbm` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã picked,\r\n đơn vị CBM',
-    `qty_picked_ton` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã picked,\r\n đơn vị TON',
-    `qty_picked_cse` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã picked,\r\n đơn vị CSE',
-    `qty_picked_pl` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã picked,\r\n đơn vị PALLET'
+    `qty` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn,\r\n\r\n đơn vị masterunit/PCE/EA',
+    `qty_cbm` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn,\r\n\r\n đơn vị CBM',
+    `qty_ton` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn,\r\n\r\n đơn vị TON',
+    `qty_cse` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn,\r\n\r\n đơn vị CSE',
+    `qty_pl` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn,\r\n\r\n đơn vị PALLET',
+    `qty_allocated` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã allocated,\r\n\r\n đơn vị masterunit/PCE/EA',
+    `qty_allocated_cbm` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã allocated,\r\n\r\n đơn vị CBM',
+    `qty_allocated_ton` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã allocated,\r\n\r\n đơn vị TON',
+    `qty_allocated_cse` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã allocated,\r\n\r\n đơn vị CSE',
+    `qty_allocated_pl` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã allocated,\r\n\r\n đơn vị PALLET',
+    `qty_picked` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã picked,\r\n\r\n đơn vị masterunit/PCE/EA',
+    `qty_picked_cbm` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã picked,\r\n\r\n đơn vị CBM',
+    `qty_picked_ton` Nullable(Decimal(38, 6)) COMMENT 'Sản lượng tồn đã picked,\r\n\r\n đơn vị TON',
+    `qty_picked_cse` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã picked,\r\n\r\n đơn vị CSE',
+    `qty_picked_pl` Nullable(Decimal(38, 4)) COMMENT 'Sản lượng tồn đã picked,\r\n\r\n đơn vị PALLET'
 )
 ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 ORDER BY (storer_key, whseid, group_of_cargo, brand)
@@ -7293,10 +7336,10 @@ AS WITH
             sum((l.qty_picked * s.kg_per_masterunit) / 1000) AS qty_picked_ton,
             ceil(sum(l.qty_picked / nullIf(s.masterunit_per_cse, 0))) AS qty_picked_cse,
             ceil(sum(l.qty_picked / nullIf(s.masterunit_per_pallet, 0))) AS qty_picked_pl
-        FROM mondelez_swm_test.dim_lotxlocxid AS l
+        FROM swm_dwh_mondelez.dim_lotxlocxid AS l
         FINAL
         LEFT JOIN analytics_workspace.mv_masterdata_sku AS s ON (s.whseid = l.whseid) AND (s.item_code = l.sku)
-        LEFT JOIN mondelez_swm_test.dim_lotattribute AS lot
+        LEFT JOIN swm_dwh_mondelez.dim_lotattribute AS lot
         FINAL ON (lot.whseid = l.whseid) AND (lot.sku = l.sku) AND (lot.lot = l.lot) AND (lot.is_deleted = 0)
         WHERE (l.storer_key = 'MDLZ') AND (l.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (l.qty > 0) AND (l.is_deleted = 0) AND (NOT ((l.whseid = 'NKD') AND (upper(l.sku) IN ('LOSCAM', 'BACHTHUAN'))))
         GROUP BY
@@ -7352,7 +7395,7 @@ GROUP BY
 
 ```sql
 CREATE MATERIALIZED VIEW analytics_workspace.mv_swm_dropped
-REFRESH EVERY 8 MINUTE
+REFRESH EVERY 30 MINUTE
 (
     `biz_key` String,
     `WHSEID` String,
@@ -7446,393 +7489,6 @@ WHERE (orderdetail.storer_key = 'MDLZ') AND (orderdetail.is_deleted = 0) AND (((
 
 ---
 
-### `mv_test_copack_clickhouse`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_test_copack_clickhouse
-REFRESH EVERY 1 HOUR
-(
-    `whseid` String,
-    `date_in_out` DateTime,
-    `pallet_in` UInt64,
-    `pallet_out` Nullable(Float64)
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY (whseid, date_in_out)
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = `sql-console:vy.tao@gosmartlog.com` SQL SECURITY DEFINER
-AS WITH
-    sku_stm AS
-    (
-        SELECT
-            key_sk AS id_cus,
-            code AS item_code_raw,
-            replaceRegexpAll(trimBoth(code), '[ /-].*$', '') AS item_code,
-            row_number() OVER (PARTITION BY replaceRegexpAll(trimBoth(code), '[ /-].*$', '') ORDER BY key_sk ASC) AS rn
-        FROM stm_dwh_mondelez.subdim_cus_product
-        WHERE is_deleted = 0
-    ),
-    masterdata_sku AS
-    (
-        SELECT
-            sku.whseid AS whseid,
-            sku.sku AS item_code,
-            pack.pallet AS masterunit_per_pallet
-        FROM
-        sku_stm
-        INNER JOIN swm_dwh_mondelez.dim_sku AS sku ON (sku.sku = sku_stm.item_code) AND (sku_stm.rn = 1)
-        LEFT JOIN swm_dwh_mondelez.dim_pack AS pack ON (pack.whseid = sku.whseid) AND (pack.pack_key = sku.pack_key)
-        WHERE (sku.storer_key = 'MDLZ') AND (sku.is_deleted = 0) AND (pack.is_deleted = 0)
-    ),
-    in_copack AS
-    (
-        SELECT
-            toStartOfDay(r.date_received) AS ngay,
-            r.whseid AS kho,
-            count(r.palletid) AS pallet_in
-        FROM swm_dwh_mondelez.dim_receiptdetail AS r
-        LEFT JOIN swm_dwh_mondelez.dim_receipt AS rh ON (rh.receipt_key = r.receipt_key) AND (rh.whseid = r.whseid)
-        WHERE (r.is_deleted = 0) AND (rh.is_deleted = 0) AND (((r.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (((rh.type = 'FGTN') AND (r.lottable06 IN ('0072', ''))) OR (rh.type = '05'))) OR ((r.whseid = 'NKD') AND (((rh.type = 'FGTN') AND (r.lottable06 IN ('0032', '0021'))) OR (rh.type = '05')))) AND (r.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (rh.status_code IN ('9', '5'))
-        GROUP BY
-            1,
-            2
-    ),
-    group_out_copack AS
-    (
-        SELECT
-            o.whseid AS kho,
-            toStartOfDay(o.actual_ship_date) AS ngay,
-            ceil(sum(p.qty / nullIf(s.masterunit_per_pallet, 0))) AS pallet_out
-        FROM swm_dwh_mondelez.dim_orderdetail AS o
-        LEFT JOIN swm_dwh_mondelez.dim_orders AS o_h ON (o.order_key = o_h.order_key) AND (o.whseid = o_h.whseid)
-        LEFT JOIN swm_dwh_mondelez.dim_pickdetail AS p ON (o.order_key = p.order_key) AND (o.whseid = p.whseid) AND (o.order_line_number = p.order_line_number)
-        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS r ON (r.whseid = p.whseid) AND (r.lpnid = p.lpnid)
-        LEFT JOIN
-        masterdata_sku AS s ON (o.whseid = s.whseid) AND (o.sku = s.item_code)
-        WHERE (o.storer_key = 'MDLZ') AND (o.is_deleted = 0) AND (o_h.is_deleted = 0) AND (p.is_deleted = 0) AND (r.is_deleted = 0) AND (o.status_code IN ('95', '92')) AND (((o.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (o_h.type IN ('05', 'CPK'))) OR ((o.whseid = 'NKD') AND (o_h.type IN ('04', '05', 'CPK'))))
-        GROUP BY
-            1,
-            2
-    ),
-    out_copack AS
-    (
-        SELECT
-            ngay,
-            kho,
-            sum(pallet_out) AS pallet_out
-        FROM
-        group_out_copack
-        GROUP BY
-            1,
-            2
-    )
-SELECT
-    coalesce(i.kho, o.kho) AS whseid,
-    coalesce(i.ngay, o.ngay) AS date_in_out,
-    i.pallet_in AS pallet_in,
-    o.pallet_out AS pallet_out
-FROM
-in_copack AS i
-FULL OUTER JOIN
-out_copack AS o ON (i.ngay = o.ngay) AND (i.kho = o.kho)
-```
-
----
-
-### `mv_test_goods_receipt`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_test_goods_receipt
-REFRESH EVERY 1 HOUR
-(
-    `date_received` Date COMMENT 'Ngày nhận hàng (theo date_received dòng receipt)',
-    `whseid` String COMMENT 'Mã kho',
-    `pallet` UInt64 COMMENT 'Số dòng đếm theo palletid'
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY (whseid, date_received)
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = helix SQL SECURITY DEFINER
-AS SELECT
-    toDate(rd.date_received) AS date_received,
-    rd.whseid AS whseid,
-    count(rd.palletid) AS pallet
-FROM mondelez_swm_test.dim_receiptdetail AS rd
-FINAL
-LEFT JOIN mondelez_swm_test.dim_receipt AS r
-FINAL ON (r.storer_key = rd.storer_key) AND (r.whseid = rd.whseid) AND (r.receipt_key = rd.receipt_key) AND (r.is_deleted = 0)
-WHERE (rd.storer_key = 'MDLZ') AND (rd.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (((rd.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (((r.type = 'FGTN') AND (rd.lottable06 IN ('0035', '0038', '0041', '0044', '0046', '0054'))) OR (r.type = '04'))) OR ((rd.whseid = 'NKD') AND (((r.type = 'FGTN') AND (rd.lottable06 IN ('0041', '0047', '0020', '0050', '0055'))) OR (r.type IN ('04', 'NB2BMC', 'NHXK'))))) AND (rd.status_code IN ('9')) AND (rd.is_deleted = 0)
-GROUP BY
-    toDate(rd.date_received),
-    rd.whseid
-```
-
----
-
-### `mv_test_loose_picking`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_test_loose_picking
-REFRESH EVERY 1 HOUR
-(
-    `whseid` String,
-    `SO` String,
-    `order_key` String,
-    `actual_ship_date` DateTime64(9),
-    `item_code` String,
-    `product_name` String,
-    `batch` DateTime64(9),
-    `number_of_full_pallets` Nullable(Float64),
-    `cse_full` Nullable(Float64),
-    `cse_loose` Nullable(Float64),
-    `pct_loose_picking` Nullable(Float64),
-    `customer_code` String,
-    `customer_name` String,
-    `region` String
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY tuple()
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = `sql-console:vy.tao@gosmartlog.com` SQL SECURITY DEFINER
-AS WITH
-    sku_stm AS
-    (
-        SELECT
-            products.id AS id_cus,
-            products.code AS item_code_raw,
-            replaceRegexpAll(trimBoth(products.code), '[ /-].*$', '') AS item_code,
-            row_number() OVER (PARTITION BY replaceRegexpAll(trimBoth(products.code), '[ /-].*$', '') ORDER BY products.id ASC) AS rn
-        FROM stm_dwh_mondelez.subdim_cus_product AS products
-        LEFT JOIN stm_dwh_mondelez.subdim_cus_group_of_product AS group_products ON products.group_of_product_id = group_products.id
-    ),
-    masterdata_sku AS
-    (
-        SELECT
-            sku_stm.id_cus,
-            sku.whseid AS whseid,
-            sku.sku AS item_code,
-            sku.descr AS sku_name,
-            sku.category,
-            multiIf((upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (left(sku.sku, 1) = '2'), 'PM', (upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (sku.sku LIKE '%SAMPLE%'), 'TEST', (upper(trimBoth(sku.category)) IN ('OTHER', 'ORTHER')) AND (left(sku.sku, 1) != '2') AND (sku.sku NOT LIKE '%SAMPLE%'), 'EQUIPMENT', (upper(trimBoth(sku.category)) IN ('MOONCAKE')), 'MOONCAKE', (upper(trimBoth(sku.category)) IN ('PALLET')), 'EQUIPMENT', (upper(trimBoth(sku.category)) IN ('POSM', 'OFFBOM')), 'POSM/OFFBOM', (upper(trimBoth(sku.category)) IN ('TEST')), 'TEST', (upper(trimBoth(sku.category)) IN ('BUN', 'BUN1', 'BUN2')), 'FRESH', (upper(trimBoth(sku.category)) IN ('FRESH')), 'FRESH', (upper(trimBoth(sku.category)) IN ('DRY')), 'DRY', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (left(sku.sku, 1) = '2'), 'PM', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (sku.sku LIKE '%SAMPLE%'), 'TEST', (upper(trimBoth(sku.category)) IN ('LOCAL', 'IMPORT', 'EXPORT', 'TET')) AND (left(sku.sku, 1) != '2') AND (sku.sku NOT LIKE '%SAMPLE%'), convert_cargo.convert_skugroup, (sku.category IS NULL) AND (left(sku.sku, 2) = 'ZW'), 'POSM/OFFBOM', (sku.category IS NULL) AND (left(sku.sku, 1) = '2'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%BAO BI%'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%BAOBI%'), 'PM', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%PL%'), 'EQUIPMENT', (sku.category IS NULL) AND (upper(sku.sku) LIKE '%PPE%'), 'EQUIPMENT', NULL) AS group_of_cargo,
-            multiIf(substring(sku.sku, 1, 1) != '4', 'Other', match(upper(sku.descr), '(^| )SOLITE( |$)'), 'Solite', match(upper(sku.descr), '(^|[^A-Z0-9])AFC([^A-Z0-9]|$)'), 'AFC', match(upper(sku.descr), '(^|[^A-Z0-9])LU([^A-Z0-9]|$)'), 'Lu', match(upper(sku.descr), '(^|[^A-Z0-9])COSY([^A-Z0-9]|$)'), 'Cosy', match(upper(sku.descr), '(^|[^A-Z0-9])OREO([^A-Z0-9]|$)'), 'Oreo', match(upper(sku.descr), '(^|[^A-Z0-9])TET([^A-Z0-9]|$)'), 'Tết', match(upper(sku.descr), '(^|[^A-Z0-9])TRUNG THU([^A-Z0-9]|$)'), 'Trung Thu', match(upper(sku.descr), '(^|[^A-Z0-9])SLIDE([^A-Z0-9]|$)'), 'Slide', match(upper(sku.descr), '(^|[^A-Z0-9])(KD|KINH ĐÔ|KINH DO)([^A-Z0-9]|$)'), 'KD', match(upper(sku.descr), '(^|[^A-Z0-9])RITZ([^A-Z0-9]|$)'), 'RITZ', match(upper(sku.descr), '(^|[^A-Z0-9])TOBLERONE([^A-Z0-9]|$)'), 'Toblerone', NULL) AS brand,
-            sku.std_cube AS cbm_per_masterunit,
-            sku.std_grossweight AS kg_per_masterunit,
-            pack.inner_pack AS masterunit_per_cse,
-            pack.pallet AS masterunit_per_pallet
-        FROM
-        sku_stm
-        FULL OUTER JOIN swm_dwh_mondelez.dim_sku AS sku ON (sku.storer_key = 'MDLZ') AND (sku_stm.rn = 1) AND (sku_stm.item_code = sku.sku)
-        LEFT JOIN swm_dwh_mondelez.dim_pack AS pack ON (pack.whseid = sku.whseid) AND (pack.pack_key = sku.pack_key)
-        LEFT JOIN internal.convert_cargo AS convert_cargo ON (convert_cargo.whseid = 'BKD1') AND (sku.sku = convert_cargo.sku)
-        WHERE sku.storer_key = 'MDLZ'
-    ),
-    group_pickdetail AS
-    (
-        SELECT
-            pickdetail.storer_key,
-            pickdetail.whseid,
-            pickdetail.order_key,
-            pickdetail.order_line_number,
-            pickdetail.lpnid,
-            sum(pickdetail.qty) AS SHIPPED
-        FROM swm_dwh_mondelez.dim_pickdetail AS pickdetail
-        GROUP BY
-            1,
-            2,
-            3,
-            4,
-            5
-    ),
-    enriching_data AS
-    (
-        SELECT
-            orders.whseid AS whseid,
-            orders.extern_order_key AS SO,
-            orders.order_key AS order_key,
-            orders.actual_ship_date AS actual_ship_date,
-            orderdetail.order_line_number,
-            orders.consignee_key AS `Customer Code`,
-            masterdata_location.cus_location_name AS `Customer Name`,
-            masterdata_location.group_area_name AS `Khu vực đội xe`,
-            orderdetail.sku AS item_code,
-            masterdata_sku.sku_name AS product_name,
-            masterdata_sku.group_of_cargo AS `Group of Cago`,
-            rd.lottable04 AS batch,
-            orderdetail.original_qty AS ORIGINAL,
-            orderdetail.original_qty * cbm_per_masterunit AS `ORIGINAL CBM`,
-            orderdetail.original_qty * kg_per_masterunit AS `ORIGINAL KG`,
-            orderdetail.original_qty / nullIf(masterunit_per_cse, 0) AS `ORIGINAL CSE`,
-            orderdetail.original_qty / nullIf(masterunit_per_pallet, 0) AS `ORIGINAL PL`,
-            p.SHIPPED AS SHIPPED,
-            p.SHIPPED * cbm_per_masterunit AS `SHIPPED CBM`,
-            p.SHIPPED * kg_per_masterunit AS `SHIPPED KG`,
-            p.SHIPPED / nullIf(masterunit_per_cse, 0) AS `SHIPPED CSE`,
-            p.SHIPPED / nullIf(masterunit_per_pallet, 0) AS `SHIPPED PL`,
-            cbm_per_masterunit,
-            kg_per_masterunit,
-            masterunit_per_cse,
-            masterunit_per_pallet,
-            masterunit_per_pallet / nullIf(masterunit_per_cse, 0) AS cse_per_pallet
-        FROM swm_dwh_mondelez.dim_orderdetail AS orderdetail
-        LEFT JOIN
-        masterdata_sku ON (orderdetail.whseid = masterdata_sku.whseid) AND (orderdetail.sku = masterdata_sku.item_code)
-        LEFT JOIN swm_dwh_mondelez.dim_orders AS orders ON (orderdetail.storer_key = orders.storer_key) AND (orderdetail.whseid = orders.whseid) AND (orderdetail.order_key = orders.order_key)
-        LEFT JOIN
-        group_pickdetail AS p ON (orderdetail.storer_key = p.storer_key) AND (orderdetail.whseid = p.whseid) AND (orderdetail.order_key = p.order_key) AND (orderdetail.order_line_number = p.order_line_number)
-        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS rd ON (rd.storer_key = p.storer_key) AND (rd.whseid = p.whseid) AND (rd.lpnid = p.lpnid)
-        LEFT JOIN analytics_workspace.mv_masterdata_location AS masterdata_location ON orders.consignee_key = masterdata_location.code
-        WHERE (orderdetail.storer_key = 'MDLZ') AND (orders.status_code = '95') AND (orderdetail.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (orders.extern_order_key IS NOT NULL) AND (orderdetail.order_key IS NOT NULL) AND (((orderdetail.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (orders.type IN ('01', '240'))) OR ((orderdetail.whseid = 'NKD') AND (orders.type IN ('01', '07', '08', '09', '240', 'XB2BMC', 'XTNPP'))))
-    ),
-    summary AS
-    (
-        SELECT
-            whseid,
-            SO,
-            order_key,
-            actual_ship_date,
-            item_code,
-            product_name,
-            batch,
-            floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) AS number_of_full_pallets,
-            floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet) AS cse_full,
-            sum(`SHIPPED CSE`) - (floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet)) AS cse_loose,
-            (sum(`SHIPPED CSE`) - (floor(sum(`SHIPPED CSE`) / nullIf(max(cse_per_pallet), 0)) * max(cse_per_pallet))) / nullIf(sum(`SHIPPED CSE`), 0) AS pct_loose_picking
-        FROM
-        enriching_data
-        GROUP BY
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-    )
-SELECT
-    summary.*,
-    enriching_data.`Customer Code` AS customer_code,
-    enriching_data.`Customer Name` AS customer_name,
-    enriching_data.`Khu vực đội xe` AS region
-FROM
-summary
-LEFT JOIN
-enriching_data ON (summary.SO = enriching_data.SO) AND (summary.item_code = enriching_data.item_code) AND (summary.batch = enriching_data.batch)
-```
-
----
-
-### `mv_test_stocktype`
-
-**Engine:** `MaterializedView`
-
-```sql
-CREATE MATERIALIZED VIEW analytics_workspace.mv_test_stocktype
-REFRESH EVERY 20 MINUTE
-(
-    `group_of_cargo` Nullable(String),
-    `brand` Nullable(String),
-    `storer_key` String,
-    `whseid` String,
-    `qty` Decimal(38, 8),
-    `qty_cbm` Float64,
-    `qty_ton` Float64,
-    `qty_cse` Nullable(Float64),
-    `qty_pl` Nullable(Float64),
-    `qty_allocated` Decimal(38, 8),
-    `qty_allocated_cbm` Float64,
-    `qty_allocated_ton` Float64,
-    `qty_allocated_cse` Nullable(Float64),
-    `qty_allocated_pl` Nullable(Float64),
-    `qty_picked` Decimal(38, 8),
-    `qty_picked_cbm` Float64,
-    `qty_picked_ton` Float64,
-    `qty_picked_cse` Nullable(Float64),
-    `qty_picked_pl` Nullable(Float64)
-)
-ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
-ORDER BY tuple()
-SETTINGS allow_nullable_key = 1, index_granularity = 8192
-DEFINER = `sql-console:vy.tao@gosmartlog.com` SQL SECURITY DEFINER
-AS WITH
-    grouping_skubatch AS
-    (
-        SELECT
-            l.storer_key AS storer_key,
-            l.whseid AS whseid,
-            l.sku AS sku,
-            lot.lottable04 AS BATCH,
-            sum(l.qty) AS qty,
-            sum(l.qty * s.cbm_per_masterunit) AS qty_cbm,
-            sum((l.qty * s.kg_per_masterunit) / 1000) AS qty_ton,
-            ceil(sum(l.qty / nullIf(s.masterunit_per_cse, 0))) AS qty_cse,
-            ceil(sum(l.qty / nullIf(s.masterunit_per_pallet, 0))) AS qty_pl,
-            sum(l.qty_allocated) AS qty_allocated,
-            sum(l.qty_allocated * s.cbm_per_masterunit) AS qty_allocated_cbm,
-            sum((l.qty_allocated * s.kg_per_masterunit) / 1000) AS qty_allocated_ton,
-            ceil(sum(l.qty_allocated / nullIf(s.masterunit_per_cse, 0))) AS qty_allocated_cse,
-            ceil(sum(l.qty_allocated / nullIf(s.masterunit_per_pallet, 0))) AS qty_allocated_pl,
-            sum(l.qty_picked) AS qty_picked,
-            sum(l.qty_picked * s.cbm_per_masterunit) AS qty_picked_cbm,
-            sum((l.qty_picked * s.kg_per_masterunit) / 1000) AS qty_picked_ton,
-            ceil(sum(l.qty_picked / nullIf(s.masterunit_per_cse, 0))) AS qty_picked_cse,
-            ceil(sum(l.qty_picked / nullIf(s.masterunit_per_pallet, 0))) AS qty_picked_pl
-        FROM swm_dwh_mondelez.dim_lotxlocxid AS l
-        LEFT JOIN analytics_workspace.mv_masterdata_sku AS s ON (s.whseid = l.whseid) AND (s.item_code = l.sku)
-        LEFT JOIN swm_dwh_mondelez.dim_lotattribute AS lot ON (lot.whseid = l.whseid) AND (lot.sku = l.sku) AND (lot.lot = l.lot) AND (lot.is_deleted = 0)
-        WHERE (l.storer_key = 'MDLZ') AND (l.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (l.qty > 0) AND (l.is_deleted = 0) AND (NOT ((l.whseid = 'NKD') AND (upper(l.sku) IN ('LOSCAM', 'BACHTHUAN'))))
-        GROUP BY
-            storer_key,
-            whseid,
-            sku,
-            BATCH
-    ),
-    enriching_data AS
-    (
-        SELECT
-            s.group_of_cargo,
-            s.brand,
-            sb.*
-        FROM
-        grouping_skubatch AS sb
-        LEFT JOIN analytics_workspace.mv_masterdata_sku AS s ON (s.whseid = sb.whseid) AND (s.item_code = sb.sku)
-    )
-SELECT
-    group_of_cargo,
-    brand,
-    storer_key,
-    whseid,
-    sum(qty) AS qty,
-    sum(qty_cbm) AS qty_cbm,
-    sum(qty_ton) AS qty_ton,
-    sum(qty_cse) AS qty_cse,
-    sum(qty_pl) AS qty_pl,
-    sum(qty_allocated) AS qty_allocated,
-    sum(qty_allocated_cbm) AS qty_allocated_cbm,
-    sum(qty_allocated_ton) AS qty_allocated_ton,
-    sum(qty_allocated_cse) AS qty_allocated_cse,
-    sum(qty_allocated_pl) AS qty_allocated_pl,
-    sum(qty_picked) AS qty_picked,
-    sum(qty_picked_cbm) AS qty_picked_cbm,
-    sum(qty_picked_ton) AS qty_picked_ton,
-    sum(qty_picked_cse) AS qty_picked_cse,
-    sum(qty_picked_pl) AS qty_picked_pl
-FROM
-enriching_data
-GROUP BY
-    group_of_cargo,
-    brand,
-    storer_key,
-    whseid
-```
-
----
-
 ### `mv_transfer_in_out`
 
 **Engine:** `MaterializedView`
@@ -7858,9 +7514,9 @@ AS WITH
             toDate(rd.date_received) AS ngay,
             rd.whseid,
             count(rd.palletid) AS pallet_transfer_in
-        FROM mondelez_swm_test.dim_receiptdetail AS rd
+        FROM swm_dwh_mondelez.dim_receiptdetail AS rd
         FINAL
-        LEFT JOIN mondelez_swm_test.dim_receipt AS r
+        LEFT JOIN swm_dwh_mondelez.dim_receipt AS r
         FINAL ON (r.storer_key = rd.storer_key) AND (r.whseid = rd.whseid) AND (r.receipt_key = rd.receipt_key) AND (r.is_deleted = 0)
         WHERE (rd.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (((rd.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (r.type IN ('02', '08', 'ICDMT', 'ICD'))) OR ((rd.whseid = 'NKD') AND (r.type IN ('09')))) AND (rd.status_code IN ('9')) AND (rd.storer_key = 'MDLZ') AND (rd.is_deleted = 0)
         GROUP BY
@@ -7877,13 +7533,13 @@ AS WITH
             r.lottable04 AS batch,
             od.sku AS sku,
             ceil(sum(p.qty / nullIf(sku.masterunit_per_pallet, 0))) AS pallet_out
-        FROM mondelez_swm_test.dim_orderdetail AS od
+        FROM swm_dwh_mondelez.dim_orderdetail AS od
         FINAL
-        LEFT JOIN mondelez_swm_test.dim_orders AS oh
+        LEFT JOIN swm_dwh_mondelez.dim_orders AS oh
         FINAL ON (oh.storer_key = od.storer_key) AND (oh.whseid = od.whseid) AND (oh.order_key = od.order_key) AND (oh.is_deleted = 0)
-        LEFT JOIN mondelez_swm_test.dim_pickdetail AS p
+        LEFT JOIN swm_dwh_mondelez.dim_pickdetail AS p
         FINAL ON (od.storer_key = p.storer_key) AND (od.whseid = p.whseid) AND (od.order_key = p.order_key) AND (od.order_line_number = p.order_line_number) AND (p.is_deleted = 0)
-        LEFT JOIN mondelez_swm_test.dim_receiptdetail AS r
+        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS r
         FINAL ON (r.storer_key = p.storer_key) AND (r.whseid = p.whseid) AND (r.lpnid = p.lpnid) AND (r.is_deleted = 0)
         LEFT JOIN analytics_workspace.mv_masterdata_sku AS sku ON (sku.whseid = od.whseid) AND (sku.item_code = od.sku)
         WHERE (od.storer_key = 'MDLZ') AND (od.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (((od.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (oh.type IN ('02', '03', 'ICD', 'ICDK12', 'ICDMT', 'ICDMC', 'ICDSFG'))) OR ((od.whseid = 'NKD') AND (oh.type IN ('03', 'GMDGT', 'TLLMC', 'CKN')))) AND (od.status_code IN ('95')) AND (od.is_deleted = 0)
@@ -8256,7 +7912,7 @@ AS WITH
             l.whseid,
             l.stack_limit,
             if(right(l.loc, 1) = '1', 'Pickface', 'Tầng cao') AS level_type
-        FROM mondelez_swm_test.dim_loc AS l
+        FROM swm_dwh_mondelez.dim_loc AS l
         WHERE (l.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (l.is_deleted = 0) AND (l.loc NOT IN ('A0', 'STAGE', 'BUN', 'PICKTO', 'CHECK', 'CHAMHANG', 'Inventory', 'TRIBECO', 'CHUYEN KHO', 'BLOCK01', 'KHO INHOUSE')) AND (NOT ((l.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (left(trimBoth(l.loc), 1) = 'F'))) AND (NOT ((l.whseid = 'BKD2') AND (l.loc LIKE 'A%'))) AND (NOT ((l.whseid = 'BKD3') AND (l.loc IN ('16', '17', '18', '19', '20', '21', '22', 'A0', 'K', 'TO', 'E', 'CK', 'COPACK'))))
     ),
     cargo AS
@@ -8272,9 +7928,9 @@ AS WITH
             l.palletid AS palletid,
             r.lottable04,
             l.status
-        FROM mondelez_swm_test.dim_lotxlocxid AS l
+        FROM swm_dwh_mondelez.dim_lotxlocxid AS l
         LEFT JOIN analytics_workspace.mv_masterdata_sku AS s ON (s.whseid = l.whseid) AND (s.item_code = l.sku)
-        LEFT JOIN mondelez_swm_test.dim_receiptdetail AS r ON (r.whseid = l.whseid) AND (r.storer_key = l.storer_key) AND (r.lpnid = l.lpnid) AND (r.is_deleted = 0)
+        LEFT JOIN swm_dwh_mondelez.dim_receiptdetail AS r ON (r.whseid = l.whseid) AND (r.storer_key = l.storer_key) AND (r.lpnid = l.lpnid) AND (r.is_deleted = 0)
         WHERE (l.storer_key = 'MDLZ') AND (l.whseid IN ('BKD1', 'BKD2', 'BKD3', 'NKD', 'VN821', 'VN831')) AND (l.is_deleted = 0) AND (l.qty != 0) AND (l.loc NOT IN ('A0', 'STAGE', 'BUN', 'PICKTO', 'CHECK', 'CHAMHANG', 'Inventory', 'TRIBECO', 'CHUYEN KHO', 'BLOCK01', 'KHO INHOUSE')) AND (NOT ((l.whseid = 'NKD') AND (s.item_code IN ('LOSCAM', 'BACHTHUAN')))) AND (NOT ((l.whseid IN ('BKD1', 'BKD2', 'BKD3')) AND (left(trimBoth(l.loc), 1) = 'F'))) AND (NOT ((l.whseid = 'BKD2') AND (l.loc LIKE 'A%'))) AND (NOT ((l.whseid = 'BKD3') AND (l.loc IN ('16', '17', '18', '19', '20', '21', '22', 'A0', 'K', 'TO', 'E', 'CK', 'COPACK'))))
     ),
     final_ds AS

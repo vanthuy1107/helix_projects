@@ -1,0 +1,9 @@
+# Phụ thuộc Python cho DA tenant Mondelez (notebook + script).
+# Cài từ thư mục gốc helix-projects/:   pip install -r mondelez/requirements.txt
+#
+# Lõi `da` cài editable (-e): sửa da/ là notebook/script thấy ngay, không cần cài lại.
+-e ./da[viz,excel]
+
+# Cho notebook tương tác (không nằm trong lõi da)
+jupyter
+ipykernel

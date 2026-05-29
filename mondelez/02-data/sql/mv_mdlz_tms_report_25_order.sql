@@ -18,6 +18,16 @@
 -- KHÔNG pre-filter MasterStatus — giữ cả đơn 'Chờ'/'Chưa giao' để dashboard
 -- vẫn quan sát được pipeline tổng. Caller tự filter `master_status_has_active`
 -- nếu chỉ muốn scope L1-L4 ('Đã hoàn thành', 'Đang vận chuyển').
+--
+-- ── WMS cross-check (cùng logic mv_otif) ────────────────────────────────────
+-- KHÁC mv_otif: mv_otif lấy WMS làm driving table → đơn không có WMS biến mất
+-- hoàn toàn. Ở đây ta GIỮ mọi đơn TMS và chỉ ĐÁNH DẤU:
+--   has_wms = 1  → order_code xuất hiện ở lớp WMS OTIF (mv_otif_swm_data)
+--   has_wms = 0  → đơn chỉ có ở TMS report 25, KHÔNG có ở WMS
+-- Khóa đối chiếu: order_code (TMS) ↔ SO (WMS, = orders.extern_order_key đã
+-- strip '-SP…'). Chuẩn WMS = analytics_workspace.mv_otif_swm_data → "có WMS"
+-- hiểu theo đúng scope OTIF (whseid BKD*/NKD/VN8*, type, status 95/1). Đơn
+-- TMS nằm ngoài scope OTIF sẽ mang has_wms = 0.
 -- ============================================================================
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS analytics_workspace.mv_mdlz_tms_report_25_order
@@ -31,6 +41,10 @@ REFRESH EVERY 1 HOUR
     `ontime_status`                LowCardinality(String) COMMENT 'Ontime | Failed Ontime | Chưa giao | Thiếu thời gian',
     `infull_status`                LowCardinality(String) COMMENT 'Infull | Failed Infull | Chưa giao | KH = 0',
     `otif_status`                  LowCardinality(String) COMMENT 'OTIF Pass | Failed Ontime | Failed Infull | Failed Both | Not Evaluable',
+
+    -- ── WMS cross-check ─────────────────────────────────────────────────────
+    `has_wms`                      UInt8   COMMENT '1 = order_code có ở lớp WMS OTIF (mv_otif_swm_data); 0 = chỉ có ở TMS report 25',
+    `wms_match_status`             LowCardinality(String) COMMENT 'Có ở WMS | Chỉ có ở TMS',
 
     -- ── Bộ đếm dòng (giải thích cờ) ─────────────────────────────────────────
     `dong_tong`                    UInt32  COMMENT 'Tổng dòng Order × Trip của đơn',
@@ -93,7 +107,7 @@ ENGINE = SharedMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}')
 PARTITION BY toYYYYMM(tendered_date_vn)
 ORDER BY (tendered_date_vn, order_code)
 SETTINGS index_granularity = 8192
-COMMENT 'MDLZ TMS Report #25 — rollup cấp đơn (1 row = 1 OrderCode). Nguồn: mdlz_tms_report_25_trip_order. Có sẵn: cờ Ontime/Infull/OTIF + parsed dates + parsed numbers + trip rollup + dimensions. Logic Ontime (≤ETA+30'')/Infull (sumBBGN≥maxOrder) lấy từ tms_report_25_explore.ipynb. Refresh 1h. Doc: mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md'
+COMMENT 'MDLZ TMS Report #25 — rollup cấp đơn (1 row = 1 OrderCode). Nguồn: mdlz_tms_report_25_trip_order. Có sẵn: cờ Ontime/Infull/OTIF + cờ WMS cross-check (has_wms / wms_match_status, chuẩn mv_otif_swm_data) + parsed dates + parsed numbers + trip rollup + dimensions. Logic Ontime (≤ETA+30'')/Infull (sumBBGN≥maxOrder) lấy từ tms_report_25_explore.ipynb. Refresh 1h. Doc: mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md'
 AS
 WITH
     base AS (
@@ -127,6 +141,13 @@ WITH
         FROM analytics_workspace.mdlz_tms_report_25_trip_order AS t
         WHERE position(t.OrderCode, '-') = 0    -- SO_VALID
           AND t.OrderCode != ''
+    ),
+    -- Tập SO tồn tại ở lớp WMS OTIF (cùng scope mv_otif). 1 row = 1 SO duy nhất.
+    wms_so AS (
+        SELECT DISTINCT SO AS so
+        FROM analytics_workspace.mv_otif_swm_data
+        WHERE SO IS NOT NULL
+          AND SO != ''
     ),
     rolled AS (
         SELECT
@@ -188,6 +209,13 @@ WITH
             max(src_loaded_at)              AS src_loaded_at
         FROM base
         GROUP BY order_code
+    ),
+    -- Gắn cờ WMS 1 lần (DRY) — has_wms tái dùng cho cả wms_match_status ở SELECT
+    marked AS (
+        SELECT
+            rolled.*,
+            toUInt8(order_code IN (SELECT so FROM wms_so))                                                       AS has_wms
+        FROM rolled
     )
 SELECT
     order_code,
@@ -217,6 +245,10 @@ SELECT
                                          'OTIF Pass'
     )                                                                                                            AS otif_status,
 
+    -- ── WMS cross-check ─────────────────────────────────────────────────────
+    has_wms,
+    if(has_wms = 1, 'Có ở WMS', 'Chỉ có ở TMS')                                                                  AS wms_match_status,
+
     dong_tong, dong_da_giao, dong_eval_ot, dong_tre,
     kh_qty, gn_qty, (gn_qty - kh_qty)                                                                            AS chenh_qty,
     kh_ton, gn_ton, kh_cbm, gn_cbm,
@@ -236,4 +268,4 @@ SELECT
     group_of_vehicle_name,
 
     src_loaded_at
-FROM rolled;
+FROM marked;
