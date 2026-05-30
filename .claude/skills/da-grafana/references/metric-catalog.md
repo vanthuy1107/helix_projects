@@ -9,7 +9,7 @@ Catalog map mỗi **section** (`mondelez/01-sections/<section>/`) → panel Graf
 
 **Công thức bên dưới là canonical** (cho section đã port) — copy nguyên semantics, chỉ đổi `WHERE window` → `$__timeFilter(<time_col>)`. Bảng vật lý lấy từ [`da.toml`](../../../../mondelez/da.toml); ở Grafana dùng tên đầy đủ `analytics_workspace.<table>`.
 
-> **Section CHƯA có ở đây** (vfr, tender-response, wh-utilization, stock-type, copack, factory-inbound, loose-picking, shipping-progress, transfer, txn-move, daily-ops, alert-summary, late-order-alert): đọc prd/spec section đó → dựng công thức → smoke-test `/da-ch` → thêm mục mới theo khuôn dưới.
+> **Section CHƯA có ở đây** (vfr, tender-response, wh-utilization, stock-type, copack, factory-inbound, loose-picking, shipping-progress, transfer, txn-move, daily-ops, alert-summary): đọc prd/spec section đó → dựng công thức → smoke-test `/da-ch` → thêm mục mới theo khuôn dưới.
 
 ### Khuôn 1 mục section (dùng khi bổ sung)
 ```
@@ -229,3 +229,43 @@ Threshold `d_don` (abs): 🟢 0 · 🟡 ≤ 2 · 🔴 > 2. Title: `"Δ số đơ
 > Timezone: mv_otif UTC, TMS VN → Δ ngày biên có thể do lệch 7h, không phải mất đơn. Ghi chú panel description đúng như script (`_classify_diff`: coverage-gap vs lệch thật).
 
 ### L1 — Đơn lệch tập cần truy (Table) — set-diff theo `(ngày, mã đơn)`; cột chẩn đoán "đối chiếu chéo" (đơn có ở nguồn kia ngày khác ⇒ lệch biên TZ). Phần này phức tạp (Python `_classify_diff`) → có thể giữ ở report `.md`, panel Grafana chỉ show Δ tổng hợp; nếu cần đầy đủ, tạo MV/bảng trung gian.
+
+---
+
+## Dashboard 5 — Late Order Alert (`mv_alert_late_do`)
+
+Nguồn: [`01-sections/late-order-alert/{prd,spec}.md`](../../../../mondelez/01-sections/late-order-alert/) (§22.1 spec = scorecard canonical). Artifact: [`mondelez/grafana/late-order-alert-quickview.json`](../../../../mondelez/grafana/late-order-alert-quickview.json). Time col mặc định `thoi_gian_gui_thau` (chọn được qua `$date_col`). **Đơn vị = số CHUYẾN** (`uniqExact(so_chuyen)`), KHÔNG phải đơn/volume.
+
+> **`alert_status` precompute trong MV** — widget/dashboard CHỈ đếm theo cột này, KHÔNG tính inline (ngưỡng 45′ At-risk sống trong MV). 7 status + priority (getAlertPriority): `Late departure open`=0 · `Late departure`=1 · `Late delivery`=2 · `At risk`=3 · `Normal`=4 · `Ontime departure`=5 · `Ontime delivery`=6. MV còn có giá trị rác `'N/A'` (so_chuyen rỗng) → loại bằng `alert_status != 'N/A'`.
+
+Common WHERE (mọi panel theo bộ lọc): `$__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt)`. Dim cột: kho=`whseid`, khu vực=`khu_vuc_doi_xe`, kênh=`group`, NVT=`ten_ngan_nvt`.
+
+### L0 — Health: 6 stat (Tổng chuyến + 4 trạng thái xấu, RAG >0)
+`uniqExactIf(so_chuyen, alert_status = '<status>')` cho từng status. Threshold: bad-status (`Late departure open`, `Late delivery`) 🟢0/🔴≥1; warning (`At risk`, `Late departure`) 🟢0/🟠≥1. Freshness = `dateDiff('minute', max(${date_col}), now())` (business-date, lag lớn là bình thường).
+
+### L1 — Exception: chuyến cần can thiệp (Table, gộp DO→chuyến)
+Gộp DO→chuyến lấy DO cảnh báo xấu nhất (khớp FE `detailTripRows`):
+```sql
+SELECT so_chuyen AS "Chuyến", argMin(alert_status, prio) AS "Cảnh báo",
+       argMin(whseid, prio) AS "Kho", argMin(ten_ngan_nvt, prio) AS "NVT",
+       argMin(ds_ma_don_trong_chuyen, prio) AS "Mã đơn",
+       ifNull(formatDateTime(toTimeZone(argMin(tg_bat_buoc_roi_kho, prio),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS "TG bắt buộc rời kho",
+       ifNull(formatDateTime(toTimeZone(min(eta_giao_hang_cho_npp),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS "ETA giao NPP"
+FROM ( SELECT *, multiIf(alert_status='Late departure open',0, alert_status='Late departure',1,
+       alert_status='Late delivery',2, alert_status='At risk',3, alert_status='Normal',4,
+       alert_status='Ontime departure',5, alert_status='Ontime delivery',6, 7) AS prio
+       FROM analytics_workspace.mv_alert_late_do WHERE <common> )
+GROUP BY so_chuyen HAVING min(prio) <= 3 ORDER BY min(prio) ASC LIMIT 200
+```
+Color-map cột "Cảnh báo": LDO/Late delivery=red, Late departure=orange, At risk=yellow. `HAVING min(prio)<=3` = chỉ chuyến cần hành động.
+⚠ `phut_tre_roi_kho` / `phut_tre_giao_npp` là CHUỖI DO-keyed (`"<doCode>: 66 phút | ..."`) **KHÔNG phải số** → đừng `max()`/`sum()` như số; show deadline/ETA thay vì "số phút trễ" tổng hợp.
+
+### L2 — Breakdown: trạng thái (Bar chart horizontal) + theo NVT (Table %trễ worst-first)
+- Trạng thái: `SELECT alert_status, uniqExact(so_chuyen) ... WHERE <common> AND alert_status!='N/A' GROUP BY alert_status` → barchart `xField=alert_status`.
+- NVT: `% trễ = uniqExactIf(so_chuyen, alert_status IN ('Late departure open','Late departure','Late delivery')) / uniqExact(so_chuyen)`; NVT rỗng → `'Không xác định'`; threshold %trễ 🟢<5 🟡5–20 🔴≥20.
+
+### L3 — Trend: chuyến trễ vs đúng hạn theo ngày (Time series, stacked bars)
+`toStartOfDay(${date_col}) AS time` + 4 series stacked: `Giao trễ`(red) / `Trễ rời kho`(orange, gồm LDO+Late departure) / `Sắp trễ`(yellow) / `Đúng hạn`(green, gồm Normal+Ontime departure+Ontime delivery). `stacking.mode=normal`, fixedColor override mỗi series.
+
+### Detail (collapsed) — drill gộp theo chuyến, 5000 dòng
+Như L1 nhưng BỎ `HAVING` (mọi trạng thái), thêm cột `trang_thai_chuyen`/`group_of_cago`/`ata_roi`, color-map đủ 7 status.
