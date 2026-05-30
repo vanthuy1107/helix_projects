@@ -6,15 +6,18 @@ user-invocable: true
 
 # Smartlog Control Tower — Product Owner sweep (business-side)
 
-Cảm hứng từ workflow gstack — *boil the lake before you code*, verdict-driven, atomic handoff. Skill này tồn tại để trả lời 2 câu hỏi cốt lõi của một Product Owner business-side:
+Cảm hứng từ workflow gstack — *boil the lake before you code*, verdict-driven, atomic handoff. Skill này tồn tại để trả lời 3 câu hỏi cốt lõi của một Product Owner business-side:
 
 1. **Ta đang có gì?** — bóc tính năng từ source code, không dựa vào trí nhớ stakeholder.
 2. **Ta ở đâu trên bản đồ?** — so capability với 7 sản phẩm BI lớn để định hướng roadmap.
+3. **User dùng có thuận tiện không?** — đo trải nghiệm thực tế (time-to-insight, self-serve, learning curve) theo persona, không chỉ đếm tính năng.
+
+Câu 1–2 là **supply view** (platform CÓ gì). Câu 3 là **demand view** (user CẢM NHẬN gì). Một PO thiếu demand view sẽ chấm các tool "nhiều tính năng nhưng khó dùng" cao hơn thực tế, và bỏ sót chính khoản đầu tư user-centric lớn nhất của mình (storytelling layout, empty-state, plain-language taxonomy — những thứ không hiện trên thước đo presence×depth).
 
 ## Triết lý
 
 - Inventory **phải bám source code**, không lấy từ slide marketing — code là source of truth.
-- Benchmark so **capability presence × depth**, không so polish UI (subjective).
+- Benchmark **3 trục**: capability **presence × depth** (supply) **× ease** (demand, theo persona). Loại trừ *UI polish* (đẹp/xấu — subjective) NHƯNG **đo *usability/convenience*** (time-to-task, số click, self-serve, recovery — measurable). Đây là 2 thứ KHÁC nhau; đừng vứt usability chung với polish.
 - Mỗi gap phải kết thúc bằng 1 verdict: `KEEP | CATCH-UP | LEAPFROG | IGNORE`. Không "TBD".
 - Skill này **filter** trước `/da-discovery` và `/ba`, không thay thế chúng.
 - Chạy định kỳ → chỉ re-quét phần *đã đổi*, không re-do toàn bộ.
@@ -32,7 +35,7 @@ Cảm hứng từ workflow gstack — *boil the lake before you code*, verdict-d
 |---|---|---|---|
 | **A. Inventory** | "liệt kê tính năng", "ta đang có gì", `/da-po inventory` | Feature catalog theo BI taxonomy | 30–60 phút |
 | **B. Benchmark** | "so với PowerBI/Tableau", "benchmark BI", `/da-po benchmark` | Capability matrix 8 cột | 60–90 phút |
-| **C. Full sweep** | "PO sweep", "rà soát PO", `/da-po sweep` | A + B + Gap analysis + Recommendations | 2–3 giờ |
+| **C. Full sweep** | "PO sweep", "rà soát PO", `/da-po sweep` | A + B + Convenience lens + Gap analysis + Recommendations | 2–3 giờ |
 | **D. Periodic delta** | `/da-po delta`, hoặc cron weekly | Diff vs snapshot trước → re-benchmark phần đổi | 15–30 phút |
 
 ## Mode A — Inventory (bóc từ source code)
@@ -93,9 +96,12 @@ notes           : 1 dòng — gì đặc biệt
 ```
 Presence : ✓ (full) | ◐ (partial) | ✗ (none)
 Depth    : Deep | Medium | Shallow | n/a
+Ease     : Easy | Moderate | Hard | n/a   (kèm persona, vd "Hard (P2)")
 Note     : 1 câu chứng minh, kèm path code (ta) hoặc URL doc (đối thủ)
 Source   : commit SHA + date (ta) / vendor docs URL + access date (đối thủ)
 ```
+
+Trục **Ease** đo demand view (xem `references/bi-capability-taxonomy.md` → rubric 3-trục + "Convenience personas & journeys"). Luôn surface ô `Presence ✓ / Depth Deep / Ease Hard` — đó là chỗ "moat capability" hẹp hơn nhiều so với vẻ ngoài cho persona đó.
 
 **Cache đối thủ:** `projects/po/_competitors/{vendor}.md` — refresh khi >30 ngày hoặc khi vendor có release notes mới. Template ở `references/competitor-baseline-template.md`.
 
@@ -108,7 +114,7 @@ Source   : commit SHA + date (ta) / vendor docs URL + access date (đối thủ)
 
 ## Mode C — Full sweep (A + B + Gap + Recommendation)
 
-Chạy nối tiếp A → B → gap analysis → recommendations.
+Chạy nối tiếp A → B → **convenience lens** → gap analysis (capability + convenience) → recommendations.
 
 **Gap analysis:** Với mỗi ô đối thủ có mà ta không (hoặc Depth thấp hơn rõ rệt) → 1 row gap với 4 trường:
 
@@ -123,9 +129,12 @@ Chạy nối tiếp A → B → gap analysis → recommendations.
 | `verdict_rationale` | 1 câu giải thích |
 | `handoff_to` | `/da-discovery` (CATCH-UP, LEAPFROG) / null (KEEP, IGNORE) |
 
+**Convenience lens (demand view — bắt buộc trong Mode C):** chấm trục Ease cho từng ô ma trận theo persona, RỒI chấm 6 persona journeys (J1–J6, xem taxonomy). Mỗi điểm Hard / chậm / cần-DA → 1 row `CONV-NNN` (namespace RIÊNG, KHÔNG trộn dải số với `GAP-NNN`), cùng verdict framework + thêm trường `persona` + `journey`. Bắt buộc surface mọi ô `Presence ✓ / Depth Deep / Ease Hard` (capability có nhưng dùng khó) — đây thường là CATCH-UP bị giấu sau điểm capability đẹp.
+
 **Output:**
-- `projects/po/benchmark/{YYYY-MM-DD}-gap-analysis.md`
-- `projects/po/roadmap-input/{YYYY-MM-DD}-recommendations.md` — chỉ items CATCH-UP / LEAPFROG, sort theo `relevance_to_logistics` rồi gap_id
+- `projects/po/benchmark/{YYYY-MM-DD}-gap-analysis.md` — capability gaps `GAP-NNN`
+- `projects/po/benchmark/{YYYY-MM-DD}-usability-convenience-lens.md` — Ease matrix + persona journeys + convenience gaps `CONV-NNN` (demand view)
+- `projects/po/roadmap-input/{YYYY-MM-DD}-recommendations.md` — items CATCH-UP / LEAPFROG (cả `GAP-NNN` lẫn `CONV-NNN`), sort theo `relevance_to_logistics` rồi id
 
 ## Mode D — Periodic delta (đáp đúng yêu cầu chạy định kỳ)
 
@@ -189,7 +198,8 @@ projects/po/
 │   └── _latest.json
 ├── benchmark/
 │   ├── {YYYY-MM-DD}-bi-capability-matrix.md
-│   └── {YYYY-MM-DD}-gap-analysis.md
+│   ├── {YYYY-MM-DD}-gap-analysis.md
+│   └── {YYYY-MM-DD}-usability-convenience-lens.md   # demand view: Ease matrix + persona journeys + CONV-NNN
 ├── _competitors/
 │   ├── powerbi.md
 │   ├── tableau.md
@@ -224,7 +234,10 @@ Nếu không quyết được verdict → ghi blocker cụ thể (câu hỏi + a
 | Sai lầm | Sửa |
 |---|---|
 | List từng controller / route như 1 feature | Gom theo 14 BI capability bucket |
-| So polish UI ("PowerBI đẹp hơn") | So presence × depth capability, ghi rõ evidence path |
+| So **polish UI** ("PowerBI đẹp hơn") — subjective | Loại trừ thẩm mỹ; nhưng VẪN đo **usability/convenience** bằng evidence (time-to-task, số click, self-serve, recovery) |
+| Chỉ chấm presence × depth, bỏ qua user dùng dễ hay khó | Chấm đủ **3 trục** (+ Ease theo persona) + 6 persona journeys; surface ô `✓/Deep/Hard` |
+| Thêm "area #15 — Usability" vào taxonomy | SAI category — usability là chất lượng cross-cutting; chấm Ease per-cell + persona journeys, KHÔNG tạo bucket riêng |
+| Trộn `CONV-NNN` chung dải số với `GAP-NNN` | 2 namespace độc lập (capability gap vs convenience gap) — tránh collision |
 | Cố match mọi feature của PowerBI | Filter qua lens "tenant logistics của ta có cần không" |
 | Verdict "ta cũng có" mà không chứng minh path | Phải có cột Source = code path hoặc PR link |
 | Recommendation chung chung "nên thêm AI" | Link tới use case cụ thể của 1 tenant (Mondelez/Panasonic) |
@@ -248,11 +261,13 @@ Nếu không quyết được verdict → ghi blocker cụ thể (câu hỏi + a
 | Từ verdict | Skill kế tiếp | Input handoff |
 |---|---|---|
 | KEEP | (none) | — |
-| CATCH-UP | `/da-discovery` | gap_id, capability, evidence, relevance |
-| LEAPFROG | `/da-discovery` priority cao | gap_id + thị trường gap rationale |
+| CATCH-UP | `/da-discovery` | gap_id / conv_id, capability, evidence, relevance |
+| LEAPFROG | `/da-discovery` priority cao | gap_id / conv_id + thị trường gap rationale |
 | IGNORE | (review log) | record lý do để check lại 6 tháng sau |
 
 `/da-discovery` sẽ tiếp tục bằng 5 câu hỏi reframe (xem SKILL.md của discovery). KHÔNG nhảy thẳng từ `/da-po` sang `/ba`.
+
+**Convenience gaps (`CONV-NNN`)** đi qua `/da-discovery` y hệt. Sau khi frame xong, nếu là vấn đề thiết kế luồng/UI thì handoff tiếp tới **`/frontend-ux`** (SaaS quality) hoặc **`/da-storytelling-data`** (narrative/layout) — đó là 2 skill *thực thi* convenience; `/da-po` chỉ *phát hiện + định verdict*.
 
 ## Mandatory ending signals
 
@@ -262,14 +277,15 @@ Kết thúc mọi lần chạy phải in ra:
 - `ARTIFACT_PATHS`: list file đã tạo/cập nhật
 - `INVENTORY_SUMMARY`: X features total, Y new, Z removed, K changed (Mode A/C/D)
 - `BENCHMARK_SUMMARY`: X capability area, Y ta dẫn đầu, Z ta tụt (Mode B/C)
-- `GAP_VERDICT_BREAKDOWN`: catch_up=N, leapfrog=M, ignore=K (Mode C/D)
-- `HANDOFF_QUEUE`: list gap_id sẽ handoff sang `/da-discovery`
+- `USABILITY_SUMMARY`: số ô Easy/Moderate/Hard cho mỗi persona; điểm storytelling/leapfrog convenience; số ô `✓/Deep/Hard` (capability có nhưng dùng khó) (Mode B/C)
+- `GAP_VERDICT_BREAKDOWN`: capability `GAP-NNN` catch_up=N, leapfrog=M, ignore=K; convenience `CONV-NNN` catch_up=N, leapfrog=M, ignore=K (Mode C/D)
+- `HANDOFF_QUEUE`: list gap_id + conv_id sẽ handoff sang `/da-discovery`
 - `NEXT_REFRESH_DUE`: ngày khuyến nghị chạy `/da-po delta` lần kế
 
 ## Templates & taxonomy
 
 Chi tiết tham chiếu:
 
-- `references/bi-capability-taxonomy.md` — định nghĩa 14 BI capability area + "what good looks like" cho từng area + path source code Smartlog liên quan
+- `references/bi-capability-taxonomy.md` — định nghĩa 14 BI capability area + "what good looks like" + rubric 3-trục (Presence × Depth × Ease) + **Convenience personas & journeys** (P1–P3, J1–J6, namespace `CONV-NNN`) + path source code Smartlog
 - `references/competitor-baseline-template.md` — template cho `projects/po/_competitors/{vendor}.md` (profile, capability scores, pricing, source URLs)
 - `references/delta-detection-runbook.md` — step-by-step Mode D, bảng mapping file→bucket, decision tree

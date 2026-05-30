@@ -50,16 +50,22 @@ Format mỗi area:
 ### {N}. {Capability name}
 - **Presence**: ✓ | ◐ | ✗
 - **Depth**: Deep | Medium | Shallow | n/a
+- **Ease**: Easy | Moderate | Hard | n/a  (cho persona nào — P1 consumer / P2 author / P3 admin)
 - **Evidence**: <URL doc cụ thể>
 - **Notable**: <1 câu — gì đặc biệt, vd "DAX engine in-memory VertiPaq">
+- **Ease note**: <1 câu — vd "DAX learning curve cao → Moderate cho P2; consume pre-built thì Easy cho P1">
 - **Smartlog comparable**: <link tới capability tương ứng của ta, hoặc "n/a — ta chưa có">
 ```
+
+> **Ease là trục thứ 3 bắt buộc** (xem `bi-capability-taxonomy.md` → "Convenience personas & journeys"). Đo bằng learning curve / số bước / khả năng self-serve — KHÔNG bằng "đẹp/xấu". Champion usability (vd Metabase) thường Easy ở #7/#5 dù Depth chỉ Medium — chính chỗ đó là điểm Smartlog dễ bị under-rate nếu chỉ nhìn presence×depth.
 
 ### 1. Data Connectors
 - **Presence**: 
 - **Depth**: 
+- **Ease**: 
 - **Evidence**: 
 - **Notable**: 
+- **Ease note**: 
 - **Smartlog comparable**: 
 
 ### 2. Data Modeling
@@ -113,6 +119,16 @@ Format mỗi area:
 1. <1 câu, có evidence>
 2. ...
 3. ...
+
+## Usability posture (per persona)
+
+Tóm tắt vendor này dễ/khó với từng persona (demand view, bổ trợ capability scores):
+
+| Persona | Ease tổng thể | 1 câu vì sao |
+|---|---|---|
+| P1 — Business Consumer | Easy/Moderate/Hard | <vd "consume pre-built dashboard rất mượt"> |
+| P2 — Citizen Author | Easy/Moderate/Hard | <vd "DAX/LookML learning curve"> |
+| P3 — Admin/Embedder | Easy/Moderate/Hard | <vd "embed setup time"> |
 
 ## Recent releases (window: last 90 days)
 | Version | Date | Notable changes affecting capability matrix |
