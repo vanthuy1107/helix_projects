@@ -1,0 +1,1423 @@
+{
+  "annotations": [
+    {
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "query": {
+          "datasource": {
+            "name": "-- Grafana --"
+          },
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {},
+          "version": "v0"
+        }
+      }
+    }
+  ],
+  "cursorSync": "Off",
+  "description": "Nhìn nhanh sức khỏe Flash Daily của mv_flash_and_drop_report: freshness + % Hoàn thành E2E (target 95%) + chiều đang kéo xuống + funnel 5 trạng thái + trend hoàn thành/tỷ lệ rớt + drill. Công thức canonical theo flash-daily-spec §6.8 (Done = e2e_label='Đã vận chuyển'; mẫu số = 5 trạng thái active). Drop = e2e_label='Kế hoạch hủy' (status='Cancel'). Target/RAG theo prd §0-LOCKED (B1 95% / B4 alert <85 / G2 rớt ≤5%). RAG ở thresholds, KHÔNG trong SQL. TRỤC THỜI GIAN: 'Ngày GI' = cột ngay_gi (CHUẨN — date sạch, 0 NULL, KHÔNG có ngày tương lai). Tùy chọn 'Ngày giao KH (delivery)' = delivery_date_1 (≈25% NULL, có giờ, có thể lệch +1 ngày so với GI & chứa ngày kế hoạch tương lai) — chỉ chọn khi cần xem theo ngày giao khách. delivery_date_1 KHÔNG phải Ngày GI (đó là lý do trước đây 24/05 hiện 1 đơn lẻ).",
+  "editable": true,
+  "elements": {
+    "panel-1": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT dateDiff('minute', max(ngay_tao_don), now()) AS lag_min, toString(toDate(max(ngay_tao_don))) AS max_created FROM analytics_workspace.mv_flash_and_drop_report"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Lag = phút từ max(ngay_tao_don) tới now. Đây là 'phút kể từ đơn được tạo gần nhất' (nhịp nghiệp vụ), dùng làm proxy độ tươi. 🟡 > 12h · 🔴 > 24h = nghi không có đơn mới / MV không refresh.",
+        "id": 1,
+        "links": [],
+        "title": "Freshness — đơn tạo gần nhất, trễ ~lag′ (🟡>12h · 🔴>24h)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "green", "value": 0 },
+                    { "color": "yellow", "value": 720 },
+                    { "color": "red", "value": 1440 }
+                  ]
+                },
+                "unit": "m"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^lag_min$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-2": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')),0),2) AS pct_hoan_thanh FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Số quan trọng nhất (PRD E2). % Hoàn thành E2E = volume 'Đã vận chuyển' / volume 5 trạng thái active, theo UOM đang chọn. Target 95% (B1). Đỏ < 85 (B4 alert).",
+        "id": 2,
+        "links": [],
+        "title": "% Hoàn thành E2E (mục tiêu 95%)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "red", "value": 0 },
+                    { "color": "yellow", "value": 85 },
+                    { "color": "green", "value": 95 }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^pct_hoan_thanh$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-3": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')),0) AS plan_vol FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Tổng khối lượng kế hoạch (5 trạng thái active) theo UOM đang chọn — mẫu số của % Hoàn thành.",
+        "id": 3,
+        "links": [],
+        "title": "Tổng kế hoạch (volume theo UOM)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "blue", "value": 0 }]
+                },
+                "unit": "locale"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "none",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^plan_vol$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS done_vol FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Khối lượng đã giao (e2e_label='Đã vận chuyển') theo UOM đang chọn — tử số của % Hoàn thành.",
+        "id": 4,
+        "links": [],
+        "title": "Đã giao (volume theo UOM)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "green", "value": 0 }]
+                },
+                "unit": "locale"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "none",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^done_vol$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-5": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')) - sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS con_lai FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Còn lại = Kế hoạch − Đã giao (volume các trạng thái chưa 'Đã vận chuyển'). Càng nhỏ càng tốt.",
+        "id": 5,
+        "links": [],
+        "title": "Còn lại chưa giao (volume theo UOM)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "orange", "value": 0 }]
+                },
+                "unit": "locale"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "none",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^con_lai$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-6": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(100.0*uniqExactIf(so, e2e_label='Kế hoạch hủy')/nullIf(uniqExact(so),0),2) AS pct_rot FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Tỷ lệ rớt = #đơn (so) 'Kế hoạch hủy' (= status='Cancel') / tổng đơn kế hoạch (G2 định nghĩa hẹp). Mục tiêu ≤ 5% (G4). 🟢=0 · 🟡>0 · 🔴≥5%.",
+        "id": 6,
+        "links": [],
+        "title": "% đơn rớt (mục tiêu ≤ 5%)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "decimals": 2,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "green", "value": 0 },
+                    { "color": "yellow", "value": 0.01 },
+                    { "color": "red", "value": 5 }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^pct_rot$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-7": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT chieu, gia_tri, plan_vol, done_vol, (plan_vol - done_vol) AS con_lai, pct_done FROM ( SELECT 'Kho' AS chieu, multiIf(whseid IS NULL,'(NULL)', whseid='','(rỗng)', whseid) AS gia_tri, round(sum(toFloat64(coalesce(${uom_col},0))),0) AS plan_vol, round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS done_vol, round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sum(toFloat64(coalesce(${uom_col},0))),0),2) AS pct_done FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY gia_tri UNION ALL SELECT 'Khu vực' AS chieu, multiIf(khu_vuc_doi_xe IS NULL,'(NULL)', khu_vuc_doi_xe='','(rỗng)', khu_vuc_doi_xe) AS gia_tri, round(sum(toFloat64(coalesce(${uom_col},0))),0) AS plan_vol, round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS done_vol, round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sum(toFloat64(coalesce(${uom_col},0))),0),2) AS pct_done FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY gia_tri UNION ALL SELECT 'Kênh' AS chieu, multiIf(group_name IS NULL,'(NULL)', group_name='','(rỗng)', group_name) AS gia_tri, round(sum(toFloat64(coalesce(${uom_col},0))),0) AS plan_vol, round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS done_vol, round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sum(toFloat64(coalesce(${uom_col},0))),0),2) AS pct_done FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY gia_tri UNION ALL SELECT 'Nhóm hàng' AS chieu, multiIf(group_of_cago IS NULL,'(NULL)', group_of_cago='','(rỗng)', group_of_cago) AS gia_tri, round(sum(toFloat64(coalesce(${uom_col},0))),0) AS plan_vol, round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS done_vol, round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sum(toFloat64(coalesce(${uom_col},0))),0),2) AS pct_done FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY gia_tri ) WHERE pct_done < 95 AND plan_vol >= 50 ORDER BY pct_done ASC, plan_vol DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Exception Spotlight (PRD §0-LOCKED L2): gộp 4 chiều Kho / Khu vực / Kênh / Nhóm hàng, chỉ giữ nhóm %Hoàn thành < target 95% và ≥50 (volume theo UOM), tệ nhất trước. con_lai = volume chưa giao trong nhóm.",
+        "id": 7,
+        "links": [],
+        "title": "Chiều đang kéo % Hoàn thành xuống — cross-dim < 95% (worst-first, ≥50 vol)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "unit": "locale",
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": { "type": "auto" },
+                  "filterable": true,
+                  "footer": { "reducers": [] },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": { "id": "byName", "options": "pct_done" },
+                  "properties": [
+                    { "id": "unit", "value": "percent" },
+                    { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          { "color": "red", "value": 0 },
+                          { "color": "yellow", "value": 85 },
+                          { "color": "green", "value": 95 }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": { "id": "byName", "options": "con_lai" },
+                  "properties": [
+                    { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          { "color": "green", "value": 0 },
+                          { "color": "orange", "value": 1 }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true,
+              "sortBy": [{ "desc": false, "displayName": "pct_done" }]
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-8": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT e2e_label AS \"Trạng thái\", round(sum(toFloat64(coalesce(${uom_col},0))),0) AS \"Khối lượng\" FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY e2e_label ORDER BY multiIf(e2e_label='Chưa xuất kho',1, e2e_label='Đang xuất kho',2, e2e_label='Đã xuất kho',3, e2e_label='Đang vận chuyển',4, 5)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Funnel 5 trạng thái E2E (PRD §0-LOCKED L3): Chưa xuất → Đang xuất → Đã xuất → Đang vận → Đã vận. Volume theo UOM đang chọn, theo thứ tự luồng.",
+        "id": 8,
+        "links": [],
+        "title": "Funnel 5 trạng thái — khối lượng theo luồng E2E",
+        "vizConfig": {
+          "group": "barchart",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "fillOpacity": 80,
+                  "gradientMode": "none",
+                  "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                  "lineWidth": 1,
+                  "scaleDistribution": { "type": "linear" },
+                  "thresholdsStyle": { "mode": "off" }
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "blue", "value": 0 }]
+                },
+                "unit": "locale"
+              },
+              "overrides": []
+            },
+            "options": {
+              "barRadius": 0,
+              "barWidth": 0.7,
+              "fullHighlight": false,
+              "groupWidth": 0.7,
+              "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+              "orientation": "horizontal",
+              "showValue": "auto",
+              "stacking": "none",
+              "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" },
+              "xField": "Trạng thái",
+              "xTickLabelRotation": 0,
+              "xTickLabelSpacing": 0
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-12": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(whseid IS NULL,'(NULL)', whseid='','(rỗng)', whseid) AS \"Kho\", round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sum(toFloat64(coalesce(${uom_col},0))),0),2) AS pct_done FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY \"Kho\" HAVING sum(toFloat64(coalesce(${uom_col},0))) > 0 ORDER BY pct_done ASC LIMIT 15"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "% Hoàn thành theo Kho (PRD §0-LOCKED L5), worst-first. Đường target 95%. Đỏ < 85.",
+        "id": 12,
+        "links": [],
+        "title": "% Hoàn thành theo Kho — worst-first (target 95%)",
+        "vizConfig": {
+          "group": "bargauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "red", "value": 0 },
+                    { "color": "yellow", "value": 85 },
+                    { "color": "green", "value": 95 }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "displayMode": "gradient",
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^pct_done$/",
+                "values": true
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-13": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(group_name IS NULL,'(NULL)', group_name='','(rỗng)', group_name) AS \"Kênh\", round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sum(toFloat64(coalesce(${uom_col},0))),0),2) AS pct_done FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển') AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY \"Kênh\" HAVING sum(toFloat64(coalesce(${uom_col},0))) > 0 ORDER BY pct_done ASC LIMIT 15"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "% Hoàn thành theo Kênh bán (PRD §0-LOCKED L5), worst-first. Đường target 95%.",
+        "id": 13,
+        "links": [],
+        "title": "% Hoàn thành theo Kênh — worst-first (target 95%)",
+        "vizConfig": {
+          "group": "bargauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "red", "value": 0 },
+                    { "color": "yellow", "value": 85 },
+                    { "color": "green", "value": 95 }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "displayMode": "gradient",
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "/^pct_done$/",
+                "values": true
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-9": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')),0),2) AS \"% Hoàn thành\" FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Trend % Hoàn thành theo ngày (trục = Loại ngày đang chọn). Đường xanh = target 95%. Dưới đường = chưa đạt. Mặc định trục Ngày GI (ngay_gi) không có ngày tương lai; nếu đổi sang 'Ngày giao KH' (delivery_date_1) thì có thể thấy ngày tương lai → % thấp giả tạo.",
+        "id": 9,
+        "links": [],
+        "title": "Xu hướng % Hoàn thành theo ngày — đường xanh = target 95%",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 8,
+                  "gradientMode": "none",
+                  "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": { "type": "linear" },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": { "group": "A", "mode": "none" },
+                  "thresholdsStyle": { "mode": "line" }
+                },
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "transparent", "value": 0 },
+                    { "color": "green", "value": 95 }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+              "tooltip": { "hideZeros": false, "mode": "multi", "sort": "desc" }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-10": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, round(100.0*uniqExactIf(so, e2e_label='Kế hoạch hủy')/nullIf(uniqExact(so),0),2) AS \"% đơn rớt\" FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Trend tỷ lệ rớt theo ngày (PRD §0-LOCKED L4). Đường đỏ = ngưỡng 5%. Trên đường = cảnh báo.",
+        "id": 10,
+        "links": [],
+        "title": "Xu hướng tỷ lệ rớt theo ngày — đường đỏ = ngưỡng 5%",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 8,
+                  "gradientMode": "none",
+                  "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": { "type": "linear" },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": { "group": "A", "mode": "none" },
+                  "thresholdsStyle": { "mode": "line" }
+                },
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "transparent", "value": 0 },
+                    { "color": "red", "value": 5 }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+              "tooltip": { "hideZeros": false, "mode": "multi", "sort": "desc" }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-11": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')),0) AS \"Kế hoạch\", round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS \"Đã giao\" FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Volume Kế hoạch vs Đã giao theo ngày (UOM đang chọn) — bối cảnh đọc trend % Hoàn thành.",
+        "id": 11,
+        "links": [],
+        "title": "Khối lượng Kế hoạch vs Đã giao theo ngày (volume context)",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "bars",
+                  "fillOpacity": 60,
+                  "gradientMode": "none",
+                  "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": { "type": "linear" },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": { "group": "A", "mode": "none" },
+                  "thresholdsStyle": { "mode": "off" }
+                },
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "blue", "value": 0 }]
+                },
+                "unit": "locale"
+              },
+              "overrides": []
+            },
+            "options": {
+              "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+              "tooltip": { "hideZeros": false, "mode": "multi", "sort": "none" }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-14": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT toString(toDate(${date_col})) AS \"Ngày\", round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')),0) AS \"Tổng KH\", round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển'),0) AS \"Đã giao\", round(100.0*sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã vận chuyển')/nullIf(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label IN ('Chưa xuất kho','Đang xuất kho','Đã xuất kho','Đang vận chuyển','Đã vận chuyển')),0),2) AS \"% Hoàn thành (vol)\", round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đang vận chuyển'),0) AS \"Đang vận\", round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Đã xuất kho'),0) AS \"Đã xuất\", round(sumIf(toFloat64(coalesce(${uom_col},0)), e2e_label='Chưa xuất kho'),0) AS \"Chưa xuất\", uniqExactIf(so, e2e_label='Kế hoạch hủy') AS \"Đơn rớt\", round(100.0*uniqExactIf(so, e2e_label='Kế hoạch hủy')/nullIf(uniqExact(so),0),2) AS \"% rớt (đơn)\" FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) GROUP BY \"Ngày\" ORDER BY \"Ngày\" DESC"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Bảng tổng hợp theo ngày. ⚠ HAI ĐƠN VỊ: '% Hoàn thành (vol)' = theo KHỐI LƯỢNG, mẫu số = đơn ACTIVE (đã loại đơn rớt) — nên đơn rớt KHÔNG kéo nó xuống. '% rớt (đơn)' = theo SỐ ĐƠN, mẫu số = TẤT CẢ đơn (gồm cả rớt). Vì vậy có thể thấy 99.9% hoàn thành mà vẫn 10% rớt: nhiều đơn lẻ khối lượng nhỏ bị huỷ. Cột 'Đơn rớt' = số SO 'Kế hoạch hủy'. Volume theo UOM đang chọn. Mới nhất trước.",
+        "id": 14,
+        "links": [],
+        "title": "Bảng tổng hợp theo ngày — % Hoàn thành + funnel + % rớt (mới nhất trước)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "unit": "locale",
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": { "type": "auto" },
+                  "filterable": true,
+                  "footer": { "reducers": [] },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": { "id": "byName", "options": "% Hoàn thành (vol)" },
+                  "properties": [
+                    { "id": "unit", "value": "percent" },
+                    { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          { "color": "red", "value": 0 },
+                          { "color": "yellow", "value": 85 },
+                          { "color": "green", "value": 95 }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": { "id": "byName", "options": "% rớt (đơn)" },
+                  "properties": [
+                    { "id": "unit", "value": "percent" },
+                    { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          { "color": "green", "value": 0 },
+                          { "color": "yellow", "value": 0.01 },
+                          { "color": "red", "value": 5 }
+                        ]
+                      }
+                    },
+                    { "id": "decimals", "value": 2 }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true,
+              "sortBy": [{ "desc": true, "displayName": "Ngày" }]
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-15": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT so AS \"SO\", whseid AS \"Kho\", khu_vuc_doi_xe AS \"Khu vực\", group_of_cago AS \"Nhóm hàng\", group_name AS \"Kênh\", customer_name AS \"Khách hàng\", e2e_label AS \"Trạng thái\", round(toFloat64(coalesce(original_cse,0)),2) AS \"KH CSE\", round(toFloat64(coalesce(shipped_cse,0)),2) AS \"Xuất CSE\", round(toFloat64(coalesce(san_luong_giao_cse,0)),2) AS \"Giao CSE\", formatDateTime(toTimeZone(delivery_date_1,'Asia/Ho_Chi_Minh'),'%Y-%m-%d') AS \"Ngày GI\", formatDateTime(toTimeZone(actual_ship_date,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i') AS \"Actual Ship\", formatDateTime(toTimeZone(ata_den,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i') AS \"ATA đến\" FROM analytics_workspace.mv_flash_and_drop_report WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) ORDER BY ${date_col} DESC LIMIT 5000"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Drill SO-level theo Loại ngày đang chọn. KHÔNG loại trạng thái nào (tra được mọi đơn kể cả 'Kế hoạch hủy'). Mỗi cột có ô filter — gõ SO/kho/kênh để lọc nhanh. Ngày hiển thị giờ Asia/Ho_Chi_Minh. Giới hạn 5000 dòng mới nhất.",
+        "id": 15,
+        "links": [],
+        "title": "Chi tiết đơn hàng — tra cứu nhanh (gõ SO ở ô lọc cột) · 5000 dòng mới nhất",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "unit": "locale",
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": { "type": "auto" },
+                  "filterable": true,
+                  "footer": { "reducers": [] },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": { "id": "byName", "options": "Trạng thái" },
+                  "properties": [
+                    { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+                    {
+                      "id": "mappings",
+                      "value": [
+                        {
+                          "type": "value",
+                          "options": {
+                            "Đã vận chuyển": { "color": "green", "index": 0 },
+                            "Đang vận chuyển": { "color": "blue", "index": 1 },
+                            "Đã xuất kho": { "color": "purple", "index": 2 },
+                            "Đang xuất kho": { "color": "orange", "index": 3 },
+                            "Chưa xuất kho": { "color": "#808080", "index": 4 },
+                            "Kế hoạch hủy": { "color": "red", "index": 5 }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    }
+  },
+  "layout": {
+    "kind": "RowsLayout",
+    "spec": {
+      "rows": [
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "hideHeader": true,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-1" }, "height": 4, "width": 4, "x": 0, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-2" }, "height": 4, "width": 4, "x": 4, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-3" }, "height": 4, "width": 4, "x": 8, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-4" }, "height": 4, "width": 4, "x": 12, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-5" }, "height": 4, "width": 4, "x": 16, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-6" }, "height": 4, "width": 4, "x": 20, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-7" }, "height": 8, "width": 24, "x": 0, "y": 4 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-8" }, "height": 8, "width": 8, "x": 0, "y": 12 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-12" }, "height": 8, "width": 8, "x": 8, "y": 12 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-13" }, "height": 8, "width": 8, "x": 16, "y": 12 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-9" }, "height": 8, "width": 12, "x": 0, "y": 20 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-10" }, "height": 8, "width": 12, "x": 12, "y": 20 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-11" }, "height": 7, "width": 24, "x": 0, "y": 28 } }
+                ]
+              }
+            },
+            "title": ""
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "title": "Chi tiết — bảng tổng hợp theo ngày + drill SO-level (theo Loại ngày & bộ lọc đang chọn)",
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-14" }, "height": 9, "width": 24, "x": 0, "y": 0 } },
+                  { "kind": "GridLayoutItem", "spec": { "element": { "kind": "ElementReference", "name": "panel-15" }, "height": 12, "width": 24, "x": 0, "y": 9 } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preload": false,
+  "tags": ["tenant:mondelez", "source:da-analysis", "flash", "quickview"],
+  "timeSettings": {
+    "autoRefresh": "30m",
+    "autoRefreshIntervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "fiscalYearStartMonth": 0,
+    "from": "now-14d",
+    "hideTimepicker": false,
+    "timezone": "Asia/Ho_Chi_Minh",
+    "to": "now"
+  },
+  "title": "Flash Quick View — Mondelez",
+  "variables": [
+    {
+      "kind": "CustomVariable",
+      "spec": {
+        "allowCustomValue": false,
+        "current": { "text": "Ngày GI", "value": "ngay_gi" },
+        "hide": "dontHide",
+        "includeAll": false,
+        "label": "Loại ngày",
+        "multi": false,
+        "name": "date_col",
+        "options": [
+          { "selected": true, "text": "Ngày GI", "value": "ngay_gi" },
+          { "selected": false, "text": "Ngày giao KH (delivery)", "value": "delivery_date_1" },
+          { "selected": false, "text": "Ngày tạo đơn", "value": "ngay_tao_don" },
+          { "selected": false, "text": "Actual Ship date", "value": "actual_ship_date" },
+          { "selected": false, "text": "ATA đến", "value": "ata_den" }
+        ],
+        "query": "Ngày GI : ngay_gi,Ngày giao KH (delivery) : delivery_date_1,Ngày tạo đơn : ngay_tao_don,Actual Ship date : actual_ship_date,ATA đến : ata_den",
+        "skipUrlSync": false
+      }
+    },
+    {
+      "kind": "CustomVariable",
+      "spec": {
+        "allowCustomValue": false,
+        "current": { "text": "CSE", "value": "original_cse" },
+        "hide": "dontHide",
+        "includeAll": false,
+        "label": "Đơn vị (UOM)",
+        "multi": false,
+        "name": "uom_col",
+        "options": [
+          { "selected": true, "text": "CSE", "value": "original_cse" },
+          { "selected": false, "text": "Pallet", "value": "original_pl" },
+          { "selected": false, "text": "KG", "value": "original_kg" },
+          { "selected": false, "text": "CBM", "value": "original_cbm" }
+        ],
+        "query": "CSE : original_cse,Pallet : original_pl,KG : original_kg,CBM : original_cbm",
+        "skipUrlSync": false
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": { "text": "All", "value": ["$__all"] },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Kho (whseid)",
+        "multi": true,
+        "name": "whseid",
+        "options": [],
+        "query": {
+          "datasource": { "name": "ffnl3fnifrcowc" },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": { "__legacyStringValue": "SELECT DISTINCT whseid FROM analytics_workspace.mv_flash_and_drop_report WHERE whseid != '' ORDER BY whseid" },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": { "text": "All", "value": ["$__all"] },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Kênh (group_name)",
+        "multi": true,
+        "name": "kenh",
+        "options": [],
+        "query": {
+          "datasource": { "name": "ffnl3fnifrcowc" },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": { "__legacyStringValue": "SELECT DISTINCT group_name FROM analytics_workspace.mv_flash_and_drop_report WHERE group_name != '' ORDER BY group_name" },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": { "text": "All", "value": ["$__all"] },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Khu vực (khu_vuc_doi_xe)",
+        "multi": true,
+        "name": "region",
+        "options": [],
+        "query": {
+          "datasource": { "name": "ffnl3fnifrcowc" },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": { "__legacyStringValue": "SELECT DISTINCT khu_vuc_doi_xe FROM analytics_workspace.mv_flash_and_drop_report WHERE khu_vuc_doi_xe != '' ORDER BY 1" },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    }
+  ]
+}

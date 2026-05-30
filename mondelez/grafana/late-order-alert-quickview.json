@@ -1,0 +1,1843 @@
+{
+  "annotations": [
+    {
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "query": {
+          "datasource": {
+            "name": "-- Grafana --"
+          },
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {},
+          "version": "v0"
+        }
+      }
+    }
+  ],
+  "cursorSync": "Off",
+  "description": "Nhìn nhanh chuyến TRỄ / SẮP TRỄ của mv_alert_late_do: freshness + 6 KPI cảnh báo + chuyến cần can thiệp ngay + phân bố trạng thái + cảnh báo theo NVT + trend. 7 alert_status precompute trong MV (KHÔNG tính inline) theo late-order-alert-spec §22.1; thứ tự ưu tiên theo §3.4 (Late departure open=0 ... Ontime delivery=6). Đơn vị = số CHUYẾN (uniqExact so_chuyen). RAG ở thresholds, KHÔNG trong SQL.",
+  "editable": true,
+  "elements": {
+    "panel-1": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT dateDiff('minute', max(${date_col}), now()) AS lag_min, toString(toDate(max(${date_col}))) AS max_date FROM analytics_workspace.mv_alert_late_do"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Lag = phút từ max(Loại ngày đang chọn) tới now. Cột business-date (giờ UTC), dashboard hiển thị Asia/Ho_Chi_Minh. alert_status phụ thuộc now() nên cần refresh đều (5m).",
+        "id": 1,
+        "links": [],
+        "title": "Dữ liệu mới nhất — tới max_date (lag ~′)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 1440
+                    },
+                    {
+                      "color": "red",
+                      "value": 2880
+                    }
+                  ]
+                },
+                "unit": "m"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^lag_min$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-2": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT uniqExact(so_chuyen) AS total_trip FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Tổng số chuyến duy nhất (uniqExact so_chuyen) trong cửa sổ + bộ lọc đang chọn.",
+        "id": 2,
+        "links": [],
+        "title": "Tổng chuyến",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "none",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^total_trip$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-3": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT uniqExactIf(so_chuyen, alert_status = 'Late departure open') AS cnt FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Chuyến CHƯA rời kho và ĐÃ quá TG bắt buộc rời kho — mức nghiêm trọng nhất (priority 0). Mọi giá trị > 0 = đỏ, cần can thiệp ngay.",
+        "id": 3,
+        "links": [],
+        "title": "🔴 Đã trễ, chưa rời kho (cần can thiệp NGAY)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^cnt$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT uniqExactIf(so_chuyen, alert_status = 'At risk') AS cnt FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Chuyến chưa ra cổng, đang trong cửa sổ 45 phút cuối trước TG bắt buộc rời kho (priority 3). Cần theo dõi sát để kịp xuất xe.",
+        "id": 4,
+        "links": [],
+        "title": "⚠ Sắp trễ rời kho (≤45′ tới deadline)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^cnt$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-5": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT uniqExactIf(so_chuyen, alert_status = 'Late departure') AS cnt FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Chuyến đã rời cổng SAU deadline, đang trên đường giao, chưa có ATA rời (priority 1).",
+        "id": 5,
+        "links": [],
+        "title": "🚚 Rời kho trễ (đang trên đường)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^cnt$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-6": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT uniqExactIf(so_chuyen, alert_status = 'Late delivery') AS cnt FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Chuyến đã hoàn tất giao nhưng ATA rời MUỘN hơn ETA giao NPP (priority 2). Kết quả trễ đã xảy ra.",
+        "id": 6,
+        "links": [],
+        "title": "🔴 Giao trễ NPP (Late delivery)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^cnt$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-7": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT so_chuyen AS \"Chuyến\", argMin(alert_status, prio) AS \"Cảnh báo\", argMin(whseid, prio) AS \"Kho\", argMin(khu_vuc_doi_xe, prio) AS \"Khu vực giao\", argMin(group, prio) AS \"Kênh\", argMin(ten_ngan_nvt, prio) AS \"NVT\", argMin(ds_ma_don_trong_chuyen, prio) AS \"Mã đơn\", ifNull(formatDateTime(toTimeZone(argMin(tg_bat_buoc_roi_kho, prio),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"TG bắt buộc rời kho\", ifNull(formatDateTime(toTimeZone(argMin(gio_ra_cong, prio),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"Giờ ra cổng (ATD)\", ifNull(formatDateTime(toTimeZone(min(eta_giao_hang_cho_npp),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"ETA giao NPP\" FROM ( SELECT *, multiIf(alert_status='Late departure open',0, alert_status='Late departure',1, alert_status='Late delivery',2, alert_status='At risk',3, alert_status='Normal',4, alert_status='Ontime departure',5, alert_status='Ontime delivery',6, 7) AS prio FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt) ) GROUP BY so_chuyen HAVING min(prio) <= 3 ORDER BY min(prio) ASC, \"ETA giao NPP\" ASC LIMIT 200"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Gộp DO → chuyến: mỗi chuyến lấy DO có cảnh báo nghiêm trọng nhất (priority asc — khớp getAlertPriority FE). Chỉ giữ chuyến cần hành động: Late departure open (0) / Late departure (1) / Late delivery (2) / At risk (3). Xấu nhất trước. ETA giao NPP lấy DO sớm nhất. 200 chuyến.",
+        "id": 7,
+        "links": [],
+        "title": "Chuyến cần can thiệp ngay — trễ / sắp trễ (xấu nhất trước)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": true,
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Cảnh báo"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "mappings",
+                      "value": [
+                        {
+                          "type": "value",
+                          "options": {
+                            "Late departure open": {
+                              "color": "red",
+                              "index": 0
+                            },
+                            "Late departure": {
+                              "color": "orange",
+                              "index": 1
+                            },
+                            "Late delivery": {
+                              "color": "red",
+                              "index": 2
+                            },
+                            "At risk": {
+                              "color": "yellow",
+                              "index": 3
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-8": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT alert_status AS \"Trạng thái\", uniqExact(so_chuyen) AS \"Số chuyến\" FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND alert_status != 'N/A' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt) GROUP BY alert_status ORDER BY \"Số chuyến\" DESC"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Phân bố số chuyến theo 7 trạng thái cảnh báo (loại 'N/A'). Đếm uniqExact(so_chuyen) — 1 chuyến có thể vào nhiều trạng thái nếu các DO khác nhau (khớp scorecard spec §22.1).",
+        "id": 8,
+        "links": [],
+        "title": "Phân bố chuyến theo trạng thái cảnh báo",
+        "vizConfig": {
+          "group": "barchart",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "fillOpacity": 80,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "lineWidth": 1,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "barRadius": 0,
+              "barWidth": 0.7,
+              "fullHighlight": false,
+              "groupWidth": 0.7,
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "orientation": "horizontal",
+              "showValue": "auto",
+              "stacking": "none",
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              },
+              "xField": "Trạng thái",
+              "xTickLabelRotation": 0,
+              "xTickLabelSpacing": 0
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-9": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(ten_ngan_nvt IS NULL,'(NULL)', ten_ngan_nvt='','Không xác định', ten_ngan_nvt) AS \"Nhà vận tải\", uniqExact(so_chuyen) AS \"Tổng chuyến\", uniqExactIf(so_chuyen, alert_status IN ('Late departure open','Late departure')) AS \"Trễ rời kho\", uniqExactIf(so_chuyen, alert_status = 'Late delivery') AS \"Giao trễ\", uniqExactIf(so_chuyen, alert_status = 'At risk') AS \"Sắp trễ\", round(100.0 * uniqExactIf(so_chuyen, alert_status IN ('Late departure open','Late departure','Late delivery')) / nullIf(uniqExact(so_chuyen),0), 1) AS \"% trễ\" FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt) GROUP BY \"Nhà vận tải\" ORDER BY \"% trễ\" DESC, \"Tổng chuyến\" DESC LIMIT 30"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Hold-accountable NVT có nhiều chuyến trễ. % trễ = (Trễ rời kho + Giao trễ) / Tổng chuyến của NVT. Worst-first. NVT rỗng → 'Không xác định' (giữ làm tín hiệu data-quality).",
+        "id": 9,
+        "links": [],
+        "title": "Cảnh báo theo nhà vận tải — % chuyến trễ (worst-first)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": true,
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "% trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "unit",
+                      "value": "percent"
+                    },
+                    {
+                      "id": "decimals",
+                      "value": 1
+                    },
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "yellow",
+                            "value": 5
+                          },
+                          {
+                            "color": "red",
+                            "value": 20
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Giao trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "orange",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Trễ rời kho"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "red",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": true,
+                  "displayName": "% trễ"
+                }
+              ]
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-10": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, uniqExactIf(so_chuyen, alert_status = 'Late delivery') AS \"Giao trễ\", uniqExactIf(so_chuyen, alert_status IN ('Late departure open','Late departure')) AS \"Trễ rời kho\", uniqExactIf(so_chuyen, alert_status = 'At risk') AS \"Sắp trễ\", uniqExactIf(so_chuyen, alert_status IN ('Normal','Ontime departure','Ontime delivery')) AS \"Đúng hạn\" FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND alert_status != 'N/A' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Số chuyến mỗi ngày theo nhóm trạng thái (stacked). Đỏ/cam dâng cao = nhiều chuyến trễ. Theo Loại ngày đang chọn ($date_col).",
+        "id": 10,
+        "links": [],
+        "title": "Xu hướng chuyến trễ vs đúng hạn theo ngày (stacked)",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "bars",
+                  "fillOpacity": 80,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "normal"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Giao trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "red",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Trễ rời kho"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "orange",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Sắp trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "yellow",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Đúng hạn"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "green",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "desc"
+              }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-11": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT so_chuyen AS \"Chuyến\", argMin(alert_status, prio) AS \"Cảnh báo\", argMin(trang_thai_chuyen, prio) AS \"Tr.thái chuyến\", argMin(whseid, prio) AS \"Kho\", argMin(khu_vuc_doi_xe, prio) AS \"Khu vực giao\", argMin(group, prio) AS \"Kênh\", argMin(ten_ngan_nvt, prio) AS \"NVT\", argMin(ds_ma_don_trong_chuyen, prio) AS \"Mã đơn\", argMin(group_of_cago, prio) AS \"Nhóm hàng\", ifNull(formatDateTime(toTimeZone(argMin(tg_bat_buoc_roi_kho, prio),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"TG bắt buộc rời kho\", ifNull(formatDateTime(toTimeZone(argMin(gio_ra_cong, prio),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"Giờ ra cổng (ATD)\", ifNull(formatDateTime(toTimeZone(argMin(ata_roi, prio),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"ATA rời\", ifNull(formatDateTime(toTimeZone(min(eta_giao_hang_cho_npp),'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"ETA giao NPP\" FROM ( SELECT *, multiIf(alert_status='Late departure open',0, alert_status='Late departure',1, alert_status='Late delivery',2, alert_status='At risk',3, alert_status='Normal',4, alert_status='Ontime departure',5, alert_status='Ontime delivery',6, 7) AS prio FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt) ) GROUP BY so_chuyen ORDER BY min(prio) ASC, \"Chuyến\" ASC LIMIT 5000"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Drill toàn bộ chuyến (gộp DO → chuyến, cảnh báo xấu nhất theo priority). Mọi trạng thái, sort priority asc. Mỗi cột có ô filter — gõ mã chuyến/kho/NVT để lọc nhanh. Giờ hiển thị Asia/Ho_Chi_Minh. Tối đa 5000 chuyến.",
+        "id": 11,
+        "links": [],
+        "title": "Chi tiết chuyến — tra cứu nhanh (gộp theo chuyến) · 5000 dòng",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": true,
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Cảnh báo"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "mappings",
+                      "value": [
+                        {
+                          "type": "value",
+                          "options": {
+                            "Late departure open": {
+                              "color": "red",
+                              "index": 0
+                            },
+                            "Late departure": {
+                              "color": "orange",
+                              "index": 1
+                            },
+                            "Late delivery": {
+                              "color": "red",
+                              "index": 2
+                            },
+                            "At risk": {
+                              "color": "yellow",
+                              "index": 3
+                            },
+                            "Normal": {
+                              "color": "green",
+                              "index": 4
+                            },
+                            "Ontime departure": {
+                              "color": "blue",
+                              "index": 5
+                            },
+                            "Ontime delivery": {
+                              "color": "green",
+                              "index": 6
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-12": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT toString(toDate(${date_col})) AS \"Ngày\", uniqExact(so_chuyen) AS \"Tổng chuyến\", uniqExactIf(so_chuyen, alert_status = 'Late departure open') AS \"Trễ chưa rời\", uniqExactIf(so_chuyen, alert_status = 'At risk') AS \"Sắp trễ\", uniqExactIf(so_chuyen, alert_status = 'Late departure') AS \"Rời kho trễ\", uniqExactIf(so_chuyen, alert_status = 'Ontime departure') AS \"Rời đúng hạn\", uniqExactIf(so_chuyen, alert_status = 'Late delivery') AS \"Giao trễ\", uniqExactIf(so_chuyen, alert_status = 'Ontime delivery') AS \"Giao đúng hạn\", round(100.0 * uniqExactIf(so_chuyen, alert_status IN ('Late departure open','Late departure','Late delivery')) / nullIf(uniqExact(so_chuyen),0), 1) AS \"% trễ\" FROM analytics_workspace.mv_alert_late_do WHERE $__timeFilter(${date_col}) AND alert_status != 'N/A' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(khu_vuc_doi_xe IN (${region:singlequote}), $region) AND $__conditionalAll(group IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nvt IN (${nvt:singlequote}), $nvt) GROUP BY \"Ngày\" ORDER BY \"Ngày\" DESC"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Thống kê số CHUYẾN theo ngày (Loại ngày đang chọn $date_col), tách 7 trạng thái cảnh báo + % trễ. Đơn vị = uniqExact(so_chuyen); 1 chuyến có thể vào nhiều trạng thái nếu các DO khác nhau. % trễ = (Trễ chưa rời + Rời kho trễ + Giao trễ) / Tổng chuyến. Loại 'N/A'. Mới nhất trước.",
+        "id": 12,
+        "links": [],
+        "title": "Bảng tổng hợp theo ngày — số chuyến theo trạng thái + % trễ (mới nhất trước)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": true,
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "% trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "unit",
+                      "value": "percent"
+                    },
+                    {
+                      "id": "decimals",
+                      "value": 1
+                    },
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "yellow",
+                            "value": 5
+                          },
+                          {
+                            "color": "red",
+                            "value": 20
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Trễ chưa rời"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "red",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Rời kho trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "orange",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Giao trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "red",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Sắp trễ"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "yellow",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": true,
+                  "displayName": "Ngày"
+                }
+              ]
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    }
+  },
+  "layout": {
+    "kind": "RowsLayout",
+    "spec": {
+      "rows": [
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "hideHeader": true,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-1"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-2"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 4,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-3"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 8,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-4"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 12,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-5"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 16,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-6"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 20,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-12"
+                      },
+                      "height": 9,
+                      "width": 24,
+                      "x": 0,
+                      "y": 4
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-7"
+                      },
+                      "height": 9,
+                      "width": 24,
+                      "x": 0,
+                      "y": 13
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-8"
+                      },
+                      "height": 8,
+                      "width": 12,
+                      "x": 0,
+                      "y": 22
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-9"
+                      },
+                      "height": 8,
+                      "width": 12,
+                      "x": 12,
+                      "y": 22
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-10"
+                      },
+                      "height": 8,
+                      "width": 24,
+                      "x": 0,
+                      "y": 30
+                    }
+                  }
+                ]
+              }
+            },
+            "title": ""
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": true,
+            "title": "Chi tiết chuyến (drill) — gộp theo chuyến, cảnh báo xấu nhất",
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-11"
+                      },
+                      "height": 12,
+                      "width": 24,
+                      "x": 0,
+                      "y": 0
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preload": false,
+  "tags": [
+    "tenant:mondelez",
+    "source:da-analysis",
+    "late-order-alert",
+    "quickview"
+  ],
+  "timeSettings": {
+    "autoRefresh": "5m",
+    "autoRefreshIntervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "fiscalYearStartMonth": 0,
+    "from": "now-7d",
+    "hideTimepicker": false,
+    "timezone": "Asia/Ho_Chi_Minh",
+    "to": "now"
+  },
+  "title": "Late Order Alert Quick View — Mondelez",
+  "variables": [
+    {
+      "kind": "CustomVariable",
+      "spec": {
+        "allowCustomValue": false,
+        "current": {
+          "text": "Ngày gửi thầu",
+          "value": "thoi_gian_gui_thau"
+        },
+        "hide": "dontHide",
+        "includeAll": false,
+        "label": "Loại ngày",
+        "multi": false,
+        "name": "date_col",
+        "options": [
+          {
+            "selected": true,
+            "text": "Ngày gửi thầu",
+            "value": "thoi_gian_gui_thau"
+          },
+          {
+            "selected": false,
+            "text": "ETA giao NPP",
+            "value": "eta_giao_hang_cho_npp"
+          },
+          {
+            "selected": false,
+            "text": "Ngày tạo chuyến",
+            "value": "ngay_tao_chuyen"
+          },
+          {
+            "selected": false,
+            "text": "ETD chuyến (dự kiến lấy)",
+            "value": "etd_chuyen"
+          },
+          {
+            "selected": false,
+            "text": "ATD chuyến (thực tế lấy)",
+            "value": "atd_chuyen"
+          },
+          {
+            "selected": false,
+            "text": "ATA chuyến (thực tế giao)",
+            "value": "ata_chuyen"
+          },
+          {
+            "selected": false,
+            "text": "Ngày duyệt chuyến",
+            "value": "approved_date"
+          }
+        ],
+        "query": "Ngày gửi thầu : thoi_gian_gui_thau,ETA giao NPP : eta_giao_hang_cho_npp,Ngày tạo chuyến : ngay_tao_chuyen,ETD chuyến (dự kiến lấy) : etd_chuyen,ATD chuyến (thực tế lấy) : atd_chuyen,ATA chuyến (thực tế giao) : ata_chuyen,Ngày duyệt chuyến : approved_date",
+        "skipUrlSync": false
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Kho (whseid)",
+        "multi": true,
+        "name": "whseid",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "ffnl3fnifrcowc"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT whseid FROM analytics_workspace.mv_alert_late_do WHERE whseid != '' ORDER BY whseid"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Khu vực giao (khu_vuc_doi_xe)",
+        "multi": true,
+        "name": "region",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "ffnl3fnifrcowc"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT khu_vuc_doi_xe FROM analytics_workspace.mv_alert_late_do WHERE khu_vuc_doi_xe != '' ORDER BY khu_vuc_doi_xe"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Kênh (group)",
+        "multi": true,
+        "name": "kenh",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "ffnl3fnifrcowc"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT group FROM analytics_workspace.mv_alert_late_do WHERE group != '' ORDER BY group"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Nhà vận tải (ten_ngan_nvt)",
+        "multi": true,
+        "name": "nvt",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "ffnl3fnifrcowc"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT ten_ngan_nvt FROM analytics_workspace.mv_alert_late_do WHERE ten_ngan_nvt != '' ORDER BY 1"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    }
+  ]
+}

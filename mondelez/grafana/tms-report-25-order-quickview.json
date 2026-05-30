@@ -21,7 +21,7 @@
     }
   ],
   "cursorSync": "Off",
-  "description": "Nhìn nhanh sức khỏe OTIF của mv_otif: freshness + 3 KPI RAG + chiều đang kéo OTIF xuống + trend + breakdown. Công thức canonical theo mondelez/scripts/analysis/otif_mtd_audit.py (mẫu số loại 'Không có dữ liệu STM'). Target/RAG theo prd.md §13.2 (OTIF 90 / Ontime 95 / Infull 97). RAG ở thresholds, KHÔNG trong SQL.",
+  "description": "Nhìn nhanh OTIF cấp đơn của TMS report #25 (mv_mdlz_tms_report_25_order): freshness + tổng đơn/chuyến + 3 KPI RAG + đơn Failed OTIF + trend + breakdown theo NVC/Kho/Tỉnh/Loại xe. Công thức canonical (order-level) theo mondelez/02-data/audit-results/tms-report-25-order-mv-20260528.md §4.1 (mẫu số loại 'Not Evaluable', scope master_status_has_active=1). Target/RAG ở thresholds, KHÔNG trong SQL.",
   "editable": true,
   "elements": {
     "panel-1": {
@@ -44,7 +44,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT dateDiff('minute', max(${date_col}), now()) AS lag_min, toString(toDate(max(${date_col}))) AS max_date FROM analytics_workspace.mv_otif"
+                      "rawSql": "SELECT dateDiff('minute', max(_refreshed_at), now()) AS lag_min, toString(max(tendered_date_vn)) AS max_date FROM analytics_workspace.mv_mdlz_tms_report_25_order"
                     },
                     "version": "v0"
                   },
@@ -56,10 +56,10 @@
             "transformations": []
           }
         },
-        "description": "Lag = phút từ max(thoi_gian_gui_thau) tới now. Lưu ý cột UTC, dashboard hiển thị Asia/Ho_Chi_Minh.",
+        "description": "Lag = phút từ lần MV refresh gần nhất (_refreshed_at) tới now. MV REFRESH EVERY 1 HOUR → lag bình thường < ~60′. max_date = ngày gửi thầu lớn nhất đang có.",
         "id": 1,
         "links": [],
-        "title": "Freshness — data tới max_date, trễ ~lag′ (MV refresh 30′)",
+        "title": "Freshness — data tới max_date, trễ ~lag′ (MV refresh 1h)",
         "vizConfig": {
           "group": "stat",
           "kind": "VizConfig",
@@ -75,11 +75,11 @@
                     },
                     {
                       "color": "yellow",
-                      "value": 35
+                      "value": 75
                     },
                     {
                       "color": "red",
-                      "value": 90
+                      "value": 150
                     }
                   ]
                 },
@@ -129,7 +129,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT uniqExact(so) AS total_so FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                      "rawSql": "SELECT count() AS so_don FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh)"
                     },
                     "version": "v0"
                   },
@@ -141,10 +141,10 @@
             "transformations": []
           }
         },
-        "description": "Số SO duy nhất trong window, đã loại otif_status='Không có dữ liệu STM' (khớp mẫu số % KPI).",
+        "description": "Số đơn (1 row = 1 OrderCode) trong window, scope master_status_has_active=1 (có chuyến Đã hoàn thành/Đang vận chuyển — notebook L1).",
         "id": 2,
         "links": [],
-        "title": "Tổng đơn (uniqExact SO, đã loại STM-missing)",
+        "title": "Tổng đơn (count OrderCode, scope active)",
         "vizConfig": {
           "group": "stat",
           "kind": "VizConfig",
@@ -174,7 +174,7 @@
                 "calcs": [
                   "lastNotNull"
                 ],
-                "fields": "/^total_so$/",
+                "fields": "/^so_don$/",
                 "values": false
               },
               "showPercentChange": false,
@@ -206,7 +206,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                      "rawSql": "SELECT uniqExact(mc) AS so_chuyen FROM (SELECT arrayJoin(master_codes) AS mc FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh))"
                     },
                     "version": "v0"
                   },
@@ -218,8 +218,85 @@
             "transformations": []
           }
         },
-        "description": "",
+        "description": "Số chuyến UNIQUE = uniqExact(arrayJoin(master_codes)) — đếm không trùng dù 1 chuyến chở nhiều đơn (caveat §5.2 audit).",
         "id": 3,
+        "links": [],
+        "title": "Tổng chuyến (uniqExact MasterCode)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "purple",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "none",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^so_chuyen$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS pct_otif FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "% OTIF cấp đơn = đơn 'OTIF Pass' / đơn evaluable (loại 'Not Evaluable'). Định nghĩa order-level (1 chuyến trễ → cả đơn fail), strict hơn line-level (audit §5.1).",
+        "id": 4,
         "links": [],
         "title": "% OTIF (mục tiêu 90%)",
         "vizConfig": {
@@ -273,7 +350,7 @@
         }
       }
     },
-    "panel-4": {
+    "panel-5": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -293,7 +370,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT round(100.0*countIf(ontime_status='Ontime')/nullIf(count(so),0),2) AS pct_ontime FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                      "rawSql": "SELECT round(100.0*countIf(ontime_status='Ontime')/nullIf(countIf(ontime_status IN ('Ontime','Failed Ontime')),0),2) AS pct_ontime FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh)"
                     },
                     "version": "v0"
                   },
@@ -305,8 +382,8 @@
             "transformations": []
           }
         },
-        "description": "",
-        "id": 4,
+        "description": "% Ontime = đơn 'Ontime' / đơn đã chấm được Ontime (Ontime + Failed Ontime). Ontime = đến ≤ ETA + 30′ trên mọi chuyến.",
+        "id": 5,
         "links": [],
         "title": "% Ontime (mục tiêu 95%)",
         "vizConfig": {
@@ -360,7 +437,7 @@
         }
       }
     },
-    "panel-5": {
+    "panel-6": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -380,7 +457,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT round(100.0*countIf(infull_status='Infull')/nullIf(count(so),0),2) AS pct_infull FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                      "rawSql": "SELECT round(100.0*countIf(infull_status='Infull')/nullIf(countIf(infull_status IN ('Infull','Failed Infull')),0),2) AS pct_infull FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh)"
                     },
                     "version": "v0"
                   },
@@ -392,8 +469,8 @@
             "transformations": []
           }
         },
-        "description": "",
-        "id": 5,
+        "description": "% Infull = đơn 'Infull' / đơn đã chấm được Infull (Infull + Failed Infull). Infull = sum(QuantityBBGN) ≥ max(QuantityOrder).",
+        "id": 6,
         "links": [],
         "title": "% Infull (mục tiêu 97%)",
         "vizConfig": {
@@ -447,7 +524,7 @@
         }
       }
     },
-    "panel-6": {
+    "panel-7": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -467,7 +544,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT chieu, gia_tri, total_so, otif_so, (total_so - otif_so) AS fail_so, pct_otif FROM ( SELECT 'NVC' AS chieu, multiIf(ten_ngan_nha_van_tai IS NULL,'(NULL)', ten_ngan_nha_van_tai='','(rỗng)', ten_ngan_nha_van_tai) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri UNION ALL SELECT 'Kho' AS chieu, multiIf(whseid IS NULL,'(NULL)', whseid='','(rỗng)', whseid) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri UNION ALL SELECT 'Loại hàng' AS chieu, multiIf(group_of_cago IS NULL,'(NULL)', group_of_cago='','(rỗng)', group_of_cago) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri UNION ALL SELECT 'Kênh' AS chieu, multiIf(group_name IS NULL,'(NULL)', group_name='','(rỗng)', group_name) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri ) WHERE pct_otif < 90 AND total_so >= 5 ORDER BY pct_otif ASC, total_so DESC LIMIT 20"
+                      "rawSql": "SELECT order_code AS \"Mã đơn\", toString(tendered_date_vn) AS \"Ngày gửi thầu\", otif_status AS \"OTIF\", ontime_status AS \"Ontime\", infull_status AS \"Infull\", ifNull(late_phut_max, 0) AS \"Trễ tối đa (phút)\", round(kh_qty,2) AS \"KH\", round(gn_qty,2) AS \"GN\", round(chenh_qty,2) AS \"Δ\", vendor_short_name AS \"NVC\", stock_name AS \"Kho\", ops_location_to_province AS \"Tỉnh giao\", arrayStringConcat(master_codes, ', ') AS \"Chuyến\" FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND otif_status IN ('Failed Ontime','Failed Infull','Failed Both') AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) ORDER BY late_phut_max DESC NULLS LAST, chenh_qty ASC LIMIT 200"
                     },
                     "version": "v0"
                   },
@@ -479,8 +556,418 @@
             "transformations": []
           }
         },
-        "description": "Exception Spotlight (PRD §13.8): gộp 4 chiều NVC / Kho / Loại hàng / Kênh, chỉ giữ nhóm %OTIF < target 90% và ≥5 đơn, sắp xếp tệ nhất trước. fail_so = đơn KHÔNG đạt OTIF trong nhóm.",
-        "id": 6,
+        "description": "Đơn KHÔNG đạt OTIF (Failed Ontime / Failed Infull / Failed Both) trong window — trễ nặng nhất lên đầu (audit §4.2). Δ = GN − KH (âm = giao thiếu). Mỗi cột có ô filter.",
+        "id": 7,
+        "links": [],
+        "title": "Đơn Failed OTIF — trễ nặng nhất trước (200 đơn) · gõ mã/NVC/kho ở ô lọc cột",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": true,
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "OTIF"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "mappings",
+                      "value": [
+                        {
+                          "type": "value",
+                          "options": {
+                            "OTIF Pass": {
+                              "color": "green",
+                              "index": 0
+                            },
+                            "Failed Ontime": {
+                              "color": "orange",
+                              "index": 1
+                            },
+                            "Failed Infull": {
+                              "color": "orange",
+                              "index": 2
+                            },
+                            "Failed Both": {
+                              "color": "red",
+                              "index": 3
+                            },
+                            "Not Evaluable": {
+                              "color": "#808080",
+                              "index": 4
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Trễ tối đa (phút)"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "yellow",
+                            "value": 1
+                          },
+                          {
+                            "color": "red",
+                            "value": 60
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Δ"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "red",
+                            "value": -1000000
+                          },
+                          {
+                            "color": "green",
+                            "value": 0
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true,
+              "sortBy": []
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-8": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS \"% OTIF\", round(100.0*countIf(ontime_status='Ontime')/nullIf(countIf(ontime_status IN ('Ontime','Failed Ontime')),0),2) AS \"% Ontime\", round(100.0*countIf(infull_status='Infull')/nullIf(countIf(infull_status IN ('Infull','Failed Infull')),0),2) AS \"% Infull\" FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Trend daily order-level. Mẫu số loại 'Not Evaluable' (khớp KPI cards). Đường xanh = target 90 (OTIF). Dưới đường = chưa đạt.",
+        "id": 8,
+        "links": [],
+        "title": "Xu hướng %OTIF/Ontime/Infull theo ngày — đường xanh = target 90%",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 5,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "line"
+                  }
+                },
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "transparent",
+                      "value": 0
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "desc"
+              }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-9": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, count() AS \"Số đơn\" FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Số đơn mỗi ngày (scope active). Spike/hụt volume giúp đọc bối cảnh khi %OTIF dao động.",
+        "id": 9,
+        "links": [],
+        "title": "Tổng đơn theo ngày — volume context cho trend",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "bars",
+                  "fillOpacity": 70,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-10": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "ffnl3fnifrcowc"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT chieu, gia_tri, total_eval, otif_so, (total_eval - otif_so) AS fail_so, pct_otif FROM ( SELECT 'NVC' AS chieu, multiIf(vendor_short_name='','(rỗng)', vendor_short_name) AS gia_tri, countIf(otif_status!='Not Evaluable') AS total_eval, countIf(otif_status='OTIF Pass') AS otif_so, round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS pct_otif FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY gia_tri UNION ALL SELECT 'Kho' AS chieu, multiIf(stock_name='','(rỗng)', stock_name) AS gia_tri, countIf(otif_status!='Not Evaluable') AS total_eval, countIf(otif_status='OTIF Pass') AS otif_so, round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS pct_otif FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY gia_tri UNION ALL SELECT 'Tỉnh giao' AS chieu, multiIf(ops_location_to_province='','(rỗng)', ops_location_to_province) AS gia_tri, countIf(otif_status!='Not Evaluable') AS total_eval, countIf(otif_status='OTIF Pass') AS otif_so, round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS pct_otif FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY gia_tri UNION ALL SELECT 'Loại xe' AS chieu, multiIf(group_of_vehicle_name='','(rỗng)', group_of_vehicle_name) AS gia_tri, countIf(otif_status!='Not Evaluable') AS total_eval, countIf(otif_status='OTIF Pass') AS otif_so, round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS pct_otif FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY gia_tri ) WHERE pct_otif < 90 AND total_eval >= 5 ORDER BY pct_otif ASC, total_eval DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Exception Spotlight: gộp 4 chiều NVC / Kho / Tỉnh giao / Loại xe, chỉ giữ nhóm %OTIF < 90% và ≥5 đơn evaluable, tệ nhất trước. fail_so = đơn KHÔNG đạt OTIF trong nhóm. total_eval = đơn đã chấm được (loại Not Evaluable).",
+        "id": 10,
         "links": [],
         "title": "Chiều đang kéo OTIF xuống — cross-dim < 90% (worst-first, ≥5 đơn)",
         "vizConfig": {
@@ -499,19 +986,6 @@
                     "reducers": []
                   },
                   "inspect": false
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
                 }
               },
               "overrides": [
@@ -600,7 +1074,7 @@
         }
       }
     },
-    "panel-7": {
+    "panel-11": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -619,8 +1093,8 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorType": "sql",
-                      "format": 0,
-                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS \"% OTIF\", round(100.0*countIf(ontime_status='Ontime')/nullIf(count(so),0),2) AS \"% Ontime\", round(100.0*countIf(infull_status='Infull')/nullIf(count(so),0),2) AS \"% Infull\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY time ORDER BY time"
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(stock_name='','(rỗng)', stock_name) AS \"Kho\", round(100.0*countIf(otif_status='OTIF Pass')/nullIf(countIf(otif_status!='Not Evaluable'),0),2) AS \"% OTIF\" FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY \"Kho\" HAVING countIf(otif_status!='Not Evaluable') >= 5 ORDER BY \"% OTIF\" ASC LIMIT 20"
                     },
                     "version": "v0"
                   },
@@ -632,61 +1106,28 @@
             "transformations": []
           }
         },
-        "description": "Trend daily, mẫu số loại STM-missing. Đường threshold tại 90 (target OTIF). Đối chiếu mắt: dưới đường = chưa đạt.",
-        "id": 7,
+        "description": "%OTIF theo kho xuất (≥5 đơn evaluable), thấp nhất trước. Đỏ < 85% cần can thiệp.",
+        "id": 11,
         "links": [],
-        "title": "Xu hướng %OTIF/Ontime/Infull theo ngày — đường xanh = target 90%",
+        "title": "%OTIF theo kho — đỏ < 85% cần can thiệp",
         "vizConfig": {
-          "group": "timeseries",
+          "group": "bargauge",
           "kind": "VizConfig",
           "spec": {
             "fieldConfig": {
               "defaults": {
-                "color": {
-                  "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 5,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 2,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": true,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "line"
-                  }
-                },
                 "max": 100,
                 "min": 0,
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "transparent",
+                      "color": "red",
                       "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 85
                     },
                     {
                       "color": "green",
@@ -699,28 +1140,35 @@
               "overrides": []
             },
             "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
-              },
+              "displayMode": "gradient",
               "legend": {
                 "calcs": [],
                 "displayMode": "list",
                 "placement": "bottom",
-                "showLegend": true
+                "showLegend": false
               },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "multi",
-                "sort": "desc"
-              }
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^% OTIF$/",
+                "values": false
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
             }
           },
           "version": "13.0.1+security-01"
         }
       }
     },
-    "panel-8": {
+    "panel-12": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -739,8 +1187,8 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorType": "sql",
-                      "format": 0,
-                      "rawSql": "SELECT toStartOfDay(${date_col}) AS time, uniqExact(so) AS \"Tổng đơn\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY time ORDER BY time"
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(group_of_vehicle_name='','(rỗng)', group_of_vehicle_name) AS \"Loại xe\", count() AS \"Số đơn\" FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND master_status_has_active = 1 AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) GROUP BY \"Loại xe\" ORDER BY \"Số đơn\" DESC LIMIT 20"
                     },
                     "version": "v0"
                   },
@@ -752,12 +1200,12 @@
             "transformations": []
           }
         },
-        "description": "Số SO duy nhất mỗi ngày (loại STM-missing). Spike/hụt volume giúp đọc bối cảnh khi %OTIF dao động.",
-        "id": 8,
+        "description": "Phân bố số đơn theo loại xe (group_of_vehicle_name) — đọc cơ cấu phương tiện trong window.",
+        "id": 12,
         "links": [],
-        "title": "Tổng đơn theo ngày (uniqExact SO) — volume context cho trend",
+        "title": "Số đơn theo loại xe — cơ cấu phương tiện",
         "vizConfig": {
-          "group": "timeseries",
+          "group": "barchart",
           "kind": "VizConfig",
           "spec": {
             "fieldConfig": {
@@ -771,35 +1219,21 @@
                   "axisColorMode": "text",
                   "axisLabel": "",
                   "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "bars",
-                  "fillOpacity": 70,
+                  "fillOpacity": 80,
                   "gradientMode": "none",
                   "hideFrom": {
                     "legend": false,
                     "tooltip": false,
                     "viz": false
                   },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
                   "lineWidth": 1,
-                  "pointSize": 5,
                   "scaleDistribution": {
                     "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
                   },
                   "thresholdsStyle": {
                     "mode": "off"
                   }
                 },
-                "min": 0,
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -814,226 +1248,33 @@
               "overrides": []
             },
             "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
-              },
+              "barRadius": 0,
+              "barWidth": 0.7,
+              "fullHighlight": false,
+              "groupWidth": 0.7,
               "legend": {
                 "calcs": [],
                 "displayMode": "list",
                 "placement": "bottom",
-                "showLegend": true
+                "showLegend": false
               },
+              "orientation": "horizontal",
+              "showValue": "auto",
+              "stacking": "none",
               "tooltip": {
                 "hideZeros": false,
                 "mode": "single",
                 "sort": "none"
-              }
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-15": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "ffnl3fnifrcowc"
-                    },
-                    "group": "grafana-clickhouse-datasource",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorType": "sql",
-                      "format": 1,
-                      "rawSql": "SELECT toString(toDate(${date_col})) AS \"Ngày\", uniqExact(so) AS \"Tổng đơn\", round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS \"% OTIF\", round(100.0*countIf(ontime_status='Ontime')/nullIf(count(so),0),2) AS \"% Ontime\", round(100.0*countIf(infull_status='Infull')/nullIf(count(so),0),2) AS \"% Infull\", round(sum(toFloat64(coalesce(sum_original_cse,0))),0) AS \"KH (CSE)\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY \"Ngày\" ORDER BY \"Ngày\" DESC"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "Daily summary theo Loại ngày đang chọn ($date_col). Mẫu số canonical loại 'Không có dữ liệu STM' (khớp KPI cards & trend). Tổng đơn = uniqExact(so); 3 cột % tô RAG theo target 90/95/97. KH (CSE) = sum(sum_original_cse).",
-        "id": 15,
-        "links": [],
-        "title": "Bảng tổng hợp theo ngày — %OTIF/Ontime/Infull + volume (mới nhất trước)",
-        "vizConfig": {
-          "group": "table",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "custom": {
-                  "align": "auto",
-                  "cellOptions": {
-                    "type": "auto"
-                  },
-                  "filterable": true,
-                  "footer": {
-                    "reducers": []
-                  },
-                  "inspect": false
-                }
               },
-              "overrides": [
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "% OTIF"
-                  },
-                  "properties": [
-                    {
-                      "id": "unit",
-                      "value": "percent"
-                    },
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "thresholds",
-                      "value": {
-                        "mode": "absolute",
-                        "steps": [
-                          {
-                            "color": "red",
-                            "value": 0
-                          },
-                          {
-                            "color": "yellow",
-                            "value": 85
-                          },
-                          {
-                            "color": "green",
-                            "value": 90
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "% Ontime"
-                  },
-                  "properties": [
-                    {
-                      "id": "unit",
-                      "value": "percent"
-                    },
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "thresholds",
-                      "value": {
-                        "mode": "absolute",
-                        "steps": [
-                          {
-                            "color": "red",
-                            "value": 0
-                          },
-                          {
-                            "color": "yellow",
-                            "value": 90
-                          },
-                          {
-                            "color": "green",
-                            "value": 95
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "% Infull"
-                  },
-                  "properties": [
-                    {
-                      "id": "unit",
-                      "value": "percent"
-                    },
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "thresholds",
-                      "value": {
-                        "mode": "absolute",
-                        "steps": [
-                          {
-                            "color": "red",
-                            "value": 0
-                          },
-                          {
-                            "color": "yellow",
-                            "value": 92
-                          },
-                          {
-                            "color": "green",
-                            "value": 97
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "KH (CSE)"
-                  },
-                  "properties": [
-                    {
-                      "id": "unit",
-                      "value": "short"
-                    }
-                  ]
-                }
-              ]
-            },
-            "options": {
-              "cellHeight": "sm",
-              "showHeader": true,
-              "sortBy": [
-                {
-                  "desc": true,
-                  "displayName": "Ngày"
-                }
-              ]
+              "xTickLabelRotation": 0,
+              "xTickLabelSpacing": 0
             }
           },
           "version": "13.0.1+security-01"
         }
       }
     },
-    "panel-16": {
+    "panel-13": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -1053,7 +1294,7 @@
                     "spec": {
                       "editorType": "sql",
                       "format": 1,
-                      "rawSql": "SELECT so AS \"SO\", whseid AS \"Kho\", khu_vuc_doi_xe AS \"Khu vực\", group_of_cago AS \"Nhóm hàng\", group_name AS \"Kênh\", ten_ngan_nha_van_tai AS \"NVC\", customer_code AS \"Mã KH\", customer_name AS \"Tên KH\", formatDateTime(toTimeZone(thoi_gian_gui_thau,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i') AS \"Ngày gửi thầu\", formatDateTime(toTimeZone(eta_giao_hang_cho_npp,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i') AS \"ETA giao NPP\", formatDateTime(toTimeZone(ata_den,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i') AS \"ATA đến\", round(toFloat64(coalesce(sum_original_cse,0)),2) AS \"KH CSE\", round(toFloat64(coalesce(sum_shipped_cse,0)),2) AS \"Xuất CSE\", round(toFloat64(coalesce(sum_san_luong_giao_cse,0)),2) AS \"Giao CSE\", ontime_status AS \"Ontime\", infull_status AS \"Infull\", otif_status AS \"OTIF\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(${date_col}) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) ORDER BY ${date_col} DESC LIMIT 5000"
+                      "rawSql": "SELECT order_code AS \"Mã đơn\", toString(tendered_date_vn) AS \"Ngày gửi thầu\", otif_status AS \"OTIF\", ontime_status AS \"Ontime\", infull_status AS \"Infull\", service_of_order_name AS \"Dịch vụ\", order_status AS \"Trạng thái đơn\", customer_name AS \"Khách hàng\", vendor_short_name AS \"NVC\", stock_name AS \"Kho\", ops_location_to_name AS \"Điểm giao\", ops_location_to_province AS \"Tỉnh\", so_chuyen AS \"Số chuyến\", round(kh_qty,2) AS \"KH\", round(gn_qty,2) AS \"GN\", round(chenh_qty,2) AS \"Δ\", ifNull(late_phut_max,0) AS \"Trễ (phút)\", ifNull(formatDateTime(toTimeZone(eta,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"ETA\", ifNull(formatDateTime(toTimeZone(date_to_come_max,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS \"Giao thực tế\", wms_match_status AS \"WMS\" FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE $__timeFilter(${date_col}) AND $__conditionalAll(stock_name IN (${kho:singlequote}), $kho) AND $__conditionalAll(vendor_short_name IN (${nvc:singlequote}), $nvc) AND $__conditionalAll(ops_location_to_province IN (${tinh:singlequote}), $tinh) ORDER BY ${date_col} DESC LIMIT 5000"
                     },
                     "version": "v0"
                   },
@@ -1065,10 +1306,10 @@
             "transformations": []
           }
         },
-        "description": "Drill SO-level theo Loại ngày đang chọn. KHÔNG loại STM-missing để tra được MỌI đơn. Mỗi cột có ô filter — gõ mã SO/kho/NVC để lọc nhanh. Ngày hiển thị giờ Asia/Ho_Chi_Minh. Giới hạn 5000 dòng mới nhất theo $date_col.",
-        "id": 16,
+        "description": "Drill cấp đơn — MỌI đơn trong window (KHÔNG lọc master_status_has_active, để tra cả đơn Chờ/Chưa giao). Mỗi cột có ô filter. Ngày hiển thị giờ Asia/Ho_Chi_Minh. Giới hạn 5000 đơn mới nhất theo Loại ngày đang chọn.",
+        "id": 13,
         "links": [],
-        "title": "Chi tiết đơn hàng — tra cứu nhanh (gõ SO ở ô lọc cột) · 5000 dòng mới nhất",
+        "title": "Chi tiết đơn TMS #25 — tra cứu nhanh (gõ mã ở ô lọc cột) · 5000 đơn mới nhất",
         "vizConfig": {
           "group": "table",
           "kind": "VizConfig",
@@ -1106,313 +1347,25 @@
                         {
                           "type": "value",
                           "options": {
-                            "OTIF": {
-                              "color": "green",
-                              "index": 0
-                            },
-                            "Failed OTIF": {
-                              "color": "red",
-                              "index": 1
-                            },
-                            "Không có dữ liệu STM": {
-                              "color": "#808080",
-                              "index": 2
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "Ontime"
-                  },
-                  "properties": [
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "mappings",
-                      "value": [
-                        {
-                          "type": "value",
-                          "options": {
-                            "Ontime": {
+                            "OTIF Pass": {
                               "color": "green",
                               "index": 0
                             },
                             "Failed Ontime": {
-                              "color": "red",
-                              "index": 1
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "Infull"
-                  },
-                  "properties": [
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "mappings",
-                      "value": [
-                        {
-                          "type": "value",
-                          "options": {
-                            "Infull": {
-                              "color": "green",
-                              "index": 0
-                            },
-                            "Failed Infull": {
-                              "color": "red",
-                              "index": 1
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            "options": {
-              "cellHeight": "sm",
-              "showHeader": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-17": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "ffnl3fnifrcowc"
-                    },
-                    "group": "grafana-clickhouse-datasource",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorType": "sql",
-                      "format": 1,
-                      "rawSql": "SELECT toString(d) AS \"Ngày\", sum(t) AS \"Đơn TMS #25\", sum(m) AS \"Đơn mv_otif\", (sum(t)-sum(m)) AS \"Δ (TMS−mv)\", round(100.0*abs(sum(t)-sum(m))/nullIf(sum(m),0),1) AS \"% lệch\" FROM ( SELECT tendered_date_vn AS d, uniqExact(order_code) AS t, toUInt64(0) AS m FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE position(order_code,'-')=0 AND master_status_has_active=1 AND order_status='Đã giao hàng' AND $__timeFilter(tendered_date_vn) GROUP BY d UNION ALL SELECT toDate(thoi_gian_gui_thau) AS d, toUInt64(0) AS t, uniqExact(so) AS m FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) GROUP BY d ) GROUP BY d ORDER BY d DESC"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "So số đơn/ngày theo NGÀY GỬI THẦU. TMS scope: position(order_code,'-')=0 + master_status_has_active + order_status='Đã giao hàng' (khớp reconcile_tms_otif.py). mv_otif = uniqExact(so). Cờ canonical: 🟢Δ=0 · 🟡|Δ|≤2 · 🔴>2 (% lệch = |Δ|/mv_otif, chuẩn = mv_otif — khớp panel % lệch tổng). LƯU Ý: (1) mv giờ UTC, TMS giờ VN → lệch nhẹ ở biên ngày là bình thường; (2) mv_otif refresh 30′ còn TMS #25 MV refresh 1h → ngày mới nhất có thể lệch tạm do chênh refresh, không phải mất đơn. Panel này KHÔNG theo bộ lọc Kho/Kênh/NVC (đối chiếu tổng).",
-        "id": 17,
-        "links": [],
-        "title": "Đối chiếu số đơn theo ngày — TMS #25 vs mv_otif (Δ + % lệch)",
-        "vizConfig": {
-          "group": "table",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "custom": {
-                  "align": "auto",
-                  "cellOptions": {
-                    "type": "auto"
-                  },
-                  "filterable": true,
-                  "footer": {
-                    "reducers": []
-                  },
-                  "inspect": false
-                }
-              },
-              "overrides": [
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "% lệch"
-                  },
-                  "properties": [
-                    {
-                      "id": "unit",
-                      "value": "percent"
-                    },
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "thresholds",
-                      "value": {
-                        "mode": "absolute",
-                        "steps": [
-                          {
-                            "color": "green",
-                            "value": 0
-                          },
-                          {
-                            "color": "yellow",
-                            "value": 0.01
-                          },
-                          {
-                            "color": "red",
-                            "value": 10
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "id": "decimals",
-                      "value": 1
-                    }
-                  ]
-                }
-              ]
-            },
-            "options": {
-              "cellHeight": "sm",
-              "showHeader": true,
-              "sortBy": [
-                {
-                  "desc": true,
-                  "displayName": "Ngày"
-                }
-              ]
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-18": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "ffnl3fnifrcowc"
-                    },
-                    "group": "grafana-clickhouse-datasource",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorType": "sql",
-                      "format": 1,
-                      "rawSql": "SELECT so AS \"SO\", toString(min(toDate(thoi_gian_gui_thau))) AS \"Ngày gửi thầu\", any(whseid) AS \"Kho\", any(group_name) AS \"Kênh\", any(otif_status) AS \"OTIF (mv)\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND so IS NOT NULL AND so NOT IN (SELECT order_code FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE position(order_code,'-')=0 AND master_status_has_active=1 AND order_status='Đã giao hàng') GROUP BY so ORDER BY \"Ngày gửi thầu\" DESC LIMIT 5"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "Đơn có trong mv_otif (cửa sổ đang chọn) nhưng KHÔNG tồn tại ở TMS #25 (kiểm tra TOÀN BỘ TMS, không bó theo cửa sổ → tránh false-positive lệch biên ngày TZ). 5 mới nhất. Không theo bộ lọc Kho/Kênh/NVC.",
-        "id": 18,
-        "links": [],
-        "title": "Đơn chỉ có ở mv_otif — thiếu ở TMS #25 (5 mới nhất)",
-        "vizConfig": {
-          "group": "table",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "custom": {
-                  "align": "auto",
-                  "cellOptions": {
-                    "type": "auto"
-                  },
-                  "filterable": true,
-                  "footer": {
-                    "reducers": []
-                  },
-                  "inspect": false
-                }
-              },
-              "overrides": [
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "OTIF (mv)"
-                  },
-                  "properties": [
-                    {
-                      "id": "custom.cellOptions",
-                      "value": {
-                        "type": "color-text"
-                      }
-                    },
-                    {
-                      "id": "mappings",
-                      "value": [
-                        {
-                          "type": "value",
-                          "options": {
-                            "OTIF": {
-                              "color": "green",
-                              "index": 0
-                            },
-                            "Failed Ontime": {
-                              "color": "red",
+                              "color": "orange",
                               "index": 1
                             },
                             "Failed Infull": {
-                              "color": "red",
+                              "color": "orange",
                               "index": 2
                             },
                             "Failed Both": {
                               "color": "red",
                               "index": 3
                             },
-                            "Failed OTIF": {
-                              "color": "red",
-                              "index": 4
-                            },
                             "Not Evaluable": {
                               "color": "#808080",
-                              "index": 5
-                            },
-                            "Không có dữ liệu STM": {
-                              "color": "#808080",
-                              "index": 6
+                              "index": 4
                             }
                           }
                         }
@@ -1425,151 +1378,6 @@
             "options": {
               "cellHeight": "sm",
               "showHeader": true
-            }
-          },
-          "version": "13.0.1+security-01"
-        }
-      }
-    },
-    "panel-19": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "ffnl3fnifrcowc"
-                    },
-                    "group": "grafana-clickhouse-datasource",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorType": "sql",
-                      "format": 1,
-                      "rawSql": "SELECT order_code AS order_code, toString(tendered_date_vn) AS tendered, service_of_order_name AS service, order_type AS otype, order_status AS ostatus, otif_status AS otif, ontime_status AS ontime, infull_status AS infull, customer_name AS customer, vendor_short_name AS nvc, stock_name AS kho, ops_location_to_name AS dest, ops_location_to_province AS province, so_chuyen AS sochuyen, arrayStringConcat(master_codes, ', ') AS chuyen, round(kh_qty,2) AS kh, round(gn_qty,2) AS gn, round(chenh_qty,2) AS chenh, ifNull(toString(late_phut_max),'—') AS late, ifNull(formatDateTime(toTimeZone(eta,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS eta, ifNull(formatDateTime(toTimeZone(date_to_come_max,'Asia/Ho_Chi_Minh'),'%Y-%m-%d %H:%i'),'—') AS atc, wms_match_status AS wms FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE position(order_code,'-')=0 AND master_status_has_active=1 AND order_status='Đã giao hàng' AND $__timeFilter(tendered_date_vn) AND order_code NOT IN (SELECT so FROM analytics_workspace.mv_otif WHERE so IS NOT NULL) ORDER BY tendered_date_vn DESC LIMIT 50"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "Đơn có ở TMS #25 nhưng KHÔNG tồn tại ở mv_otif. Rê chuột (hoặc focus bàn phím) vào mã đơn để bung thẻ chi tiết từ mv_mdlz_tms_report_25_order. Cần plugin Business Text. Không theo bộ lọc Kho/Kênh/NVC.",
-        "id": 19,
-        "links": [],
-        "title": "Đơn chỉ có ở TMS #25 — thiếu ở mv_otif · rê chuột vào mã đơn để xem chi tiết",
-        "vizConfig": {
-          "group": "marcusolsson-dynamictext-panel",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {},
-              "overrides": []
-            },
-            "options": {
-              "content": "<table class=\"otif-tbl\">\n<thead><tr><th>Mã đơn</th><th>Ngày gửi thầu</th><th>OTIF</th><th>Khách hàng</th><th>NVC</th><th></th></tr></thead>\n<tbody>\n{{#each data}}\n<tr class=\"ord\" tabindex=\"0\">\n<td class=\"mono\">{{order_code}}</td>\n<td>{{tendered}}</td>\n<td>{{otif}}</td>\n<td>{{customer}}</td>\n<td>{{nvc}}</td>\n<td class=\"more\">ⓘ\n  <span class=\"card\">\n    <span class=\"hd\">{{order_code}} · {{otif}}</span>\n    <span class=\"r\"><i>Dịch vụ / Loại</i><b>{{service}} · {{otype}}</b></span>\n    <span class=\"r\"><i>Trạng thái đơn</i><b>{{ostatus}}</b></span>\n    <span class=\"r\"><i>Ontime / Infull</i><b>{{ontime}} · {{infull}}</b></span>\n    <span class=\"r\"><i>Kho xuất</i><b>{{kho}}</b></span>\n    <span class=\"r\"><i>Điểm giao</i><b>{{dest}} ({{province}})</b></span>\n    <span class=\"r\"><i>Số chuyến</i><b>{{sochuyen}} — {{chuyen}}</b></span>\n    <span class=\"r\"><i>KH / Giao (CSE)</i><b>{{kh}} / {{gn}} (Δ {{chenh}})</b></span>\n    <span class=\"r\"><i>ETA → ATA</i><b>{{eta}} → {{atc}}</b></span>\n    <span class=\"r\"><i>Trễ tối đa (phút)</i><b>{{late}}</b></span>\n    <span class=\"r\"><i>WMS</i><b>{{wms}}</b></span>\n  </span>\n</td>\n</tr>\n{{/each}}\n</tbody>\n</table>",
-              "defaultContent": "Không có đơn TMS-only nào trong cửa sổ đang chọn.",
-              "editors": [
-                "styles"
-              ],
-              "renderMode": "allRows",
-              "styles": ".otif-tbl{width:100%;border-collapse:collapse;font-size:13px;color:#d6e2f2}.otif-tbl th{text-align:left;padding:6px 10px;color:#8aa0bd;font-weight:600;border-bottom:1px solid #233b5c}.otif-tbl td{padding:6px 10px;border-bottom:1px solid #16263b}.otif-tbl tr.ord:hover{background:#1c2c44}.otif-tbl .mono{font-weight:600;color:#cfe0f5}.otif-tbl .more{position:relative;text-align:center;color:#7fb2ff;cursor:help;width:28px}.otif-tbl .card{display:none;position:absolute;right:32px;top:50%;transform:translateY(-50%);z-index:1000;width:460px;max-height:300px;overflow:auto;grid-template-columns:1fr 1fr;gap:3px 18px;padding:12px 14px;background:#0b1622;border:1px solid #2b4a73;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.6);text-align:left;font-weight:400}.otif-tbl tr.ord:hover .card,.otif-tbl tr.ord:focus .card{display:grid}.otif-tbl .card .hd{grid-column:1 / -1;font-weight:700;color:#7fb2ff;border-bottom:1px solid #233b5c;padding-bottom:5px;margin-bottom:3px}.otif-tbl .card .r{display:flex;justify-content:space-between;gap:14px;line-height:1.5}.otif-tbl .card .r i{color:#8aa0bd;font-style:normal;white-space:nowrap}.otif-tbl .card .r b{color:#fff;text-align:right}",
-              "wrap": true
-            }
-          },
-          "version": "5.5.0"
-        }
-      }
-    },
-    "panel-20": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "ffnl3fnifrcowc"
-                    },
-                    "group": "grafana-clickhouse-datasource",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorType": "sql",
-                      "format": 1,
-                      "rawSql": "SELECT round(100.0*abs(t-m)/nullIf(m,0),2) AS pct_diff FROM ( SELECT (SELECT uniqExact(order_code) FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE position(order_code,'-')=0 AND master_status_has_active=1 AND order_status='Đã giao hàng' AND $__timeFilter(tendered_date_vn)) AS t, (SELECT uniqExact(so) FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau)) AS m )"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "% chênh lệch số đơn = |Đơn TMS #25 − Đơn mv_otif| / Đơn mv_otif (CHUẨN = mv_otif), trên toàn window theo Ngày gửi thầu. Scope TMS như panel đối chiếu. 🟢=0 · 🟡>0 · 🔴≥10%. Chiều lệch (TMS nhiều/ít hơn) xem cột Δ ở bảng đối chiếu bên dưới. Không theo bộ lọc Kho/Kênh/NVC.",
-        "id": 20,
-        "links": [],
-        "title": "% lệch số đơn — TMS #25 vs mv_otif (chuẩn = mv_otif)",
-        "vizConfig": {
-          "group": "stat",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "unit": "percent",
-                "decimals": 1,
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 0.01
-                    },
-                    {
-                      "color": "red",
-                      "value": 10
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "colorMode": "value",
-              "graphMode": "none",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "percentChangeColorMode": "standard",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "/^pct_diff$/",
-                "values": false
-              },
-              "showPercentChange": false,
-              "textMode": "value_and_name",
-              "wideLayout": true
             }
           },
           "version": "13.0.1+security-01"
@@ -1599,7 +1407,7 @@
                       },
                       "height": 4,
                       "width": 4,
-                      "x": 4,
+                      "x": 0,
                       "y": 0
                     }
                   },
@@ -1612,7 +1420,7 @@
                       },
                       "height": 4,
                       "width": 4,
-                      "x": 8,
+                      "x": 4,
                       "y": 0
                     }
                   },
@@ -1625,7 +1433,7 @@
                       },
                       "height": 4,
                       "width": 4,
-                      "x": 12,
+                      "x": 8,
                       "y": 0
                     }
                   },
@@ -1638,7 +1446,7 @@
                       },
                       "height": 4,
                       "width": 4,
-                      "x": 16,
+                      "x": 12,
                       "y": 0
                     }
                   },
@@ -1651,7 +1459,7 @@
                       },
                       "height": 4,
                       "width": 4,
-                      "x": 20,
+                      "x": 16,
                       "y": 0
                     }
                   },
@@ -1662,10 +1470,10 @@
                         "kind": "ElementReference",
                         "name": "panel-6"
                       },
-                      "height": 8,
-                      "width": 24,
-                      "x": 0,
-                      "y": 21
+                      "height": 4,
+                      "width": 4,
+                      "x": 20,
+                      "y": 0
                     }
                   },
                   {
@@ -1674,32 +1482,6 @@
                       "element": {
                         "kind": "ElementReference",
                         "name": "panel-7"
-                      },
-                      "height": 8,
-                      "width": 16,
-                      "x": 0,
-                      "y": 13
-                    }
-                  },
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-8"
-                      },
-                      "height": 8,
-                      "width": 8,
-                      "x": 16,
-                      "y": 13
-                    }
-                  },
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-15"
                       },
                       "height": 9,
                       "width": 24,
@@ -1712,12 +1494,64 @@
                     "spec": {
                       "element": {
                         "kind": "ElementReference",
-                        "name": "panel-20"
+                        "name": "panel-8"
                       },
-                      "height": 4,
-                      "width": 4,
+                      "height": 8,
+                      "width": 16,
                       "x": 0,
-                      "y": 0
+                      "y": 13
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-9"
+                      },
+                      "height": 8,
+                      "width": 8,
+                      "x": 16,
+                      "y": 13
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-10"
+                      },
+                      "height": 8,
+                      "width": 24,
+                      "x": 0,
+                      "y": 21
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-11"
+                      },
+                      "height": 8,
+                      "width": 12,
+                      "x": 0,
+                      "y": 29
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-12"
+                      },
+                      "height": 8,
+                      "width": 12,
+                      "x": 12,
+                      "y": 29
                     }
                   }
                 ]
@@ -1729,8 +1563,8 @@
         {
           "kind": "RowsLayoutRow",
           "spec": {
-            "collapse": false,
-            "hideHeader": true,
+            "collapse": true,
+            "title": "Chi tiết đơn TMS #25 (drill — bung khi cần tra)",
             "layout": {
               "kind": "GridLayout",
               "spec": {
@@ -1740,65 +1574,12 @@
                     "spec": {
                       "element": {
                         "kind": "ElementReference",
-                        "name": "panel-16"
+                        "name": "panel-13"
                       },
                       "height": 12,
                       "width": 24,
                       "x": 0,
                       "y": 0
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        },
-        {
-          "kind": "RowsLayoutRow",
-          "spec": {
-            "collapse": false,
-            "title": "Đối chiếu TMS #25 ↔ mv_otif — số đơn theo ngày + đơn lệch tập (theo Ngày gửi thầu, không theo bộ lọc Kho/Kênh/NVC)",
-            "layout": {
-              "kind": "GridLayout",
-              "spec": {
-                "items": [
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-17"
-                      },
-                      "height": 8,
-                      "width": 24,
-                      "x": 0,
-                      "y": 0
-                    }
-                  },
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-18"
-                      },
-                      "height": 10,
-                      "width": 12,
-                      "x": 0,
-                      "y": 8
-                    }
-                  },
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-19"
-                      },
-                      "height": 10,
-                      "width": 12,
-                      "x": 12,
-                      "y": 8
                     }
                   }
                 ]
@@ -1815,16 +1596,13 @@
   "tags": [
     "tenant:mondelez",
     "source:da-analysis",
+    "tms-report-25",
     "otif",
     "quickview"
   ],
   "timeSettings": {
     "autoRefresh": "",
     "autoRefreshIntervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
       "5m",
       "15m",
       "30m",
@@ -1838,7 +1616,7 @@
     "timezone": "Asia/Ho_Chi_Minh",
     "to": "now"
   },
-  "title": "OTIF Quick View — Mondelez",
+  "title": "TMS #25 Order Quick View — Mondelez",
   "variables": [
     {
       "kind": "CustomVariable",
@@ -1846,7 +1624,7 @@
         "allowCustomValue": false,
         "current": {
           "text": "Ngày gửi thầu",
-          "value": "thoi_gian_gui_thau"
+          "value": "tendered_date_vn"
         },
         "hide": "dontHide",
         "includeAll": false,
@@ -1857,30 +1635,25 @@
           {
             "selected": true,
             "text": "Ngày gửi thầu",
-            "value": "thoi_gian_gui_thau"
+            "value": "tendered_date_vn"
           },
           {
             "selected": false,
-            "text": "Ngày GI",
-            "value": "ngay_gi"
+            "text": "Ngày giao thực tế (DateToCome)",
+            "value": "date_to_come_max"
           },
           {
             "selected": false,
             "text": "Ngày tạo đơn",
-            "value": "ngay_tao_don"
+            "value": "order_created_date"
           },
           {
             "selected": false,
-            "text": "ETA giao NPP",
-            "value": "eta_giao_hang_cho_npp"
-          },
-          {
-            "selected": false,
-            "text": "Ngày giao thực tế (ATA đến)",
-            "value": "ata_den"
+            "text": "ETA",
+            "value": "eta"
           }
         ],
-        "query": "Ngày gửi thầu : thoi_gian_gui_thau,Ngày GI : ngay_gi,Ngày tạo đơn : ngay_tao_don,ETA giao NPP : eta_giao_hang_cho_npp,Ngày giao thực tế (ATA đến) : ata_den",
+        "query": "Ngày gửi thầu : tendered_date_vn,Ngày giao thực tế (DateToCome) : date_to_come_max,Ngày tạo đơn : order_created_date,ETA : eta",
         "skipUrlSync": false
       }
     },
@@ -1896,9 +1669,9 @@
         },
         "hide": "dontHide",
         "includeAll": true,
-        "label": "Kho (whseid)",
+        "label": "Kho (stock_name)",
         "multi": true,
-        "name": "whseid",
+        "name": "kho",
         "options": [],
         "query": {
           "datasource": {
@@ -1907,7 +1680,7 @@
           "group": "grafana-clickhouse-datasource",
           "kind": "DataQuery",
           "spec": {
-            "__legacyStringValue": "SELECT DISTINCT whseid FROM analytics_workspace.mv_otif WHERE whseid != '' ORDER BY whseid"
+            "__legacyStringValue": "SELECT DISTINCT stock_name FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE stock_name != '' ORDER BY stock_name"
           },
           "version": "v0"
         },
@@ -1930,9 +1703,9 @@
         },
         "hide": "dontHide",
         "includeAll": true,
-        "label": "Kênh (group_name)",
+        "label": "Nhà vận tải (vendor_short_name)",
         "multi": true,
-        "name": "kenh",
+        "name": "nvc",
         "options": [],
         "query": {
           "datasource": {
@@ -1941,7 +1714,7 @@
           "group": "grafana-clickhouse-datasource",
           "kind": "DataQuery",
           "spec": {
-            "__legacyStringValue": "SELECT DISTINCT group_name FROM analytics_workspace.mv_otif WHERE group_name != '' ORDER BY group_name"
+            "__legacyStringValue": "SELECT DISTINCT vendor_short_name FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE vendor_short_name != '' ORDER BY 1"
           },
           "version": "v0"
         },
@@ -1964,9 +1737,9 @@
         },
         "hide": "dontHide",
         "includeAll": true,
-        "label": "Nhà vận tải (ten_ngan_nha_van_tai)",
+        "label": "Tỉnh giao (ops_location_to_province)",
         "multi": true,
-        "name": "nvt",
+        "name": "tinh",
         "options": [],
         "query": {
           "datasource": {
@@ -1975,7 +1748,7 @@
           "group": "grafana-clickhouse-datasource",
           "kind": "DataQuery",
           "spec": {
-            "__legacyStringValue": "SELECT DISTINCT ten_ngan_nha_van_tai FROM analytics_workspace.mv_otif WHERE ten_ngan_nha_van_tai != '' ORDER BY 1"
+            "__legacyStringValue": "SELECT DISTINCT ops_location_to_province FROM analytics_workspace.mv_mdlz_tms_report_25_order WHERE ops_location_to_province != '' ORDER BY 1"
           },
           "version": "v0"
         },
