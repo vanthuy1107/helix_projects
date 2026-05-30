@@ -28,7 +28,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 WINDOW_FROM = date(2026, 5, 22)
 WINDOW_TO = date(2026, 5, 28)
 TENANT = "Mondelez"
-OUT_DIR = Path(__file__).resolve().parent.parent / "uat"
+OUT_DIR = next(p for p in Path(__file__).resolve().parents
+               if (p / "da.toml").exists()) / "uat"  # tenant root = nơi có da.toml (relocation-proof)
 OUT_FILE = OUT_DIR / f"mondelez-uat-quick-check-{WINDOW_FROM:%Y-%m-%d}_to_{WINDOW_TO:%Y-%m-%d}.xlsx"
 
 NAVY = "1E3A5F"

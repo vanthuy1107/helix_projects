@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đối chiếu TMS #25 ↔ mv_otif — mondelez</title>
+<style>
+:root { --navy:#1E3A5F; --dark:#14283F; --accent:#2563EB; --pale:#EFF4FB;
+        --grey:#9AA5B1; --line:#E2E8F0; --green:#287819; --amber:#E18719; --red:#C0392B; }
+* { box-sizing: border-box; }
+body { margin:0; background:#FFFFFF; color:var(--dark);
+       font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+       font-size:14px; line-height:1.55; font-weight:400; }
+.wrap { max-width:980px; margin:0 auto; padding:32px 36px 64px; }
+h1 { color:var(--navy); font-weight:500; font-size:23px; margin:0 0 4px;
+     padding-bottom:10px; border-bottom:2px solid var(--accent); }
+h2 { color:var(--navy); font-weight:500; font-size:18px; margin:30px 0 10px;
+     padding-left:10px; border-left:3px solid var(--accent); }
+h3 { color:var(--navy); font-weight:500; font-size:15px; margin:20px 0 8px; }
+p { margin:8px 0; }
+p.subtitle { color:var(--grey); margin:0 0 18px; }
+a { color:var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+code { background:var(--pale); color:var(--navy); padding:1px 5px; border-radius:3px;
+       font-family:"Cascadia Code",Consolas,"SF Mono",monospace; font-size:12.5px; }
+ul { margin:8px 0; padding-left:22px; }
+li { margin:3px 0; }
+blockquote { margin:12px 0; padding:8px 14px; background:var(--pale);
+             border-left:3px solid var(--grey); color:var(--dark); }
+blockquote p { margin:4px 0; }
+table { border-collapse:collapse; margin:10px 0 18px; width:100%; font-size:13px; }
+table th { background:var(--pale); color:var(--navy); font-weight:500; text-align:left;
+           padding:7px 10px; border-bottom:2px solid var(--navy); white-space:nowrap; }
+table td { padding:6px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+table tr:nth-child(even) td { background:#FAFBFD; }
+table.dataframe td:not(:first-child) { text-align:right; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body><div class="wrap">
+<h1>Đối chiếu TMS #25 ↔ mv_otif — mondelez</h1>
+<p><strong>Window</strong> <code>2026-05-01</code> → <code>2026-05-28</code> · trục <code>Ngày gửi thầu</code> (<code>thoi_gian_gui_thau</code>)</p>
+<ul><li>mv_otif freshness: max_date <code>2026-05-29 00:00:00</code>, trễ ~355′</li></ul>
+<ul><li>Số ngày lệch số đơn: <strong>8</strong> / 28 ngày  (trong đó 1 ngày thiếu hẳn 1 phía)</li></ul>
+<ul><li>Đơn lệch tập (chỉ 1 nguồn): <strong>1447</strong> (🔵 13 chỉ TMS · 🟠 1434 chỉ mv_otif) — trong đó <strong>31</strong> đơn cần truy (ngày đủ 2 nguồn), còn lại do coverage-gap ngày biên</li></ul>
+<ul><li>Cờ Δ số đơn: 🟢 = 0 · 🟡 ≤ 2 · 🔴 &gt; 2</li></ul>
+<blockquote><p>Chỉ tin cột <strong>số đơn</strong> (Δ). OT%/IF% hai nguồn khác mẫu số (TMS tính trên dòng 'Hoàn tất'; mv_otif trên count(so)) → chỉ tham khảo.</p></blockquote>
+<h2>Đối chiếu số đơn theo ngày</h2>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ngay</th>
+      <th>don_tms</th>
+      <th>don_mv</th>
+      <th>d_don</th>
+      <th>d_don_flag</th>
+      <th>ontime_tms</th>
+      <th>ontime_mv</th>
+      <th>infull_tms</th>
+      <th>infull_mv</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-05-01</td>
+      <td></td>
+      <td>1416</td>
+      <td>-1416.0</td>
+      <td>🔴</td>
+      <td></td>
+      <td>99.93</td>
+      <td></td>
+      <td>99.86</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>274.0</td>
+      <td>288</td>
+      <td>-14.0</td>
+      <td>🔴</td>
+      <td>87.37</td>
+      <td>92.71</td>
+      <td>91.23</td>
+      <td>94.44</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>1016.0</td>
+      <td>1020</td>
+      <td>-4.0</td>
+      <td>🔴</td>
+      <td>92.13</td>
+      <td>96.27</td>
+      <td>98.92</td>
+      <td>98.92</td>
+    </tr>
+    <tr>
+      <td>2026-05-04</td>
+      <td>745.0</td>
+      <td>745</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>58.62</td>
+      <td>66.58</td>
+      <td>96.68</td>
+      <td>97.05</td>
+    </tr>
+    <tr>
+      <td>2026-05-05</td>
+      <td>2367.0</td>
+      <td>2367</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>93.50</td>
+      <td>97.25</td>
+      <td>97.52</td>
+      <td>97.63</td>
+    </tr>
+    <tr>
+      <td>2026-05-06</td>
+      <td>852.0</td>
+      <td>852</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>91.58</td>
+      <td>95.66</td>
+      <td>95.16</td>
+      <td>97.77</td>
+    </tr>
+    <tr>
+      <td>2026-05-07</td>
+      <td>646.0</td>
+      <td>645</td>
+      <td>1.0</td>
+      <td>🟡</td>
+      <td>77.83</td>
+      <td>91.32</td>
+      <td>94.42</td>
+      <td>95.35</td>
+    </tr>
+    <tr>
+      <td>2026-05-08</td>
+      <td>221.0</td>
+      <td>221</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>78.38</td>
+      <td>96.83</td>
+      <td>96.85</td>
+      <td>96.83</td>
+    </tr>
+    <tr>
+      <td>2026-05-09</td>
+      <td>353.0</td>
+      <td>353</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>86.85</td>
+      <td>89.24</td>
+      <td>100.00</td>
+      <td>89.80</td>
+    </tr>
+    <tr>
+      <td>2026-05-10</td>
+      <td>697.0</td>
+      <td>697</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>92.04</td>
+      <td>96.70</td>
+      <td>100.00</td>
+      <td>99.86</td>
+    </tr>
+    <tr>
+      <td>2026-05-11</td>
+      <td>1009.0</td>
+      <td>1009</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>86.16</td>
+      <td>89.59</td>
+      <td>100.00</td>
+      <td>99.90</td>
+    </tr>
+    <tr>
+      <td>2026-05-12</td>
+      <td>566.0</td>
+      <td>566</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>75.81</td>
+      <td>90.46</td>
+      <td>100.00</td>
+      <td>100.00</td>
+    </tr>
+    <tr>
+      <td>2026-05-13</td>
+      <td>355.0</td>
+      <td>355</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>76.68</td>
+      <td>88.73</td>
+      <td>100.00</td>
+      <td>98.87</td>
+    </tr>
+    <tr>
+      <td>2026-05-14</td>
+      <td>1343.0</td>
+      <td>1343</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>90.00</td>
+      <td>94.86</td>
+      <td>100.00</td>
+      <td>99.78</td>
+    </tr>
+    <tr>
+      <td>2026-05-15</td>
+      <td>1095.0</td>
+      <td>1095</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>96.34</td>
+      <td>98.81</td>
+      <td>100.00</td>
+      <td>99.91</td>
+    </tr>
+    <tr>
+      <td>2026-05-16</td>
+      <td>237.0</td>
+      <td>237</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>82.82</td>
+      <td>94.09</td>
+      <td>100.00</td>
+      <td>99.16</td>
+    </tr>
+    <tr>
+      <td>2026-05-17</td>
+      <td>1105.0</td>
+      <td>1105</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>93.95</td>
+      <td>98.64</td>
+      <td>100.00</td>
+      <td>100.00</td>
+    </tr>
+    <tr>
+      <td>2026-05-18</td>
+      <td>268.0</td>
+      <td>268</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>77.66</td>
+      <td>91.42</td>
+      <td>100.00</td>
+      <td>99.25</td>
+    </tr>
+    <tr>
+      <td>2026-05-19</td>
+      <td>1920.0</td>
+      <td>1920</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>92.25</td>
+      <td>95.68</td>
+      <td>100.00</td>
+      <td>99.90</td>
+    </tr>
+    <tr>
+      <td>2026-05-20</td>
+      <td>1370.0</td>
+      <td>1370</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>94.35</td>
+      <td>97.37</td>
+      <td>100.00</td>
+      <td>99.85</td>
+    </tr>
+    <tr>
+      <td>2026-05-21</td>
+      <td>1236.0</td>
+      <td>1235</td>
+      <td>1.0</td>
+      <td>🟡</td>
+      <td>91.91</td>
+      <td>97.09</td>
+      <td>100.00</td>
+      <td>100.00</td>
+    </tr>
+    <tr>
+      <td>2026-05-22</td>
+      <td>238.0</td>
+      <td>238</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>81.59</td>
+      <td>90.34</td>
+      <td>100.00</td>
+      <td>99.16</td>
+    </tr>
+    <tr>
+      <td>2026-05-23</td>
+      <td>475.0</td>
+      <td>475</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>90.55</td>
+      <td>95.16</td>
+      <td>100.00</td>
+      <td>99.79</td>
+    </tr>
+    <tr>
+      <td>2026-05-24</td>
+      <td>209.0</td>
+      <td>209</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>68.90</td>
+      <td>88.52</td>
+      <td>100.00</td>
+      <td>99.52</td>
+    </tr>
+    <tr>
+      <td>2026-05-25</td>
+      <td>338.0</td>
+      <td>338</td>
+      <td>0.0</td>
+      <td>🟢</td>
+      <td>80.64</td>
+      <td>92.60</td>
+      <td>100.00</td>
+      <td>99.70</td>
+    </tr>
+    <tr>
+      <td>2026-05-26</td>
+      <td>1161.0</td>
+      <td>1159</td>
+      <td>2.0</td>
+      <td>🟡</td>
+      <td>52.89</td>
+      <td>59.45</td>
+      <td>100.00</td>
+      <td>99.91</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>271.0</td>
+      <td>265</td>
+      <td>6.0</td>
+      <td>🔴</td>
+      <td>81.91</td>
+      <td>93.96</td>
+      <td>100.00</td>
+      <td>99.62</td>
+    </tr>
+    <tr>
+      <td>2026-05-28</td>
+      <td>399.0</td>
+      <td>396</td>
+      <td>3.0</td>
+      <td>🔴</td>
+      <td>82.71</td>
+      <td>94.95</td>
+      <td>100.00</td>
+      <td>97.47</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Đơn lệch tập — tổng hợp theo ngày</h2>
+<blockquote><p>📭 = ngày thiếu hẳn một nguồn (coverage gap, KHÔNG truy từng đơn — đã thấy ở Δ daily) · 🔎 = lệch trong ngày có đủ 2 nguồn (đơn thật sự cần truy bên dưới).</p></blockquote>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ngày</th>
+      <th>chỉ TMS</th>
+      <th>chỉ mv_otif</th>
+      <th>loại</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-05-01</td>
+      <td>0</td>
+      <td>1416</td>
+      <td>📭 thiếu TMS cả ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>0</td>
+      <td>14</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>0</td>
+      <td>4</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-07</td>
+      <td>1</td>
+      <td>0</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-21</td>
+      <td>1</td>
+      <td>0</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-26</td>
+      <td>2</td>
+      <td>0</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>6</td>
+      <td>0</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+    <tr>
+      <td>2026-05-28</td>
+      <td>3</td>
+      <td>0</td>
+      <td>🔎 lệch trong ngày</td>
+    </tr>
+  </tbody>
+</table>
+<ul><li>Ngày coverage-gap: <code>2026-05-01</code> thiếu TMS cả ngày: 1416 đơn</li></ul>
+<h2>Chi tiết đơn cần truy (🔎 ngày đủ 2 nguồn)</h2>
+<blockquote><p>Cột chẩn đoán nguyên nhân lệch: <strong><code>đối chiếu chéo</code></strong> = mã đơn có ở nguồn kia ngày nào không — <code>⏱ ở … {ngày}</code> ⇒ nghi <strong>lệch biên ngày timezone</strong> (mv_otif giờ <strong>UTC</strong>, TMS giờ <strong>VN</strong>, chênh 7h); <code>∅ không có</code> ⇒ đơn thật sự chỉ một nguồn (khác service / chưa đẩy). <strong><code>dịch vụ (TMS)</code></strong> ≠ <code>Xuất bán</code> ⇒ lý do mv_otif (chỉ scope <code>Xuất bán</code>) không có đơn. <code>gửi thầu</code>: TMS giờ VN, mv_otif giờ UTC. <code>mã đơn</code> = <code>OrderCode</code> (TMS) / <code>so</code> (mv_otif).</p></blockquote>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ngày</th>
+      <th>mã đơn</th>
+      <th>nguồn</th>
+      <th>gửi thầu</th>
+      <th>dịch vụ (TMS)</th>
+      <th>trạng thái</th>
+      <th>đối chiếu chéo</th>
+      <th>chuyến (TMS)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487808</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 17:26</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487809</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 17:26</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487896</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487899</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487904</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487917</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482487921</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491114</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491115</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491118</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491123</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491197</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491198</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>8482491225</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-02 15:31</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>8482491079</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-03 14:39</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>8482491142</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-03 14:39</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>8482491143</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-03 14:39</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>8482491155</td>
+      <td>🟠 chỉ mv_otif</td>
+      <td>2026-05-03 14:39</td>
+      <td>—</td>
+      <td>OTIF</td>
+      <td>∅ không có ở TMS</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>2026-05-07</td>
+      <td>8482500089</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-07 17:26</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0203751</td>
+    </tr>
+    <tr>
+      <td>2026-05-21</td>
+      <td>8482517171</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-21 19:34</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0206796</td>
+    </tr>
+    <tr>
+      <td>2026-05-26</td>
+      <td>8482518769</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-26 17:37</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207745</td>
+    </tr>
+    <tr>
+      <td>2026-05-26</td>
+      <td>8482518776</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-26 17:37</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207745</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>8482517214</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-27 15:09</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207826</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>8482518836</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-27 15:09</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207826</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>8482519843</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-27 15:09</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207826</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>8482520003</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-27 15:09</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207826</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>8482520075</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-27 15:09</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207826</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>8482520080</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-27 15:09</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0207827</td>
+    </tr>
+    <tr>
+      <td>2026-05-28</td>
+      <td>8482520599</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-28 17:28</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0208195</td>
+    </tr>
+    <tr>
+      <td>2026-05-28</td>
+      <td>8482520600</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-28 17:28</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0208195</td>
+    </tr>
+    <tr>
+      <td>2026-05-28</td>
+      <td>8482520603</td>
+      <td>🔵 chỉ TMS</td>
+      <td>2026-05-28 17:28</td>
+      <td>Xuất bán</td>
+      <td>Hoàn tất</td>
+      <td>∅ không có ở mv_otif</td>
+      <td>DI0208195</td>
+    </tr>
+  </tbody>
+</table>
+</div></body>
+</html>

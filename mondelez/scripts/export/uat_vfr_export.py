@@ -31,7 +31,8 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_PROJECT_DIR = _SCRIPT_DIR.parent
+_PROJECT_DIR = next(p for p in Path(__file__).resolve().parents
+                    if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
 _OUTPUT_DIR = _PROJECT_DIR / "01-sections" / "vfr" / "uat"
 
 try:
@@ -576,7 +577,7 @@ def build_readme(ws, ctx):
                              "Lệch → có gap filter. Sheet 02 dimension: SQL weighted ≠ simple-avg formula là BÌNH THƯỜNG (xem note weighted)."),
         ("Format chuẩn", "% VFR: '0.00\"%\"' (vd 94.49%, 82.30%). Count: '#,##0' (vd 1,234). CBM/số có thập phân: '#,##0.00'. "
                          "Datetime ETA/ATA: 'yyyy-mm-dd hh:mm:ss' (datetime cell, sort/filter range OK, đã strip tzinfo)."),
-        ("Re-run", "python scripts/uat_vfr_export.py — đổi WINDOW_START_DATE / WINDOW_END_DATE / DATE_TYPE ở đầu file rồi chạy lại."),
+        ("Re-run", "python scripts/export/uat_vfr_export.py — đổi WINDOW_START_DATE / WINDOW_END_DATE / DATE_TYPE ở đầu file rồi chạy lại."),
     ]
     for k, v in meta:
         ws.append([k, v])

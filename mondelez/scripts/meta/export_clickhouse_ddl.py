@@ -14,10 +14,10 @@ Output:
   02-data/data-sources/clickhouse-ddl/analytics_workspace_mvs.sql  ← Raw SQL DDL (copy-paste ready)
 
 Usage:
-  python scripts/export_clickhouse_ddl.py
-  python scripts/export_clickhouse_ddl.py --database analytics_workspace
-  python scripts/export_clickhouse_ddl.py --engine MaterializedView,View
-  python scripts/export_clickhouse_ddl.py --table mv_alert_late_do    # single table
+  python scripts/meta/export_clickhouse_ddl.py
+  python scripts/meta/export_clickhouse_ddl.py --database analytics_workspace
+  python scripts/meta/export_clickhouse_ddl.py --engine MaterializedView,View
+  python scripts/meta/export_clickhouse_ddl.py --table mv_alert_late_do    # single table
 """
 from __future__ import annotations
 
@@ -28,7 +28,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_PROJECT_DIR = _SCRIPT_DIR.parent  # projects/mondelez/
+_PROJECT_DIR = next(p for p in Path(__file__).resolve().parents
+                    if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
 _OUTPUT_DIR = _PROJECT_DIR / "02-data" / "data-sources" / "clickhouse-ddl"
 
 # Load .env từ repo root

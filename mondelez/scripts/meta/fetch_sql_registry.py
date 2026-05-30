@@ -8,7 +8,7 @@ projects/mondelez/02-data/data-sources/sql-registry.md để dùng cho:
   - Debug / reference SQL
 
 Cách chạy:
-    python projects/mondelez/scripts/fetch_sql_registry.py
+    python projects/mondelez/scripts/meta/fetch_sql_registry.py
 
 Env vars cần có trong projects/mondelez/.env:
     GOOGLE_APPLICATION_CREDENTIALS  — đường dẫn tới service account JSON
@@ -27,7 +27,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # ── Load .env ────────────────────────────────────────────────────────────────
-_PROJECT_DIR = Path(__file__).resolve().parent.parent  # projects/mondelez/
+_PROJECT_DIR = next(p for p in Path(__file__).resolve().parents
+                    if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
 _env_file = _PROJECT_DIR / ".env"
 if _env_file.exists():
     load_dotenv(_env_file)

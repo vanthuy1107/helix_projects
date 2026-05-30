@@ -1,0 +1,1662 @@
+{
+  "annotations": [
+    {
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "query": {
+          "datasource": {
+            "name": "-- Grafana --"
+          },
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {},
+          "version": "v0"
+        }
+      }
+    }
+  ],
+  "cursorSync": "Off",
+  "description": "Nhìn nhanh sức khỏe OTIF của mv_otif: freshness + 3 KPI RAG + chiều đang kéo OTIF xuống + trend + breakdown. Công thức canonical theo mondelez/scripts/analysis/otif_mtd_audit.py (mẫu số loại 'Không có dữ liệu STM'). Target/RAG theo prd.md §13.2 (OTIF 90 / Ontime 95 / Infull 97). RAG ở thresholds, KHÔNG trong SQL.",
+  "editable": true,
+  "elements": {
+    "panel-1": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT dateDiff('minute', max(thoi_gian_gui_thau), now()) AS lag_min, toString(toDate(max(thoi_gian_gui_thau))) AS max_date FROM analytics_workspace.mv_otif"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Lag = phút từ max(thoi_gian_gui_thau) tới now. Lưu ý cột UTC, dashboard hiển thị Asia/Ho_Chi_Minh.",
+        "id": 1,
+        "links": [],
+        "title": "Freshness — data tới max_date, trễ ~lag′ (MV refresh 5′)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 10
+                    },
+                    {
+                      "color": "red",
+                      "value": 30
+                    }
+                  ]
+                },
+                "unit": "m"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^lag_min$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-10": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(ten_ngan_nha_van_tai IS NULL,'(NULL)', ten_ngan_nha_van_tai='','(rỗng)', ten_ngan_nha_van_tai) AS dim, round(100.0*countIf(otif_status='OTIF')/nullIf(countIf(otif_status != 'Không có dữ liệu STM'),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) GROUP BY dim ORDER BY count() DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 10,
+        "links": [],
+        "title": "%OTIF theo Nhà vận tải — đỏ < 85% (top 20)",
+        "vizConfig": {
+          "group": "bargauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 85
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "displayMode": "gradient",
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-11": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(group_of_cago IS NULL,'(NULL)', group_of_cago='','(rỗng)', group_of_cago) AS dim, round(100.0*countIf(otif_status='OTIF')/nullIf(countIf(otif_status != 'Không có dữ liệu STM'),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY dim ORDER BY count() DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 11,
+        "links": [],
+        "title": "%OTIF theo Loại hàng — đỏ < 85% (top 20)",
+        "vizConfig": {
+          "group": "bargauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 85
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "displayMode": "gradient",
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-12": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(group_name IS NULL,'(NULL)', group_name='','(rỗng)', group_name) AS dim, round(100.0*countIf(otif_status='OTIF')/nullIf(countIf(otif_status != 'Không có dữ liệu STM'),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY dim ORDER BY count() DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 12,
+        "links": [],
+        "title": "%OTIF theo Kênh — đỏ < 85% (top 20)",
+        "vizConfig": {
+          "group": "bargauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 85
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "displayMode": "gradient",
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-14": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT 'so NULL/empty' AS check, countIf(so IS NULL OR so='') AS cnt FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) UNION ALL SELECT 'whseid empty', countIf(whseid='') FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) UNION ALL SELECT 'otif_status empty', countIf(otif_status='') FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) UNION ALL SELECT 'otif_but_not_ontime', countIf(otif_status='OTIF' AND ontime_status!='Ontime') FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) UNION ALL SELECT 'otif_but_not_infull', countIf(otif_status='OTIF' AND infull_status!='Infull') FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) UNION ALL SELECT 'ontime_but_ata_null', countIf(ontime_status='Ontime' AND ata_den IS NULL) FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) UNION ALL SELECT 'tender_future', countIf(toDate(thoi_gian_gui_thau) > today()) FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Subset 6 nhóm anomaly của otif_mtd_audit.py: NULL/empty cột then chốt + business-rule cross-field. cnt > 0 = đỏ, cần truy bằng script.",
+        "id": 14,
+        "links": [],
+        "title": "Anomaly — đếm kỳ vọng = 0 (drill chi tiết bằng otif_mtd_audit.py nếu > 0)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "cnt"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-background"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "red",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-2": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT uniqExact(so) AS total_so FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Số SO duy nhất trong window, đã loại otif_status='Không có dữ liệu STM' (khớp mẫu số % KPI).",
+        "id": 2,
+        "links": [],
+        "title": "Tổng đơn (uniqExact SO, đã loại STM-missing)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "none",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^total_so$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-3": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 3,
+        "links": [],
+        "title": "% OTIF (mục tiêu 90%)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 85
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^pct_otif$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(100.0*countIf(ontime_status='Ontime')/nullIf(count(so),0),2) AS pct_ontime FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 4,
+        "links": [],
+        "title": "% Ontime (mục tiêu 95%)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 90
+                    },
+                    {
+                      "color": "green",
+                      "value": 95
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^pct_ontime$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-5": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT round(100.0*countIf(infull_status='Infull')/nullIf(count(so),0),2) AS pct_infull FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt)"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 5,
+        "links": [],
+        "title": "% Infull (mục tiêu 97%)",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 92
+                    },
+                    {
+                      "color": "green",
+                      "value": 97
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "/^pct_infull$/",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value_and_name",
+              "wideLayout": true
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-6": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT chieu, gia_tri, total_so, otif_so, (total_so - otif_so) AS fail_so, pct_otif FROM ( SELECT 'NVC' AS chieu, multiIf(ten_ngan_nha_van_tai IS NULL,'(NULL)', ten_ngan_nha_van_tai='','(rỗng)', ten_ngan_nha_van_tai) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri UNION ALL SELECT 'Kho' AS chieu, multiIf(whseid IS NULL,'(NULL)', whseid='','(rỗng)', whseid) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri UNION ALL SELECT 'Loại hàng' AS chieu, multiIf(group_of_cago IS NULL,'(NULL)', group_of_cago='','(rỗng)', group_of_cago) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri UNION ALL SELECT 'Kênh' AS chieu, multiIf(group_name IS NULL,'(NULL)', group_name='','(rỗng)', group_name) AS gia_tri, count(so) AS total_so, countIf(otif_status='OTIF') AS otif_so, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY gia_tri ) WHERE pct_otif < 90 AND total_so >= 5 ORDER BY pct_otif ASC, total_so DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Exception Spotlight (PRD §13.8): gộp 4 chiều NVC / Kho / Loại hàng / Kênh, chỉ giữ nhóm %OTIF < target 90% và ≥5 đơn, sắp xếp tệ nhất trước. fail_so = đơn KHÔNG đạt OTIF trong nhóm.",
+        "id": 6,
+        "links": [],
+        "title": "Chiều đang kéo OTIF xuống — cross-dim < 90% (worst-first, ≥5 đơn)",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": true,
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "pct_otif"
+                  },
+                  "properties": [
+                    {
+                      "id": "unit",
+                      "value": "percent"
+                    },
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-background"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "red",
+                            "value": 0
+                          },
+                          {
+                            "color": "yellow",
+                            "value": 85
+                          },
+                          {
+                            "color": "green",
+                            "value": 90
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "fail_so"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-background"
+                      }
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "green",
+                            "value": 0
+                          },
+                          {
+                            "color": "orange",
+                            "value": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": false,
+                  "displayName": "pct_otif"
+                }
+              ]
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-7": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(thoi_gian_gui_thau) AS time, round(100.0*countIf(otif_status='OTIF')/nullIf(count(so),0),2) AS \"% OTIF\", round(100.0*countIf(ontime_status='Ontime')/nullIf(count(so),0),2) AS \"% Ontime\", round(100.0*countIf(infull_status='Infull')/nullIf(count(so),0),2) AS \"% Infull\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Trend daily, mẫu số loại STM-missing. Đường threshold tại 90 (target OTIF). Đối chiếu mắt: dưới đường = chưa đạt.",
+        "id": 7,
+        "links": [],
+        "title": "Xu hướng %OTIF/Ontime/Infull theo ngày — đường xanh = target 90%",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 5,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "line"
+                  }
+                },
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "transparent",
+                      "value": 0
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "desc"
+              }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-8": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 0,
+                      "rawSql": "SELECT toStartOfDay(thoi_gian_gui_thau) AS time, uniqExact(so) AS \"Tổng đơn\" FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND otif_status != 'Không có dữ liệu STM' AND $__conditionalAll(whseid IN (${whseid:singlequote}), $whseid) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY time ORDER BY time"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Số SO duy nhất mỗi ngày (loại STM-missing). Spike/hụt volume giúp đọc bối cảnh khi %OTIF dao động.",
+        "id": 8,
+        "links": [],
+        "title": "Tổng đơn theo ngày (uniqExact SO) — volume context cho trend",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "bars",
+                  "fillOpacity": 70,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    },
+    "panel-9": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "bfnjeydxu79xcf"
+                    },
+                    "group": "grafana-clickhouse-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorType": "sql",
+                      "format": 1,
+                      "rawSql": "SELECT multiIf(whseid IS NULL,'(NULL)', whseid='','(rỗng)', whseid) AS dim, round(100.0*countIf(otif_status='OTIF')/nullIf(countIf(otif_status != 'Không có dữ liệu STM'),0),2) AS pct_otif FROM analytics_workspace.mv_otif WHERE $__timeFilter(thoi_gian_gui_thau) AND $__conditionalAll(group_name IN (${kenh:singlequote}), $kenh) AND $__conditionalAll(ten_ngan_nha_van_tai IN (${nvt:singlequote}), $nvt) GROUP BY dim ORDER BY count() DESC LIMIT 20"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 9,
+        "links": [],
+        "title": "%OTIF theo Kho — đỏ < 85% (top 20 theo số dòng)",
+        "vizConfig": {
+          "group": "bargauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 85
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "options": {
+              "displayMode": "gradient",
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            }
+          },
+          "version": "13.0.1+security-01"
+        }
+      }
+    }
+  },
+  "layout": {
+    "kind": "RowsLayout",
+    "spec": {
+      "rows": [
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "hideHeader": true,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-1"
+                      },
+                      "height": 4,
+                      "width": 5,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-2"
+                      },
+                      "height": 4,
+                      "width": 4,
+                      "x": 5,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-3"
+                      },
+                      "height": 4,
+                      "width": 5,
+                      "x": 9,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-4"
+                      },
+                      "height": 4,
+                      "width": 5,
+                      "x": 14,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-5"
+                      },
+                      "height": 4,
+                      "width": 5,
+                      "x": 19,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-6"
+                      },
+                      "height": 8,
+                      "width": 24,
+                      "x": 0,
+                      "y": 4
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-7"
+                      },
+                      "height": 8,
+                      "width": 16,
+                      "x": 0,
+                      "y": 12
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-8"
+                      },
+                      "height": 8,
+                      "width": 8,
+                      "x": 16,
+                      "y": 12
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-9"
+                      },
+                      "height": 8,
+                      "width": 6,
+                      "x": 0,
+                      "y": 20
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-10"
+                      },
+                      "height": 8,
+                      "width": 6,
+                      "x": 6,
+                      "y": 20
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-11"
+                      },
+                      "height": 8,
+                      "width": 6,
+                      "x": 12,
+                      "y": 20
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-12"
+                      },
+                      "height": 8,
+                      "width": 6,
+                      "x": 18,
+                      "y": 20
+                    }
+                  }
+                ]
+              }
+            },
+            "title": ""
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-14"
+                      },
+                      "height": 8,
+                      "width": 24,
+                      "x": 0,
+                      "y": 0
+                    }
+                  }
+                ]
+              }
+            },
+            "title": "Data quality — anomaly (kỳ vọng = 0) · mở khi cần kiểm tra số liệu"
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preload": false,
+  "tags": [
+    "tenant:mondelez",
+    "source:da-analysis",
+    "otif",
+    "quickview"
+  ],
+  "timeSettings": {
+    "autoRefresh": "",
+    "autoRefreshIntervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "fiscalYearStartMonth": 0,
+    "from": "now-7d",
+    "hideTimepicker": false,
+    "timezone": "Asia/Ho_Chi_Minh",
+    "to": "now"
+  },
+  "title": "OTIF Quick View — Mondelez",
+  "variables": [
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Kho (whseid)",
+        "multi": true,
+        "name": "whseid",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "bfnjeydxu79xcf"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT whseid FROM analytics_workspace.mv_otif WHERE whseid != '' ORDER BY whseid"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Kênh (group_name)",
+        "multi": true,
+        "name": "kenh",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "bfnjeydxu79xcf"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT group_name FROM analytics_workspace.mv_otif WHERE group_name != '' ORDER BY group_name"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    },
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Nhà vận tải (ten_ngan_nha_van_tai)",
+        "multi": true,
+        "name": "nvt",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "bfnjeydxu79xcf"
+          },
+          "group": "grafana-clickhouse-datasource",
+          "kind": "DataQuery",
+          "spec": {
+            "__legacyStringValue": "SELECT DISTINCT ten_ngan_nha_van_tai FROM analytics_workspace.mv_otif WHERE ten_ngan_nha_van_tai != '' ORDER BY 1"
+          },
+          "version": "v0"
+        },
+        "refresh": "onTimeRangeChanged",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    }
+  ]
+}

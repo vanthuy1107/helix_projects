@@ -16,9 +16,9 @@ Chiến lược:
 KPI canonical (đúng công thức notebook): loại 'Không có dữ liệu STM' ở mẫu số % metric.
 
 Cách chạy (từ thư mục gốc helix-projects/):
-    python mondelez/scripts/otif_mtd_audit.py
-    python mondelez/scripts/otif_mtd_audit.py --from 2026-05-01 --to 2026-05-28
-    python mondelez/scripts/otif_mtd_audit.py --so 8482509466 --so 8482509467
+    python mondelez/scripts/analysis/otif_mtd_audit.py
+    python mondelez/scripts/analysis/otif_mtd_audit.py --from 2026-05-01 --to 2026-05-28
+    python mondelez/scripts/analysis/otif_mtd_audit.py --so 8482509466 --so 8482509467
 
 Env (mondelez/.env): CLICKHOUSE_*.  Config nghiệp vụ: mondelez/da.toml.
 """
@@ -300,18 +300,11 @@ def fetch_anomaly_timestamp(client, cfg, dfrom, dto, so_filter, date_col):
     return df.T.reset_index().rename(columns={"index": "check", 0: "count"})
 
 
-def main() -> None:
-    p = build_parser("Audit OTIF MTD trên mv_otif → .md (port từ notebook otif_mtd_audit)")
-    p.add_argument("--so", dest="so", action="append", default=[],
-                   help="Lọc theo mã SO (lặp lại để truyền nhiều). Mặc định: tất cả đơn.")
-    args = p.parse_args()
-    if not args.tenant:
-        args.tenant = Path(__file__).resolve().parent.parent   # script sống trong mondelez/
-    cfg, (dfrom, dto) = resolve(args)
-    client = da.ch_client(cfg)
-
+def build(client, cfg, dfrom: str, dto: str, *, so_filter=None) -> dict:
+    """Dựng blocks + metadata report (KHÔNG ghi file) — để main() và run_all.py
+    cùng tái dùng (Single-Purpose). Trả dict: blocks/title/stem/headline/fresh/status."""
+    so_filter = so_filter or []
     date_col = cfg.scope["default_date_col"]
-    so_filter = args.so
     T = cfg.table("mv_otif")
 
     fresh = da.meta(client, T, date_col)
@@ -367,12 +360,37 @@ def main() -> None:
         fetch_anomaly_timestamp(client, cfg, dfrom, dto, so_filter, date_col),
     ]
 
-    out = cfg.root / "reports" / f"otif-mtd-audit-{dto.replace('-', '')}.md"
-    path = da.save_md(blocks, out, title=f"Audit OTIF MTD — mv_otif — {cfg.name}")
+    pct_otif = float(k["pct_otif"]) if k["pct_otif"] is not None else 0.0
+    status = "🟢" if pct_otif >= 90 else ("🟡" if pct_otif >= 85 else "🔴")
+    return {
+        "blocks": blocks,
+        "title": f"Audit OTIF MTD — mv_otif — {cfg.name}",
+        "stem": f"otif-mtd-audit-{dto.replace('-', '')}",
+        "headline": (f"%OTIF={k['pct_otif']:.2f} · %Ontime={k['pct_ontime']:.2f} · "
+                     f"%Infull={k['pct_infull']:.2f} · total_so={int(k['total_so']):,}"),
+        "fresh": fresh,
+        "status": status,
+    }
 
-    print(f"[OK] {path}")
-    print(f"[INFO] %OTIF={k['pct_otif']:.2f} · %Ontime={k['pct_ontime']:.2f} · "
-          f"%Infull={k['pct_infull']:.2f} · total_so={int(k['total_so']):,}")
+
+def main() -> None:
+    p = build_parser("Audit OTIF MTD trên mv_otif → .md + .html (port từ notebook otif_mtd_audit)")
+    p.add_argument("--so", dest="so", action="append", default=[],
+                   help="Lọc theo mã SO (lặp lại để truyền nhiều). Mặc định: tất cả đơn.")
+    args = p.parse_args()
+    if not args.tenant:
+        args.tenant = next(p for p in Path(__file__).resolve().parents
+                           if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
+    cfg, (dfrom, dto) = resolve(args)
+    client = da.ch_client(cfg)
+
+    r = build(client, cfg, dfrom, dto, so_filter=args.so)
+    out = cfg.root / "reports" / f"{r['stem']}.md"
+    da.save_md(r["blocks"], out, title=r["title"])
+    da.save_html(r["blocks"], out.with_suffix(".html"), title=r["title"])
+
+    print(f"[OK] {out}  +  {out.with_suffix('.html').name}")
+    print(f"[INFO] {r['headline']}")
 
 
 if __name__ == "__main__":

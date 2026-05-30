@@ -8,7 +8,7 @@
 
 - On-time = đến ≤ ETA + 30′ · In-full = giao ≥ KH · % tính trên dòng `Hoàn tất`
 
-- Freshness (TenderedDate): max_date `2026-05-28 00:00:00`, trễ ~1201′
+- Freshness (TenderedDate): max_date `2026-05-28 00:00:00`, trễ ~1314′
 
 ## 1 · Quy mô & độ phủ toàn bảng (sau SO_VALID)
 
@@ -99,4 +99,4 @@ Các phần dưới đây phụ thuộc tham số tự chọn / cần render nhi
 
 - Breakdown nhà xe / kho / tỉnh / loại xe + biểu đồ xu hướng, % On-time theo tuần.
 
-- Đối chiếu chéo với `mv_otif` (confusion matrix, set diff) → xem `mondelez/scripts/reconcile_tms_otif.py`.
+- Đối chiếu chéo với `mv_otif` (confusion matrix, set diff) → xem `mondelez/scripts/analysis/reconcile_tms_otif.py`.

@@ -26,7 +26,8 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_PROJECT_DIR = _SCRIPT_DIR.parent
+_PROJECT_DIR = next(p for p in Path(__file__).resolve().parents
+                    if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
 _OUTPUT_DIR = _PROJECT_DIR / "01-sections" / "flash-daily" / "uat"
 
 try:

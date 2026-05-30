@@ -8,9 +8,13 @@ Mặc định chạy report #25 (Báo cáo theo đơn hàng và chuyến) với 
     knowledge-base/tms/reports/25-trip-and-order/samples/request.json
 
 Cách chạy:
-    python projects/mondelez/scripts/download_tms_report.py
-    python projects/mondelez/scripts/download_tms_report.py --from 2026-05-01 --to 2026-05-15
-    python projects/mondelez/scripts/download_tms_report.py --request <path.json> --functionid 78
+    python projects/mondelez/scripts/etl/download_tms_report.py
+    python projects/mondelez/scripts/etl/download_tms_report.py --from 2026-05-01 --to 2026-05-15
+    python projects/mondelez/scripts/etl/download_tms_report.py --request <path.json> --functionid 78
+
+Mặc định window (khi không truyền --from/--to): từ NGÀY CUỐI THÁNG TRƯỚC → HÔM NAY.
+Đệm 1 ngày của tháng trước để chạy đúng ngày 1 không bị rớt dữ liệu ngày 1 ở biên
+cắt timezone UTC↔+07 (xem default_window()).
 
 Env (projects/mondelez/.env):
     TMS_AUTH_URL TMS_REPORT_HOST TMS_TENANT_HOST TMS_CLIENT_ID TMS_SCOPE
@@ -24,12 +28,13 @@ import sys
 import json
 import argparse
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import requests
 from dotenv import load_dotenv
 
-_TENANT_DIR = Path(__file__).resolve().parent.parent       # projects/mondelez/
+_TENANT_DIR = next(p for p in Path(__file__).resolve().parents
+                   if (p / "da.toml").exists())             # tenant root = nơi có da.toml (relocation-proof)
 _PROJECTS_DIR = _TENANT_DIR.parent                          # projects/
 _ENV = _TENANT_DIR / ".env"
 if _ENV.exists():
@@ -105,13 +110,26 @@ def to_dtto(local_end: str) -> str:
     return dt.strftime("%Y-%m-%dT17:00:00.000Z")
 
 
+# Mặc định khi không truyền --from/--to:
+#   from = NGÀY CUỐI THÁNG TRƯỚC (không phải đầu tháng này như MTD chuẩn).
+# Lý do: chạy đúng vào ngày 1, nếu from=đầu tháng thì ngày 1 dễ rớt ở biên
+# cắt timezone UTC↔+07 — đệm thêm 1 ngày của tháng trước để CHẮC CHẮN bao trọn
+# ngày 1. Dữ liệu thừa của ngày cuối tháng trước lọc lại ở bước phân tích.
+def default_window() -> tuple[str, str]:
+    today = date.today()
+    last_of_prev = today.replace(day=1) - timedelta(days=1)
+    return last_of_prev.isoformat(), today.isoformat()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Tải report TMS từ S3.")
     parser.add_argument("--request", default=str(DEFAULT_REQUEST), help="Đường dẫn payload JSON")
     parser.add_argument("--endpoint", default=DEFAULT_ENDPOINT, help="Tên endpoint REP/*")
     parser.add_argument("--functionid", default=DEFAULT_FUNCTIONID)
-    parser.add_argument("--from", dest="dfrom", help="Ngày local bắt đầu YYYY-MM-DD")
-    parser.add_argument("--to", dest="dto", help="Ngày local kết thúc YYYY-MM-DD")
+    parser.add_argument("--from", dest="dfrom",
+                        help="Ngày local bắt đầu YYYY-MM-DD (mặc định: ngày cuối tháng trước)")
+    parser.add_argument("--to", dest="dto",
+                        help="Ngày local kết thúc YYYY-MM-DD (mặc định: hôm nay)")
     parser.add_argument("--out", default=str(OUT_DIR))
     args = parser.parse_args()
 
@@ -121,10 +139,13 @@ def main() -> None:
     validate_env()
 
     body = json.loads(Path(args.request).read_text(encoding="utf-8"))
-    if args.dfrom:
-        body["dtfrom"] = to_dtfrom(args.dfrom)
-    if args.dto:
-        body["dtto"] = to_dtto(args.dto)
+    def_from, def_to = default_window()
+    dfrom = args.dfrom or def_from
+    dto = args.dto or def_to
+    body["dtfrom"] = to_dtfrom(dfrom)
+    body["dtto"] = to_dtto(dto)
+    print(f"[INFO] Window local: {dfrom} → {dto} "
+          f"{'(mặc định: cuối tháng trước → hôm nay)' if not args.dfrom else ''}")
     print(f"[INFO] Report TypeExport={body.get('item', {}).get('TypeExport')} "
           f"| dtfrom={body.get('dtfrom')} dtto={body.get('dtto')}")
 

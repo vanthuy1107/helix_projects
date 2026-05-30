@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit OTIF MTD — mv_otif — mondelez</title>
+<style>
+:root { --navy:#1E3A5F; --dark:#14283F; --accent:#2563EB; --pale:#EFF4FB;
+        --grey:#9AA5B1; --line:#E2E8F0; --green:#287819; --amber:#E18719; --red:#C0392B; }
+* { box-sizing: border-box; }
+body { margin:0; background:#FFFFFF; color:var(--dark);
+       font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+       font-size:14px; line-height:1.55; font-weight:400; }
+.wrap { max-width:980px; margin:0 auto; padding:32px 36px 64px; }
+h1 { color:var(--navy); font-weight:500; font-size:23px; margin:0 0 4px;
+     padding-bottom:10px; border-bottom:2px solid var(--accent); }
+h2 { color:var(--navy); font-weight:500; font-size:18px; margin:30px 0 10px;
+     padding-left:10px; border-left:3px solid var(--accent); }
+h3 { color:var(--navy); font-weight:500; font-size:15px; margin:20px 0 8px; }
+p { margin:8px 0; }
+p.subtitle { color:var(--grey); margin:0 0 18px; }
+a { color:var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+code { background:var(--pale); color:var(--navy); padding:1px 5px; border-radius:3px;
+       font-family:"Cascadia Code",Consolas,"SF Mono",monospace; font-size:12.5px; }
+ul { margin:8px 0; padding-left:22px; }
+li { margin:3px 0; }
+blockquote { margin:12px 0; padding:8px 14px; background:var(--pale);
+             border-left:3px solid var(--grey); color:var(--dark); }
+blockquote p { margin:4px 0; }
+table { border-collapse:collapse; margin:10px 0 18px; width:100%; font-size:13px; }
+table th { background:var(--pale); color:var(--navy); font-weight:500; text-align:left;
+           padding:7px 10px; border-bottom:2px solid var(--navy); white-space:nowrap; }
+table td { padding:6px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+table tr:nth-child(even) td { background:#FAFBFD; }
+table.dataframe td:not(:first-child) { text-align:right; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body><div class="wrap">
+<h1>Audit OTIF MTD — mv_otif — mondelez</h1>
+<p><strong>Window</strong> <code>2026-05-01</code> → <code>2026-05-29</code> (inclusive) · trục <code>thoi_gian_gui_thau</code> (Ngày gửi thầu) · SO filter: <code>ALL</code></p>
+<ul><li>Freshness <code>thoi_gian_gui_thau</code>: max_date <code>2026-05-29 00:00:00</code>, min_date <code>2024-05-25 00:00:00</code>, lag ~340′ vs now (MV refresh 5′ → lag lớn = chưa cập nhật).</li></ul>
+<h2>1 · Summary sức khỏe — scale + distinct theo dim (trong window)</h2>
+<p><em>rows_minus_so &gt; 0 = SO split sang nhiều kho · rows_khong_co_stm = loại khỏi mẫu số % KPI.</em></p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>metric</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rows_window</td>
+      <td>22188.0</td>
+    </tr>
+    <tr>
+      <td>distinct_so</td>
+      <td>22188.0</td>
+    </tr>
+    <tr>
+      <td>rows_minus_so</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>distinct_so_whseid</td>
+      <td>22188.0</td>
+    </tr>
+    <tr>
+      <td>distinct_whseid</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <td>distinct_customer</td>
+      <td>1927.0</td>
+    </tr>
+    <tr>
+      <td>distinct_cargo</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <td>distinct_kenh</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <td>distinct_khu_vuc</td>
+      <td>12.0</td>
+    </tr>
+    <tr>
+      <td>distinct_nvt</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <td>rows_khong_co_stm</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>rows_co_stm</td>
+      <td>22188.0</td>
+    </tr>
+  </tbody>
+</table>
+<h2>2 · KPI canonical OTIF / Ontime / Infull (đã loại 'Không có dữ liệu STM' ở mẫu số)</h2>
+<table><thead><tr><th>KPI</th><th>Số đơn</th><th>%</th><th>Target</th><th>RAG</th></tr></thead><tbody><tr><td><strong>% OTIF</strong></td><td>20,357</td><td><strong>91.75%</strong></td><td>90%</td><td>🟢</td></tr><tr><td><strong>% Ontime</strong></td><td>20,564</td><td><strong>92.68%</strong></td><td>95%</td><td>🟡</td></tr><tr><td><strong>% Infull</strong></td><td>21,954</td><td><strong>98.95%</strong></td><td>97%</td><td>🟢</td></tr></tbody></table>
+<p>Tổng đơn (uniqExact SO, đã loại STM-missing): <strong>22,188</strong></p>
+<h2>3 · Phân bố theo dim nghiệp vụ (pct_otif = %OTIF nhóm, loại STM ở mẫu số)</h2>
+<p><strong>Kho (whseid)</strong> (<code>whseid</code>)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>bucket</th>
+      <th>rows</th>
+      <th>pct</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>NKD</td>
+      <td>11946</td>
+      <td>53.84</td>
+      <td>11523</td>
+      <td>96.46</td>
+    </tr>
+    <tr>
+      <td>BKD1</td>
+      <td>9990</td>
+      <td>45.02</td>
+      <td>8605</td>
+      <td>86.14</td>
+    </tr>
+    <tr>
+      <td>VN831</td>
+      <td>252</td>
+      <td>1.14</td>
+      <td>229</td>
+      <td>90.87</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Khu vực đội xe</strong> (<code>khu_vuc_doi_xe</code>)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>bucket</th>
+      <th>rows</th>
+      <th>pct</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>(rỗng)</td>
+      <td>13651</td>
+      <td>61.52</td>
+      <td>12770</td>
+      <td>93.55</td>
+    </tr>
+    <tr>
+      <td>Ho Chi Minh</td>
+      <td>1317</td>
+      <td>5.94</td>
+      <td>1143</td>
+      <td>86.79</td>
+    </tr>
+    <tr>
+      <td>Ha Noi</td>
+      <td>1306</td>
+      <td>5.89</td>
+      <td>1204</td>
+      <td>92.19</td>
+    </tr>
+    <tr>
+      <td>North East - North West</td>
+      <td>1303</td>
+      <td>5.87</td>
+      <td>1153</td>
+      <td>88.49</td>
+    </tr>
+    <tr>
+      <td>South East</td>
+      <td>1224</td>
+      <td>5.52</td>
+      <td>1101</td>
+      <td>89.95</td>
+    </tr>
+    <tr>
+      <td>North Central Coast</td>
+      <td>985</td>
+      <td>4.44</td>
+      <td>814</td>
+      <td>82.64</td>
+    </tr>
+    <tr>
+      <td>Mekong 2</td>
+      <td>596</td>
+      <td>2.69</td>
+      <td>569</td>
+      <td>95.47</td>
+    </tr>
+    <tr>
+      <td>Central</td>
+      <td>523</td>
+      <td>2.36</td>
+      <td>485</td>
+      <td>92.73</td>
+    </tr>
+    <tr>
+      <td>Mekong 1</td>
+      <td>493</td>
+      <td>2.22</td>
+      <td>436</td>
+      <td>88.44</td>
+    </tr>
+    <tr>
+      <td>South Central Coast</td>
+      <td>365</td>
+      <td>1.65</td>
+      <td>326</td>
+      <td>89.32</td>
+    </tr>
+    <tr>
+      <td>Central highland</td>
+      <td>250</td>
+      <td>1.13</td>
+      <td>196</td>
+      <td>78.40</td>
+    </tr>
+    <tr>
+      <td>South East - Lam Dong</td>
+      <td>175</td>
+      <td>0.79</td>
+      <td>160</td>
+      <td>91.43</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Kênh bán hàng</strong> (<code>group_name</code>)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>bucket</th>
+      <th>rows</th>
+      <th>pct</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MT</td>
+      <td>16411</td>
+      <td>73.96</td>
+      <td>15291</td>
+      <td>93.18</td>
+    </tr>
+    <tr>
+      <td>GT</td>
+      <td>5467</td>
+      <td>24.64</td>
+      <td>4809</td>
+      <td>87.96</td>
+    </tr>
+    <tr>
+      <td>KA</td>
+      <td>309</td>
+      <td>1.39</td>
+      <td>256</td>
+      <td>82.85</td>
+    </tr>
+    <tr>
+      <td>B2B</td>
+      <td>1</td>
+      <td>0.00</td>
+      <td>1</td>
+      <td>100.00</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Nhà vận tải</strong> (<code>ten_ngan_nha_van_tai</code>)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>bucket</th>
+      <th>rows</th>
+      <th>pct</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HDA</td>
+      <td>10352</td>
+      <td>46.66</td>
+      <td>10066</td>
+      <td>97.24</td>
+    </tr>
+    <tr>
+      <td>ANH SON</td>
+      <td>6018</td>
+      <td>27.12</td>
+      <td>5257</td>
+      <td>87.35</td>
+    </tr>
+    <tr>
+      <td>HOA PHAT</td>
+      <td>2359</td>
+      <td>10.63</td>
+      <td>1857</td>
+      <td>78.72</td>
+    </tr>
+    <tr>
+      <td>GHN</td>
+      <td>1072</td>
+      <td>4.83</td>
+      <td>1072</td>
+      <td>100.00</td>
+    </tr>
+    <tr>
+      <td>TLL</td>
+      <td>770</td>
+      <td>3.47</td>
+      <td>611</td>
+      <td>79.35</td>
+    </tr>
+    <tr>
+      <td>NGUYEN PHAT</td>
+      <td>597</td>
+      <td>2.69</td>
+      <td>570</td>
+      <td>95.48</td>
+    </tr>
+    <tr>
+      <td>HVP</td>
+      <td>523</td>
+      <td>2.36</td>
+      <td>485</td>
+      <td>92.73</td>
+    </tr>
+    <tr>
+      <td>THANH AN</td>
+      <td>493</td>
+      <td>2.22</td>
+      <td>436</td>
+      <td>88.44</td>
+    </tr>
+    <tr>
+      <td>(rỗng)</td>
+      <td>4</td>
+      <td>0.02</td>
+      <td>3</td>
+      <td>75.00</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Loại hàng (Group of Cargo)</strong> (<code>group_of_cago</code>)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>bucket</th>
+      <th>rows</th>
+      <th>pct</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DRY</td>
+      <td>18245</td>
+      <td>82.23</td>
+      <td>17126</td>
+      <td>93.87</td>
+    </tr>
+    <tr>
+      <td>FRESH</td>
+      <td>3324</td>
+      <td>14.98</td>
+      <td>2644</td>
+      <td>79.54</td>
+    </tr>
+    <tr>
+      <td>POSM/OFFBOM</td>
+      <td>613</td>
+      <td>2.76</td>
+      <td>581</td>
+      <td>94.78</td>
+    </tr>
+    <tr>
+      <td>(NULL)</td>
+      <td>6</td>
+      <td>0.03</td>
+      <td>6</td>
+      <td>100.00</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Loại xe gửi thầu</strong> (<code>loai_xe_gui_thau</code>)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>bucket</th>
+      <th>rows</th>
+      <th>pct</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2T</td>
+      <td>5266</td>
+      <td>23.73</td>
+      <td>4566</td>
+      <td>86.71</td>
+    </tr>
+    <tr>
+      <td>3.5T</td>
+      <td>3674</td>
+      <td>16.56</td>
+      <td>3536</td>
+      <td>96.24</td>
+    </tr>
+    <tr>
+      <td>(rỗng)</td>
+      <td>3672</td>
+      <td>16.55</td>
+      <td>3208</td>
+      <td>87.36</td>
+    </tr>
+    <tr>
+      <td>5T</td>
+      <td>2673</td>
+      <td>12.05</td>
+      <td>2526</td>
+      <td>94.50</td>
+    </tr>
+    <tr>
+      <td>2.5T</td>
+      <td>2398</td>
+      <td>10.81</td>
+      <td>2266</td>
+      <td>94.50</td>
+    </tr>
+    <tr>
+      <td>8T</td>
+      <td>2266</td>
+      <td>10.21</td>
+      <td>2159</td>
+      <td>95.28</td>
+    </tr>
+    <tr>
+      <td>1.4T</td>
+      <td>1742</td>
+      <td>7.85</td>
+      <td>1675</td>
+      <td>96.15</td>
+    </tr>
+    <tr>
+      <td>11T</td>
+      <td>497</td>
+      <td>2.24</td>
+      <td>421</td>
+      <td>84.71</td>
+    </tr>
+  </tbody>
+</table>
+<h2>4 · Volume tổng (kỳ vọng monotonic Plan ≥ Shipped ≥ Delivered mỗi UOM)</h2>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>metric</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>plan_cse</td>
+      <td>1174163.970</td>
+    </tr>
+    <tr>
+      <td>shipped_cse</td>
+      <td>1177619.100</td>
+    </tr>
+    <tr>
+      <td>delivered_cse</td>
+      <td>1170573.700</td>
+    </tr>
+    <tr>
+      <td>plan_kg</td>
+      <td>4344816.180</td>
+    </tr>
+    <tr>
+      <td>shipped_kg</td>
+      <td>4356120.890</td>
+    </tr>
+    <tr>
+      <td>delivered_kg</td>
+      <td>4331314.740</td>
+    </tr>
+    <tr>
+      <td>plan_cbm</td>
+      <td>41430.426</td>
+    </tr>
+    <tr>
+      <td>shipped_cbm</td>
+      <td>41496.051</td>
+    </tr>
+    <tr>
+      <td>delivered_cbm</td>
+      <td>39581.807</td>
+    </tr>
+  </tbody>
+</table>
+<h2>5 · Trend theo ngày (<code>thoi_gian_gui_thau</code>)</h2>
+<p><em>total_so = count(so) cắt ngày UTC (khớp widget trend) · dup &gt; 0 = SO lặp trong ngày.</em></p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ngay</th>
+      <th>total_so</th>
+      <th>so_unique</th>
+      <th>dup</th>
+      <th>rows_nostm</th>
+      <th>otif_so</th>
+      <th>pct_otif</th>
+      <th>pct_ontime</th>
+      <th>pct_infull</th>
+      <th>plan_cse</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-05-01</td>
+      <td>1416</td>
+      <td>1416</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1413</td>
+      <td>99.79</td>
+      <td>99.93</td>
+      <td>99.86</td>
+      <td>6961.96</td>
+    </tr>
+    <tr>
+      <td>2026-05-02</td>
+      <td>288</td>
+      <td>288</td>
+      <td>0</td>
+      <td>0</td>
+      <td>253</td>
+      <td>87.85</td>
+      <td>92.71</td>
+      <td>94.44</td>
+      <td>35540.13</td>
+    </tr>
+    <tr>
+      <td>2026-05-03</td>
+      <td>1020</td>
+      <td>1020</td>
+      <td>0</td>
+      <td>0</td>
+      <td>973</td>
+      <td>95.39</td>
+      <td>96.27</td>
+      <td>98.92</td>
+      <td>21971.52</td>
+    </tr>
+    <tr>
+      <td>2026-05-04</td>
+      <td>745</td>
+      <td>745</td>
+      <td>0</td>
+      <td>0</td>
+      <td>475</td>
+      <td>63.76</td>
+      <td>66.58</td>
+      <td>97.05</td>
+      <td>61421.77</td>
+    </tr>
+    <tr>
+      <td>2026-05-05</td>
+      <td>2367</td>
+      <td>2367</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2253</td>
+      <td>95.18</td>
+      <td>97.25</td>
+      <td>97.63</td>
+      <td>71656.36</td>
+    </tr>
+    <tr>
+      <td>2026-05-06</td>
+      <td>852</td>
+      <td>852</td>
+      <td>0</td>
+      <td>0</td>
+      <td>796</td>
+      <td>93.43</td>
+      <td>95.66</td>
+      <td>97.77</td>
+      <td>62227.60</td>
+    </tr>
+    <tr>
+      <td>2026-05-07</td>
+      <td>645</td>
+      <td>645</td>
+      <td>0</td>
+      <td>0</td>
+      <td>563</td>
+      <td>87.29</td>
+      <td>91.32</td>
+      <td>95.35</td>
+      <td>60112.10</td>
+    </tr>
+    <tr>
+      <td>2026-05-08</td>
+      <td>221</td>
+      <td>221</td>
+      <td>0</td>
+      <td>0</td>
+      <td>207</td>
+      <td>93.67</td>
+      <td>96.83</td>
+      <td>96.83</td>
+      <td>29954.30</td>
+    </tr>
+    <tr>
+      <td>2026-05-09</td>
+      <td>353</td>
+      <td>353</td>
+      <td>0</td>
+      <td>0</td>
+      <td>284</td>
+      <td>80.45</td>
+      <td>89.24</td>
+      <td>89.80</td>
+      <td>31710.00</td>
+    </tr>
+    <tr>
+      <td>2026-05-10</td>
+      <td>697</td>
+      <td>697</td>
+      <td>0</td>
+      <td>0</td>
+      <td>674</td>
+      <td>96.70</td>
+      <td>96.70</td>
+      <td>99.86</td>
+      <td>19496.68</td>
+    </tr>
+    <tr>
+      <td>2026-05-11</td>
+      <td>1009</td>
+      <td>1009</td>
+      <td>0</td>
+      <td>0</td>
+      <td>903</td>
+      <td>89.49</td>
+      <td>89.59</td>
+      <td>99.90</td>
+      <td>31584.70</td>
+    </tr>
+    <tr>
+      <td>2026-05-12</td>
+      <td>566</td>
+      <td>566</td>
+      <td>0</td>
+      <td>0</td>
+      <td>512</td>
+      <td>90.46</td>
+      <td>90.46</td>
+      <td>100.00</td>
+      <td>73422.22</td>
+    </tr>
+    <tr>
+      <td>2026-05-13</td>
+      <td>355</td>
+      <td>355</td>
+      <td>0</td>
+      <td>0</td>
+      <td>312</td>
+      <td>87.89</td>
+      <td>88.73</td>
+      <td>98.87</td>
+      <td>50621.60</td>
+    </tr>
+    <tr>
+      <td>2026-05-14</td>
+      <td>1343</td>
+      <td>1343</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1271</td>
+      <td>94.64</td>
+      <td>94.86</td>
+      <td>99.78</td>
+      <td>60520.80</td>
+    </tr>
+    <tr>
+      <td>2026-05-15</td>
+      <td>1095</td>
+      <td>1095</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1081</td>
+      <td>98.72</td>
+      <td>98.81</td>
+      <td>99.91</td>
+      <td>32399.20</td>
+    </tr>
+    <tr>
+      <td>2026-05-16</td>
+      <td>237</td>
+      <td>237</td>
+      <td>0</td>
+      <td>0</td>
+      <td>222</td>
+      <td>93.67</td>
+      <td>94.09</td>
+      <td>99.16</td>
+      <td>27093.80</td>
+    </tr>
+    <tr>
+      <td>2026-05-17</td>
+      <td>1105</td>
+      <td>1105</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1090</td>
+      <td>98.64</td>
+      <td>98.64</td>
+      <td>100.00</td>
+      <td>20206.50</td>
+    </tr>
+    <tr>
+      <td>2026-05-18</td>
+      <td>268</td>
+      <td>268</td>
+      <td>0</td>
+      <td>0</td>
+      <td>243</td>
+      <td>90.67</td>
+      <td>91.42</td>
+      <td>99.25</td>
+      <td>35041.14</td>
+    </tr>
+    <tr>
+      <td>2026-05-19</td>
+      <td>1920</td>
+      <td>1920</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1835</td>
+      <td>95.57</td>
+      <td>95.68</td>
+      <td>99.90</td>
+      <td>60475.29</td>
+    </tr>
+    <tr>
+      <td>2026-05-20</td>
+      <td>1370</td>
+      <td>1370</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1332</td>
+      <td>97.23</td>
+      <td>97.37</td>
+      <td>99.85</td>
+      <td>44274.10</td>
+    </tr>
+    <tr>
+      <td>2026-05-21</td>
+      <td>1235</td>
+      <td>1235</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1199</td>
+      <td>97.09</td>
+      <td>97.09</td>
+      <td>100.00</td>
+      <td>53944.90</td>
+    </tr>
+    <tr>
+      <td>2026-05-22</td>
+      <td>238</td>
+      <td>238</td>
+      <td>0</td>
+      <td>0</td>
+      <td>213</td>
+      <td>89.50</td>
+      <td>90.34</td>
+      <td>99.16</td>
+      <td>31680.60</td>
+    </tr>
+    <tr>
+      <td>2026-05-23</td>
+      <td>475</td>
+      <td>475</td>
+      <td>0</td>
+      <td>0</td>
+      <td>451</td>
+      <td>94.95</td>
+      <td>95.16</td>
+      <td>99.79</td>
+      <td>29524.50</td>
+    </tr>
+    <tr>
+      <td>2026-05-24</td>
+      <td>209</td>
+      <td>209</td>
+      <td>0</td>
+      <td>0</td>
+      <td>184</td>
+      <td>88.04</td>
+      <td>88.52</td>
+      <td>99.52</td>
+      <td>19666.00</td>
+    </tr>
+    <tr>
+      <td>2026-05-25</td>
+      <td>338</td>
+      <td>338</td>
+      <td>0</td>
+      <td>0</td>
+      <td>312</td>
+      <td>92.31</td>
+      <td>92.60</td>
+      <td>99.70</td>
+      <td>41551.20</td>
+    </tr>
+    <tr>
+      <td>2026-05-26</td>
+      <td>1159</td>
+      <td>1159</td>
+      <td>0</td>
+      <td>0</td>
+      <td>688</td>
+      <td>59.36</td>
+      <td>59.45</td>
+      <td>99.91</td>
+      <td>63328.50</td>
+    </tr>
+    <tr>
+      <td>2026-05-27</td>
+      <td>265</td>
+      <td>265</td>
+      <td>0</td>
+      <td>0</td>
+      <td>248</td>
+      <td>93.58</td>
+      <td>93.96</td>
+      <td>99.62</td>
+      <td>44478.00</td>
+    </tr>
+    <tr>
+      <td>2026-05-28</td>
+      <td>396</td>
+      <td>396</td>
+      <td>0</td>
+      <td>0</td>
+      <td>369</td>
+      <td>93.18</td>
+      <td>94.95</td>
+      <td>97.47</td>
+      <td>52918.50</td>
+    </tr>
+    <tr>
+      <td>2026-05-29</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>100.00</td>
+      <td>100.00</td>
+      <td>100.00</td>
+      <td>380.00</td>
+    </tr>
+  </tbody>
+</table>
+<h2>6 · Anomaly — 5 nhóm (đếm kỳ vọng = 0 trừ các mục info)</h2>
+<p><strong>6A · NULL / empty cột then chốt</strong> (so_null, whseid_empty kỳ vọng = 0)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>check</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rows_window</td>
+      <td>22188</td>
+    </tr>
+    <tr>
+      <td>so_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>whseid_empty</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>otif_status_empty</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>ontime_status_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>infull_status_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>thoi_gian_gui_thau_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>eta_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>ata_den_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>customer_code_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>cargo_null</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>original_cse_zero</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>6B · Volume integrity</strong> (neg_*, overdeliver kỳ vọng = 0 · overship → Failed Infull, info)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>check</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rows_window</td>
+      <td>22188</td>
+    </tr>
+    <tr>
+      <td>neg_plan_cse</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>neg_shipped_cse</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>neg_delivered_cse</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>overship_cse</td>
+      <td>243</td>
+    </tr>
+    <tr>
+      <td>overdeliver_cse</td>
+      <td>385</td>
+    </tr>
+    <tr>
+      <td>cse_pos_qty_zero</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>6C · Business-rule cross-field</strong> (otif_but_not_ontime/infull kỳ vọng = 0)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>check</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rows_window</td>
+      <td>22188</td>
+    </tr>
+    <tr>
+      <td>failontime_no_reason</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>failinfull_no_reason</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ontime_but_ata_null</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>otif_but_not_ontime</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>otif_but_not_infull</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>nostm_but_has_ata</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>grace_gap</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>tender_future</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>tender_too_old</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>6D · Duplicate (so, whseid)</strong> (dup kỳ vọng = 0 · multi = SO trải &gt; 1 kho, info)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>check</th>
+      <th>count</th>
+      <th>rule</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Duplicate (so, whseid)</td>
+      <td>0</td>
+      <td>= 0</td>
+    </tr>
+    <tr>
+      <td>SO trải &gt; 1 whseid</td>
+      <td>0</td>
+      <td>info</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>6E · Timestamp ordering</strong> (mọi cặp mốc nghịch thứ tự kỳ vọng = 0)</p>
+<table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>check</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rows_window</td>
+      <td>22188</td>
+    </tr>
+    <tr>
+      <td>tender_after_etd</td>
+      <td>201</td>
+    </tr>
+    <tr>
+      <td>etd_after_eta</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>incong_after_outcong</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>indock_after_outdock</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>atadel_after_ataleave</td>
+      <td>47</td>
+    </tr>
+    <tr>
+      <td>ship_after_arrival</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td>leavegate_after_arrival</td>
+      <td>26</td>
+    </tr>
+    <tr>
+      <td>create_after_gi</td>
+      <td>138</td>
+    </tr>
+  </tbody>
+</table>
+</div></body>
+</html>

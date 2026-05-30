@@ -19,8 +19,8 @@ Section (đọc được lặp lại):
                 key/cross-MV parity (flash+drop vs flash_and_drop) · timestamp ordering
 
 Cách chạy (từ thư mục gốc helix-projects/):
-    python mondelez/scripts/flash_daily_audit.py
-    python mondelez/scripts/flash_daily_audit.py --from 2026-05-01 --to 2026-05-28
+    python mondelez/scripts/analysis/flash_daily_audit.py
+    python mondelez/scripts/analysis/flash_daily_audit.py --from 2026-05-01 --to 2026-05-28
 
 Env (mondelez/.env): CLICKHOUSE_*.  Config nghiệp vụ: mondelez/da.toml.
 """
@@ -329,15 +329,9 @@ def fetch_timestamp_ordering(client, cfg, dfrom, dto):
     return out, total
 
 
-def main() -> None:
-    args = build_parser(
-        "Audit chất lượng dữ liệu MTD cho Flash Daily (mv_flash_and_drop_report) → .md"
-    ).parse_args()
-    if not args.tenant:
-        args.tenant = Path(__file__).resolve().parent.parent  # script sống trong mondelez/
-    cfg, (dfrom, dto) = resolve(args)
-    client = da.ch_client(cfg)
-
+def build(client, cfg, dfrom: str, dto: str) -> dict:
+    """Dựng blocks + metadata audit Flash Daily (KHÔNG ghi file) — main() và
+    run_all.py cùng tái dùng. Trả dict: blocks/title/stem/headline/fresh/status."""
     # 1 · Summary
     fresh_meta = da.meta(client, cfg.table("mv_flash"), DATE_COL)
     df_rowcount = fetch_rowcount(client, cfg)
@@ -386,7 +380,6 @@ def main() -> None:
         "✓ **Data healthy** — không vi phạm integrity/business/timestamp/duplicate/parity."
     )
 
-    out = cfg.root / "reports" / f"flash-daily-audit-{dto.replace('-', '')}.md"
     blocks = [
         f"**Window** `{dfrom}` → `{dto}` · trục `{DATE_LABEL}` (`{DATE_COL}`) · "
         f"volume theo `{UOM_COL}`",
@@ -423,10 +416,34 @@ def main() -> None:
         "**Nhóm 5 · Timestamp ordering violations (kỳ vọng = 0 mọi dòng)**", df_ts,
     ]
 
-    path = da.save_md(blocks, out, title=f"Flash Daily — Audit chất lượng MTD — {cfg.name}")
-    print(f"[OK] {path}")
-    print(f"[INFO] {n_window:,} row · {hard_violations} vi phạm cứng "
-          f"(int {n_int} · biz {n_biz} · ts {n_ts} · dup {n_dup} · parity {parity_diff})")
+    return {
+        "blocks": blocks,
+        "title": f"Flash Daily — Audit chất lượng MTD — {cfg.name}",
+        "stem": f"flash-daily-audit-{dto.replace('-', '')}",
+        "headline": (f"{n_window:,} row · {hard_violations} vi phạm cứng "
+                     f"(int {n_int} · biz {n_biz} · ts {n_ts} · dup {n_dup} · parity {parity_diff})"),
+        "fresh": fresh_meta,
+        "status": "🟢" if hard_violations == 0 else "🔴",
+    }
+
+
+def main() -> None:
+    args = build_parser(
+        "Audit chất lượng dữ liệu MTD cho Flash Daily (mv_flash_and_drop_report) → .md + .html"
+    ).parse_args()
+    if not args.tenant:
+        args.tenant = next(p for p in Path(__file__).resolve().parents
+                           if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
+    cfg, (dfrom, dto) = resolve(args)
+    client = da.ch_client(cfg)
+
+    r = build(client, cfg, dfrom, dto)
+    out = cfg.root / "reports" / f"{r['stem']}.md"
+    da.save_md(r["blocks"], out, title=r["title"])
+    da.save_html(r["blocks"], out.with_suffix(".html"), title=r["title"])
+
+    print(f"[OK] {out}  +  {out.with_suffix('.html').name}")
+    print(f"[INFO] {r['headline']}")
 
 
 if __name__ == "__main__":

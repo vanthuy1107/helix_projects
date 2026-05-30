@@ -23,8 +23,8 @@ OrderStatus) → bind qua params {x:String}/{x:Array(String)}. so_valid là MẢ
 (identifier-level) → nội suy f-string.
 
 Cách chạy (từ thư mục gốc helix-projects/):
-    python mondelez/scripts/tms_report_25_audit.py
-    python mondelez/scripts/tms_report_25_audit.py --from 2026-05-01 --to 2026-05-28
+    python mondelez/scripts/analysis/tms_report_25_audit.py
+    python mondelez/scripts/analysis/tms_report_25_audit.py --from 2026-05-01 --to 2026-05-28
 
 Env (mondelez/.env): CLICKHOUSE_*.  Config nghiệp vụ: mondelez/da.toml.
 """
@@ -151,13 +151,9 @@ def fetch_integrity(client, cfg, dfrom: str, dto: str):
     return miss, multi
 
 
-def main() -> None:
-    args = build_parser("Audit lặp-lại-được TMS report #25 theo window → .md").parse_args()
-    if not args.tenant:
-        args.tenant = Path(__file__).resolve().parent.parent   # script sống trong mondelez/
-    cfg, (dfrom, dto) = resolve(args)
-    client = da.ch_client(cfg)
-
+def build(client, cfg, dfrom: str, dto: str) -> dict:
+    """Dựng blocks + metadata audit TMS #25 (KHÔNG ghi file) — main() và run_all.py
+    cùng tái dùng. Trả dict: blocks/title/stem/headline/fresh/status."""
     fresh = da.meta(client, cfg.table("tms_report_25"), DT("TenderedDate"))
     scale = fetch_scale(client, cfg)
     daily = fetch_daily(client, cfg, dfrom, dto)
@@ -180,8 +176,7 @@ def main() -> None:
         "pct_infull": "% In-full", "fill_rate": "Fill rate %", "sl_giao": "Số lượng giao",
     })
 
-    out = cfg.root / "reports" / f"tms-report-25-audit-{dto.replace('-', '')}.md"
-    path = da.save_md([
+    blocks = [
         f"**Window** `{dfrom}` → `{dto}` · trục `Ngày gửi thầu` (`TenderedDate`) · "
         f"**{don_window:,} đơn / {n_ngay} ngày** · OT ~{ot_avg}% · IF ~{if_avg}% (avg theo ngày)",
         f"- Scope phân tích: MasterStatus ∈ ({mstatus}) · OrderStatus ∈ ({ostatus})",
@@ -225,13 +220,36 @@ def main() -> None:
         "- Danh sách fail OTIF (L3.4.1/2/3: KHÔNG On-time / KHÔNG In-full / Fail cả 2).",
         "- Breakdown nhà xe / kho / tỉnh / loại xe + biểu đồ xu hướng, % On-time theo tuần.",
         "- Đối chiếu chéo với `mv_otif` (confusion matrix, set diff) → xem "
-        "`mondelez/scripts/reconcile_tms_otif.py`.",
-    ], out, title=f"Audit TMS report #25 — {cfg.name}")
+        "`mondelez/scripts/analysis/reconcile_tms_otif.py`.",
+    ]
 
-    print(f"[OK] {path}")
-    print(f"[INFO] {n_ngay} ngày · {don_window:,} đơn (window) · "
-          f"OT avg {ot_avg}% · IF avg {if_avg}% · "
-          f"toàn bảng {int(scale['so_don']):,} đơn / {int(scale['so_chuyen']):,} chuyến")
+    return {
+        "blocks": blocks,
+        "title": f"Audit TMS report #25 — {cfg.name}",
+        "stem": f"tms-report-25-audit-{dto.replace('-', '')}",
+        "headline": (f"{n_ngay} ngày · {don_window:,} đơn (window) · "
+                     f"OT avg {ot_avg}% · IF avg {if_avg}% · "
+                     f"toàn bảng {int(scale['so_don']):,} đơn / {int(scale['so_chuyen']):,} chuyến"),
+        "fresh": fresh,
+        "status": "🟢",  # audit TMS raw: không có ngưỡng pass/fail cứng → thông tin
+    }
+
+
+def main() -> None:
+    args = build_parser("Audit lặp-lại-được TMS report #25 theo window → .md + .html").parse_args()
+    if not args.tenant:
+        args.tenant = next(p for p in Path(__file__).resolve().parents
+                           if (p / "da.toml").exists())  # tenant root = nơi có da.toml (relocation-proof)
+    cfg, (dfrom, dto) = resolve(args)
+    client = da.ch_client(cfg)
+
+    r = build(client, cfg, dfrom, dto)
+    out = cfg.root / "reports" / f"{r['stem']}.md"
+    da.save_md(r["blocks"], out, title=r["title"])
+    da.save_html(r["blocks"], out.with_suffix(".html"), title=r["title"])
+
+    print(f"[OK] {out}  +  {out.with_suffix('.html').name}")
+    print(f"[INFO] {r['headline']}")
 
 
 if __name__ == "__main__":

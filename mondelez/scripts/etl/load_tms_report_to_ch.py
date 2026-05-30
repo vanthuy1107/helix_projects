@@ -17,9 +17,13 @@ Chiến lược:
 Schema canonical: knowledge-base/tms/reports/25-trip-and-order/25-tms-trip-and-order.columns.json
 
 Cách chạy:
-    python projects/mondelez/scripts/load_tms_report_to_ch.py
-    python projects/mondelez/scripts/load_tms_report_to_ch.py --from 2026-05-01 --to 2026-05-26
-    python projects/mondelez/scripts/load_tms_report_to_ch.py --recreate     # DROP + tạo lại (khi đổi schema/comment)
+    python projects/mondelez/scripts/etl/load_tms_report_to_ch.py
+    python projects/mondelez/scripts/etl/load_tms_report_to_ch.py --from 2026-05-01 --to 2026-05-26
+    python projects/mondelez/scripts/etl/load_tms_report_to_ch.py --recreate     # DROP + tạo lại (khi đổi schema/comment)
+
+Mặc định window (khi không truyền --from/--to): từ NGÀY ĐẦU THÁNG TRƯỚC → HÔM NAY,
+tức nạp TRỌN tháng trước + MTD tháng này. Bao cả tháng trước nên ngày 1 tháng này
+không bị rớt ở biên cắt timezone UTC↔+07 (xem default_window()).
 
 Env (projects/mondelez/.env): TMS_* + CLICKHOUSE_*
 """
@@ -31,14 +35,15 @@ import time
 import argparse
 from io import BytesIO
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import requests
 from dotenv import load_dotenv
 from openpyxl import load_workbook
 import clickhouse_connect
 
-_TENANT_DIR = Path(__file__).resolve().parent.parent       # projects/mondelez/
+_TENANT_DIR = next(p for p in Path(__file__).resolve().parents
+                   if (p / "da.toml").exists())             # tenant root = nơi có da.toml (relocation-proof)
 _PROJECTS_DIR = _TENANT_DIR.parent                          # projects/
 _ENV = _TENANT_DIR / ".env"
 if _ENV.exists():
@@ -69,8 +74,6 @@ ENDPOINT = "REPDIOPSPlan_SettingDownload"
 FUNCTIONID = "78"
 CHUNK_DAYS = 5
 SLEEP_BETWEEN = 3.0   # giây nghỉ giữa các lần gọi nguồn
-DEFAULT_FROM = "2026-05-01"
-DEFAULT_TO = "2026-05-26"
 
 CH_TABLE_STG = CH_TABLE + "_stg"
 CSE_SOURCE = "mv_otif_swm_stm_data"   # canonical line-level CSE, đã quy đổi UOM qua mv_masterdata_sku
@@ -213,6 +216,16 @@ def to_dtto(d: datetime) -> str:
     return d.strftime("%Y-%m-%dT17:00:00.000Z")
 
 
+# Mặc định khi không truyền --from/--to:
+#   from = NGÀY ĐẦU THÁNG TRƯỚC, to = HÔM NAY → nạp TRỌN tháng trước + MTD tháng này.
+# Bao cả tháng trước nên ngày 1 tháng này luôn nằm gọn trong window (không rớt ở
+# biên cắt timezone UTC↔+07). Dữ liệu thừa lọc lại ở bước phân tích.
+def default_window() -> tuple[str, str]:
+    today = date.today()
+    first_of_prev = (today.replace(day=1) - timedelta(days=1)).replace(day=1)
+    return first_of_prev.isoformat(), today.isoformat()
+
+
 def date_windows(start: datetime, end: datetime, days: int):
     cur = start
     while cur <= end:
@@ -242,8 +255,10 @@ def fetch_window_rows(body_template: dict, token: str, s: datetime, e: datetime,
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Nạp report TMS #25 vào ClickHouse.")
-    parser.add_argument("--from", dest="dfrom", default=DEFAULT_FROM, help="Ngày local bắt đầu YYYY-MM-DD")
-    parser.add_argument("--to", dest="dto", default=DEFAULT_TO, help="Ngày local kết thúc YYYY-MM-DD")
+    parser.add_argument("--from", dest="dfrom", default=None,
+                        help="Ngày local bắt đầu YYYY-MM-DD (mặc định: ngày cuối tháng trước)")
+    parser.add_argument("--to", dest="dto", default=None,
+                        help="Ngày local kết thúc YYYY-MM-DD (mặc định: hôm nay)")
     parser.add_argument("--recreate", action="store_true", help="DROP + tạo lại bảng (khi đổi schema/comment)")
     parser.add_argument("--sleep", type=float, default=SLEEP_BETWEEN, help="Giây nghỉ giữa các lần gọi nguồn")
     args = parser.parse_args()
@@ -256,10 +271,14 @@ def main() -> None:
     columns = load_columns()
     codes = [c["code"] for c in columns]
     ncols = len(codes)
-    start = datetime.strptime(args.dfrom, "%Y-%m-%d")
-    end = datetime.strptime(args.dto, "%Y-%m-%d")
+    def_from, def_to = default_window()
+    dfrom = args.dfrom or def_from
+    dto = args.dto or def_to
+    start = datetime.strptime(dfrom, "%Y-%m-%d")
+    end = datetime.strptime(dto, "%Y-%m-%d")
     windows = list(date_windows(start, end, CHUNK_DAYS))
-    print(f"[INFO] Khoảng: {args.dfrom} → {args.dto} | {ncols} cột | {len(windows)} cửa sổ ≤{CHUNK_DAYS} ngày")
+    suffix = " (mặc định: đầu tháng trước → hôm nay = tháng trước + MTD)" if not args.dfrom else ""
+    print(f"[INFO] Khoảng: {dfrom} → {dto}{suffix} | {ncols} cột | {len(windows)} cửa sổ ≤{CHUNK_DAYS} ngày")
 
     client = ch_client()
     print(f"[INFO] ClickHouse: {os.getenv('CLICKHOUSE_HOST')} / {CH_DATABASE}.{CH_TABLE}")
