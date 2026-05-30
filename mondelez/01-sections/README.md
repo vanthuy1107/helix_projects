@@ -12,7 +12,7 @@ Mỗi widget = 1 thư mục, bên trong có đủ 3 file:
 | `late-order-alert/` | Cảnh báo đơn trễ | `order-monitor/widget-late-order-alert` | ✅ Docs v1.0.0 (2026-05-19) — prd/spec/wireframe prefixed convention |
 | `otif/` | OTIF | `order-monitor/widget-otif` | — |
 | `shipping-progress/` | Tiến độ giao hàng | `order-monitor/widget-shipping-progress` | — |
-| `tender-response/` | Tender Response | `order-monitor/widget-tender-response` | — |
+| `tender-response/` | Tender Response | `order-monitor/widget-tender-response` | ✅ Docs v1.0.0 (2026-05-30) — canonical từ glossary+MV (FE chưa trace) · prefixed convention |
 | `vfr/` | VFR (Vehicle Fill Rate) | `order-monitor/widget-vfr` | — |
 | `copack/` | Copack In/Out | `wh-predict/widget-copack` | — |
 | `factory-inbound/` | Factory Inbound | `wh-predict/widget-factory-inbound` | — |
